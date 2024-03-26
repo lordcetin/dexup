@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+::-webkit-scrollbar {
+  width: 7px !important;
+  scroll-behavior: smooth;
+}
+::-webkit-scrollbar:hover {
+  width: 12px !important;
+}
+::-webkit-scrollbar-track {
+  @apply !bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply !bg-zinc-600 !bg-opacity-30 !rounded-full !snap-mandatory
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply !bg-zinc-600
+}
+
+::after, ::before{
+  box-sizing: border-box;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+   -webkit-appearance: none;
+}
+
+.bgradient{
+  background-color:rgb(11, 15, 19);
+  background-image:
+  radial-gradient(at 58% 55%, hsla(327,67%,47%,0.07) 0px, transparent 50%),
+  radial-gradient(at 42% 55%, hsla(210,74%,49%,0.07) 0px, transparent 50%),
+  radial-gradient(at 100% 67%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 99% 100%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 100% 1%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 99%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 52% 100%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 66%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 0%, hsla(215,27%,6%,1) 0px, transparent 50%),
+  radial-gradient(at 40% 0%, hsla(210,74%,49%,0.57) 0px, transparent 50%),
+  radial-gradient(at 58% 0%, hsla(327,67%,47%,0.57) 0px, transparent 50%);
+  background-repeat: no-repeat;
+}
+
+.white-glassmorphism {
+  background: rgba(1, 34, 36, 0.1);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.dark-glassmorphism {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 16px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}

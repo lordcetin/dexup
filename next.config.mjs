@@ -1,0 +1,42 @@
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images:{
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 's1.coincarp.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cryptologos.cc'
+      },
+      {
+        protocol: 'https',
+        hostname: 'wembleypark.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.coingecko.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.geckoterminal.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'ton.app'
+      },
+      {
+        protocol: 'https',
+        hostname: 'aerodrome.finance'
+      },
+    ]
+  },
+  webpack: config => {
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    return config;
+  },
+};
+
+export default nextConfig;
