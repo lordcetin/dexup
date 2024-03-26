@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from 'react'
 import { config, projectId } from '@/config'
-
+//@ts-ignore
 import { createWeb3Modal } from '@web3modal/wagmi/react'
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'

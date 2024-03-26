@@ -26,13 +26,10 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {isEmpty} from 'lodash';
 import { abi } from "@/lib/abi";
 import { MAX_ALLOWANCE } from "@/lib/constants";
-import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { useAppContext } from "@/context/AppContext";
 import dynamic from "next/dynamic";
 import Script from "next/script";
 import { ChartingLibraryWidgetOptions,ResolutionString, } from "@/public/static/charting_library/charting_library";
-import Datafeeds from '@/public/static/datafeeds/udf'
 import { IoMdSettings } from "react-icons/io";
 
 const TVChartContainer = dynamic(
@@ -54,20 +51,6 @@ const Swap = () => {
   const container = useRef<any>(null);
   let tvScriptLoadingPromise: Promise<void>;
   const onLoadScriptRef = useRef<(() => void) | null>(null);
-  const query = new URLSearchParams((window as any)?.location?.search);
-
-  useEffect(() => {
-    if(query.get('chain') === 'solana'){
-      setIsWallet(true)
-    }else{
-      setIsWallet(false)
-    }
-  },[query])
-  // connection context object that is injected into the browser by the wallet
-  const { connection } = useConnection();
-  // user's public key of the wallet they connected to our application
-  const { publicKey } = useWallet();
-  // const provider = (window as any).phantom?.solana;
 
   const [paid,setPaid] = useState<any>(10);
   const [received,setReceived] = useState<any>(0);
@@ -656,10 +639,8 @@ const Swap = () => {
       </div>
       }
       </div>
-      {address || publicKey ?
+      {address ?
       <ApproveOrReviewButton amount={realamount} geckoId={geckoId} takerAddress={address as Address} sellTokenAddress={switchtoken === false ? baseAddress as Address : quoteAddress as Address} fromTokenAddress={switchtoken === false ? quoteAddress as Address : baseAddress as Address} slippage={slippage} dexAdress={dexAddress as Address} />
-      : chain === 'solana' ?
-      <WalletMultiButton className='!bg-orange-500 hover:!bg-black transition-all duration-200 !rounded-full' />
       :
       <button type="button" onClick={() => open()} className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200">
       Connect Wallet

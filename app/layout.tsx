@@ -12,7 +12,7 @@ import { Web3ModalProvider } from '@/context'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { headers } from "next/headers";
-import WalletContextProvider from '@/context/WalletContextProvider'
+// import WalletContextProvider from '@/context/WalletContextProvider'
 // import { SocketProvider } from "./providers";
 export const metadata: Metadata = {
   title: "Dexup",
