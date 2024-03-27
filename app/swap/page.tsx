@@ -777,7 +777,6 @@ function ApproveOrReviewButton({
     writeContract, data, isLoading, isSuccess, isError,error
   }:any = useWriteContract({
     abi:DexRouter,
-    address:sellTokenAddress,
   }as any);
 
   const handleSwapR = async () => {
@@ -795,7 +794,7 @@ function ApproveOrReviewButton({
     const { tx } = datas 
     console.log("datas",datas)
 
-    const swap = await writeContract({args:[tx.data]})
+    const swap = await writeContract({args:[dexContractAddress,tx.data]})
 
     console.log("swap",swap)
     console.log("data",data)
