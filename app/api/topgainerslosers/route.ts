@@ -122,7 +122,7 @@ export async function GET(req:NextRequest) {
   const loser: any[] = [];
   const data: any[] = [];
 
-  const reser = await fetch('https://pro-api.coingecko.com/api/v3/coins/top_gainers_losers?vs_currency=usd',{
+  const reser = await fetch('https://pro-api.coingecko.com/api/v3/coins/top_gainers_losers?vs_currency=usd&duration=24h',{
     method:'GET',
     headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
     cache:'no-store',
@@ -148,7 +148,7 @@ export async function GET(req:NextRequest) {
   }
 
 
-  // data.push({ gainer, loser });
+  data.push({ gainer, loser });
 
   fs.writeFileSync('./config/data.json', JSON.stringify(data));
   return NextResponse.json("Succesfull",{status:200})

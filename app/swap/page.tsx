@@ -18,8 +18,10 @@ import {
   useWaitForTransactionReceipt,
 } from "wagmi";
 import { erc20Abi, type Address } from "viem";
+//@ts-ignore
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import Image from "next/image";
+//@ts-ignore
 import { createChart,CrosshairMode,LineStyle} from 'lightweight-charts';
 import Chart from '@/components/Chart/page'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -543,7 +545,6 @@ const Swap = () => {
     setReceiveLoading(false)
     }
   }
-
 
 
   return (
