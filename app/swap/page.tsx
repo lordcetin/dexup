@@ -408,6 +408,7 @@ const Swap = () => {
     const approve = await axios.get(`/api/approve?chainId=${chain === 'solana' ? 501 : chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
     const datasapprove = approve.data.data[0]
     const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
+
     setDexTokenApproveAddress(dexContractAddress)
     // const {  } = await writeContractAsync({
     //   chainId:chainId,
@@ -458,6 +459,13 @@ const Swap = () => {
     const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetID : quoteNetID}&baseaddress=${switchtoken === false ? baseAddress : quoteAddress}`)
     const datas = dec.data.data[0]
     const decimal = datas.attributes.decimals
+    const amount = generateDecimal(paids,baseDecimal)
+    const approve = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
+    const datasapprove = approve.data.data[0]
+    const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
+
+    setDexTokenApproveAddress(dexContractAddress)
+
     if(!isEmpty(paids)){
     setPaidLoading(true)
     const amount = generateDecimal(paids,decimal)
@@ -494,6 +502,14 @@ const Swap = () => {
     const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetID : quoteNetID}&baseaddress=${switchtoken === false ? baseAddress : quoteAddress}`)
     const datas = dec.data.data[0]
     const decimal = datas.attributes.decimals
+
+    const amount = generateDecimal(receive,baseDecimal)
+    const approve = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
+    const datasapprove = approve.data.data[0]
+    const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
+
+    setDexTokenApproveAddress(dexContractAddress)
+
     if(!isEmpty(receive)){
     setReceiveLoading(true)
     // const amount = generateDecimal(receive,decimal)
@@ -531,7 +547,24 @@ const Swap = () => {
 
 
   return (
-    <main className="flex justify-center items-center w-full mt-28 gap-x-6">
+    <main className="flex justify-between items-center w-full mt-28 gap-x-6">
+      <div className="flex-col items-center">
+        <div className="flex items-center gap-x-6 my-5">
+          <div className="flex-col flex gap-2">
+        <div className="flex gap-x-2 items-center">
+          <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
+          <h1>{pairdata?.baseTokenSymbol}</h1>
+        </div>
+          <p className="text-xs">{pairdata?.baseaddress.slice(0,5) + '...' + pairdata?.baseaddress.slice(38)}</p>
+          </div>
+          <div className="flex-col flex gap-2">
+        <div className="flex gap-x-2 items-center">
+          <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
+          <h1>{pairdata?.quoteTokenSymbol}</h1>
+        </div>
+        <p className="text-xs">{pairdata?.quoteaddress.slice(0,5) + '...' + pairdata?.quoteaddress.slice(38)}</p>
+        </div>
+        </div>
         <Script
         src="/static/datafeeds/udf/dist/bundle.js"
         strategy="lazyOnload"
@@ -546,6 +579,7 @@ const Swap = () => {
       {/* {pairdata?.baseTokenSymbol ? <Chart baseSymbol={pairdata?.baseTokenSymbol}/> : null} */}
       {/* <div className="border rounded-xl border-white border-opacity-10" ref={container} style={{ height: "600px", width: "100%" }}>
       </div> */}
+      </div>
       <div className={chain === 'solana' ? "hidden" : "flex-col flex gap-y-1 justify-center items-center relative bg-gradient-to-t to-brandblack via-brandblack from-transparent p-12 rounded-xl border border-white border-opacity-10"}>
         <div className="absolute top-5 right-5 z-50 self-end">
         <IoMdSettings onClick={() => setSettings(!settings)} title="Settings" size={22} className="text-neutral-400 hover:rotate-90 transition-all duration-500 cursor-pointer"/>
