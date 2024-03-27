@@ -16,6 +16,7 @@ import {
   useSwitchChain,
   useSimulateContract,
   useWaitForTransactionReceipt,
+
 } from "wagmi";
 import { erc20Abi, type Address } from "viem";
 //@ts-ignore
@@ -26,7 +27,8 @@ import { createChart,CrosshairMode,LineStyle} from 'lightweight-charts';
 import Chart from '@/components/Chart/page'
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import {isEmpty} from 'lodash';
-import { abi } from "@/lib/abi";
+import {abi} from "@/lib/abi";
+import DexRouter from "@/lib/DexRouter.json";
 import { MAX_ALLOWANCE } from "@/lib/constants";
 import { useAppContext } from "@/context/AppContext";
 import dynamic from "next/dynamic";
@@ -354,7 +356,7 @@ const Swap = () => {
 
           const baseUnitPrice = parseFloat(fromTokenPrice);
           // let baseAmount:any = formatEther(data?.fromTokenAmount.toString());
-          setRealAmout(paidAmount as any)
+          setRealAmout(amount)
 
           // let quoteAmount:any = formatEther(data?.toTokenAmount.toString());
           const formattedBase = new Intl.NumberFormat("en-US",{
@@ -515,7 +517,7 @@ const Swap = () => {
     if(!isEmpty(receive)){
     setReceiveLoading(true)
     // const amount = generateDecimal(receive,decimal)
-    setRealAmout(receive)
+    setRealAmout(amount)
     
     // const res = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&toTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&amount=${receive}&chainId=${chainID}`)
     const res = await axios.get(`/api/getPri?amount=${receive}&chainId=${chainID}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&slippage=${slippage}`)
@@ -691,7 +693,8 @@ const Swap = () => {
       className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]"
       /> : null} */}
 
-      {chain === 'solana' ?<iframe
+      {chain === 'solana' ?
+      <iframe
       src={urluni}
       height="660px"
       width="100%"
@@ -727,6 +730,7 @@ function ApproveOrReviewButton({
   console.log("amount",amount)
   console.log("geckoId",geckoId)
   console.log("slippage",slippage)
+
   // 1. Read from erc20, does spender (0x Exchange Proxy) have allowance?
   const { data: allowance, refetch }:any = useReadContract({
     address: sellTokenAddress,
@@ -735,48 +739,76 @@ function ApproveOrReviewButton({
     args: [takerAddress, dexAdress],
   });
   console.log("Allowance",allowance)
-  console.log("REFETCH",refetch)
-  // 2. (only if no allowance): write to erc20, approve 0x Exchange Proxy to spend max integer
-  const { data }:any = useSimulateContract({//usePrepareTransaciton
-    address: sellTokenAddress,
-    abi: abi,
-    functionName: "approve",
-    args: [dexAdress, MAX_ALLOWANCE],
-  });
 
-  console.log("APPROVE",data)
+  // const { data }:any = useSimulateContract({
+  //   address: sellTokenAddress,
+  //   abi: abi,
+  //   functionName: "allowance",
+  //   args: [takerAddress, dexAdress],
+  // });
 
-  const { 
-    data:writeContractResult,
-    writeContractAsync:approveAsync,
-    error,
-  }:any = useWriteContract(data);
-  console.log("writeContractResult",writeContractResult)
-  console.log("approveAsync",approveAsync)
-  console.log("error",error)
-  const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
-    hash: writeContractResult ? writeContractResult?.hash : undefined,
-    onSuccess(data:any) {
-      console.log("SUCCESS",data)
-      handleSwapR();
-    },
+  // console.log("APPROVE",data)
+
+  // const {
+  //   data:writeContractResult,
+  //   writeContractAsync:approveAsync,
+  //   error,
+  // }:any = useWriteContract({
+  //   abi,
+  //   account:{takerAddress},
+  //   address: sellTokenAddress,
+  //   functionName:"allowance",
+  //   args:[takerAddress, dexAdress]
+  // }as any);
+
+  // console.log("writeContractResult",writeContractResult)
+  // console.log("approveAsync",approveAsync)
+  // console.log("error",error)
+
+  // const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
+  //   hash: writeContractResult ? writeContractResult?.hash : undefined,
+  //   onSuccess(data:any) {
+  //     console.log("SUCCESS",data)
+  //     handleSwapR();
+  //   },
+  // }as any);
+
+  const {
+    writeContract, data, isLoading, isSuccess, isError
+  }:any = useWriteContract({
+    abi:DexRouter,
+    address:sellTokenAddress,
   }as any);
 
   const handleSwapR = async () => {
     refetch()
+
     const chains = await axios.get(`/api/network?chainname=${geckoId === 'binance-smart-chain' ? 'bsc' : geckoId}`)
     const chaindata = chains.data
     const chainID = chaindata?.chain_identifier
+    const respo = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${sellTokenAddress}&approveAmount=${amount}`)
+    const approve = respo.data.data[0]
+    const { dexContractAddress } = approve
+    console.log("dexContractAddress",dexContractAddress)
     const res = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${sellTokenAddress}&fromTokenAddress=${fromTokenAddress}&slippage=${slippage}&userWalletAddress=${takerAddress}`)
-    const data = res.data;
-    console.log("swap",data)
+    const datas = res.data.data[0];
+    const { tx } = datas 
+    console.log("datas",datas)
+
+    const swap = await writeContract({args:[tx.data]})
+
+    console.log("swap",swap)
+    console.log("data",data)
+    console.log("isLoading",isLoading)
+    console.log("isSuccess",isSuccess)
+    console.log("isError",isError)
   }
 
-  if (error) {
-    return <div>Something went wrong: {error.message}</div>;
-  }
+  // if (error) {
+  //   return <div>Something went wrong: {error.message}</div>;
+  // }
   //@ts-ignore
-  if (approveAsync) {
+  if (allowance === 0n ) {
     return (
       <>
 
@@ -784,10 +816,12 @@ function ApproveOrReviewButton({
           type="button"
           className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
           onClick={async () => {
-            const writtenValue = await approveAsync();
+            // const writtenValue = await approveAsync();
+            await handleSwapR()
           }}
         >
-          {isApproving ? "Approving…" : "Approve"}
+          Approve
+          {/* {isApproving ? "Approving…" : "Approve"} */}
         </button>
         
       </>
