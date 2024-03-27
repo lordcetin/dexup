@@ -706,7 +706,7 @@ function ApproveOrReviewButton({
     error,
   }:any = useWriteContract(data);
 
-  const { isLoading: isApproving, isSuccess  }:any = useWaitForTransactionReceipt({
+  const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
     hash: writeContractResult ? writeContractResult?.hash : undefined,
     onSuccess(data:any) {
       handleSwapR();
@@ -727,20 +727,10 @@ function ApproveOrReviewButton({
     return <div>Something went wrong: {error.message}</div>;
   }
   //@ts-ignore
-  if (allowance === 0n && approveAsync) {
+  if (approveAsync) {
     return (
       <>
-        {isSuccess ? 
-          <button
-          type="button"
-          className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
-          onClick={async () => {
-            const handleSwap = await handleSwapR();
-          }}
-        >
-          Swap
-        </button>
-        :
+
         <button
           type="button"
           className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
@@ -750,7 +740,7 @@ function ApproveOrReviewButton({
         >
           {isApproving ? "Approving…" : "Approve"}
         </button>
-        }
+        
       </>
     );
   }
