@@ -684,6 +684,14 @@ function ApproveOrReviewButton({
   geckoId:any;
   slippage:any;
 }) {
+
+  console.log("takerAddress",takerAddress)
+  console.log("sellTokenAddress",sellTokenAddress)
+  console.log("fromTokenAddress",fromTokenAddress)
+  console.log("dexAdress",dexAdress)
+  console.log("amount",amount)
+  console.log("geckoId",geckoId)
+  console.log("slippage",slippage)
   // 1. Read from erc20, does spender (0x Exchange Proxy) have allowance?
   const { data: allowance, refetch }:any = useReadContract({
     address: sellTokenAddress,
@@ -691,7 +699,8 @@ function ApproveOrReviewButton({
     functionName: "allowance",
     args: [takerAddress, dexAdress],
   });
-
+  console.log("Allowance",allowance)
+  console.log("REFETCH",refetch)
   // 2. (only if no allowance): write to erc20, approve 0x Exchange Proxy to spend max integer
   const { data }:any = useSimulateContract({//usePrepareTransaciton
     address: sellTokenAddress,
@@ -700,15 +709,20 @@ function ApproveOrReviewButton({
     args: [dexAdress, MAX_ALLOWANCE],
   });
 
+  console.log("APPROVE",data)
+
   const { 
     data:writeContractResult,
     writeContractAsync:approveAsync,
     error,
   }:any = useWriteContract(data);
-
+  console.log("writeContractResult",writeContractResult)
+  console.log("approveAsync",approveAsync)
+  console.log("error",error)
   const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
     hash: writeContractResult ? writeContractResult?.hash : undefined,
     onSuccess(data:any) {
+      console.log("SUCCESS",data)
       handleSwapR();
     },
   }as any);
