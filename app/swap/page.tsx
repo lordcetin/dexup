@@ -556,14 +556,14 @@ const Swap = () => {
           <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
           <h1>{pairdata?.baseTokenSymbol}</h1>
         </div>
-          <p className="text-xs">{pairdata?.baseaddress.slice(0,5) + '...' + pairdata?.baseaddress.slice(38)}</p>
+          <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
           </div>
           <div className="flex-col flex gap-2">
         <div className="flex gap-x-2 items-center">
           <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
           <h1>{pairdata?.quoteTokenSymbol}</h1>
         </div>
-        <p className="text-xs">{pairdata?.quoteaddress.slice(0,5) + '...' + pairdata?.quoteaddress.slice(38)}</p>
+        <p className="text-xs">{pairdata && pairdata?.quoteaddress?.slice(0,5) + '...' + pairdata?.quoteaddress?.slice(38)}</p>
         </div>
         </div>
         <Script
