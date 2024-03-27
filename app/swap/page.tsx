@@ -774,7 +774,7 @@ function ApproveOrReviewButton({
   // }as any);
 
   const {
-    writeContract, data, isLoading, isSuccess, isError
+    writeContract, data, isLoading, isSuccess, isError,error
   }:any = useWriteContract({
     abi:DexRouter,
     address:sellTokenAddress,
@@ -804,9 +804,9 @@ function ApproveOrReviewButton({
     console.log("isError",isError)
   }
 
-  // if (error) {
-  //   return <div>Something went wrong: {error.message}</div>;
-  // }
+  if (isError) {
+    return <div>Something went wrong: {error.message}</div>;
+  }
   //@ts-ignore
   if (allowance === 0n ) {
     return (
