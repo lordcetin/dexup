@@ -744,7 +744,7 @@ function ApproveOrReviewButton({
   console.log("Allowance",allowance)
 
   //@ts-ignore
-  const { sendTransaction } = useSendTransaction(config)
+  const { sendTransaction } = useSendTransaction(config as any)
 
   const simulate:any = useSimulateContract({
     address: sellTokenAddress,
@@ -759,7 +759,7 @@ function ApproveOrReviewButton({
     data:writeContractResult,
     writeContractAsync:approveAsync,
     error,
-  }:any = useWriteContract(config);
+  }:any = useWriteContract(config as any);
 
   console.log("writeContractResult",writeContractResult)
   console.log("approveAsync",approveAsync)
