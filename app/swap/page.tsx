@@ -742,39 +742,34 @@ function ApproveOrReviewButton({
     args: [takerAddress, dexAdress],
   });
   console.log("Allowance",allowance)
-  const { sendTransaction } = useSendTransaction()
-  // const { data }:any = useSimulateContract({
-  //   address: sellTokenAddress,
-  //   abi: abi,
-  //   functionName: "allowance",
-  //   args: [takerAddress, dexAdress],
-  // });
+  const { sendTransaction } = useSendTransaction(config)
 
-  // console.log("APPROVE",data)
+  const simulate:any = useSimulateContract({
+    address: sellTokenAddress,
+    abi: abi,
+    functionName: "allowance",
+    args: [takerAddress, dexAdress],
+  });
 
-  // const {
-  //   data:writeContractResult,
-  //   writeContractAsync:approveAsync,
-  //   error,
-  // }:any = useWriteContract({
-  //   abi,
-  //   account:{takerAddress},
-  //   address: sellTokenAddress,
-  //   functionName:"allowance",
-  //   args:[takerAddress, dexAdress]
-  // }as any);
+  console.log("APPROVE",simulate.data)
 
-  // console.log("writeContractResult",writeContractResult)
-  // console.log("approveAsync",approveAsync)
-  // console.log("error",error)
+  const {
+    data:writeContractResult,
+    writeContractAsync:approveAsync,
+    error,
+  }:any = useWriteContract(config);
 
-  // const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
-  //   hash: writeContractResult ? writeContractResult?.hash : undefined,
-  //   onSuccess(data:any) {
-  //     console.log("SUCCESS",data)
-  //     handleSwapR();
-  //   },
-  // }as any);
+  console.log("writeContractResult",writeContractResult)
+  console.log("approveAsync",approveAsync)
+  console.log("error",error)
+
+  const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
+    hash: writeContractResult ? writeContractResult?.hash : undefined,
+    onSuccess(data:any) {
+      console.log("SUCCESS",data)
+      handleSwapR();
+    },
+  }as any);
 
   // const {
   //   writeContract, data, isLoading, isSuccess, isError,error
@@ -803,9 +798,17 @@ function ApproveOrReviewButton({
     const res = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${sellTokenAddress}&fromTokenAddress=${fromTokenAddress}&slippage=${slippage}&userWalletAddress=${takerAddress}`)
     const datas = res.data.data[0];
     const { tx } = datas 
-    console.log("datas",datas)
+
     const calldata = tx.data;
 
+    const approved = await approveAsync({
+      abi:erc20Abi,
+      address: sellTokenAddress,
+      functionName:"approve",
+      args:[tx.to,amount]
+  })
+
+    console.log("approved",approved)
 
     let signTransactionParams = {
       data: tx.data,
@@ -815,7 +818,11 @@ function ApproveOrReviewButton({
       value: tx.value,
     };
 
-    const result = await sendTransaction(config,{ to:tx.to,hash: calldata }as any)
+    const result = await sendTransaction({
+      to:tx.to,
+      data:tx.data,
+      }as any)
+
 
     console.log("writeData",result)
     // const web3 = useWeb3js({chainId:chainID})
@@ -835,9 +842,9 @@ function ApproveOrReviewButton({
     // console.log("isError",isError)
   }
 
-  // if (isError) {
-  //   return <div>Something went wrong: {error.message}</div>;
-  // }
+  if (error) {
+    return <div className="whitespace-pre-wrap h-32 w-96 overflow-y-auto overflow-x-hidden mt-10">Something went wrong: {error.message}</div>;
+  }
   //@ts-ignore
   if (allowance === 0n ) {
     return (
@@ -851,8 +858,7 @@ function ApproveOrReviewButton({
             await handleSwapR()
           }}
         >
-          Approve
-          {/* {isApproving ? "Approving…" : "Approve"} */}
+          {isApproving ? "Approving…" : "Approve"}
         </button>
         
       </>
