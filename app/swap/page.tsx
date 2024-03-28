@@ -742,6 +742,8 @@ function ApproveOrReviewButton({
     args: [takerAddress, dexAdress],
   });
   console.log("Allowance",allowance)
+
+  //@ts-ignore
   const { sendTransaction } = useSendTransaction(config)
 
   const simulate:any = useSimulateContract({
