@@ -16,6 +16,7 @@ import {
   useSwitchChain,
   useSimulateContract,
   useWaitForTransactionReceipt,
+  useSendTransaction,
 
 } from "wagmi";
 import { erc20Abi, type Address } from "viem";
@@ -35,7 +36,9 @@ import dynamic from "next/dynamic";
 import Script from "next/script";
 import { ChartingLibraryWidgetOptions,ResolutionString, } from "@/public/static/charting_library/charting_library";
 import { IoMdSettings } from "react-icons/io";
-
+import {config} from '@/config'
+import { useWeb3js } from "@/hooks/useWeb3";
+import { writeContract } from '@wagmi/core'
 const TVChartContainer = dynamic(
   () =>
     import('@/components/TVChartContainer/page').then((mod:any) => mod.TVChartContainer),
@@ -732,14 +735,14 @@ function ApproveOrReviewButton({
   console.log("slippage",slippage)
 
   // 1. Read from erc20, does spender (0x Exchange Proxy) have allowance?
-  const { data: allowance, refetch }:any = useReadContract({
+  const { data: allowance }:any = useReadContract({
     address: sellTokenAddress,
     abi: abi,
     functionName: "allowance",
     args: [takerAddress, dexAdress],
   });
   console.log("Allowance",allowance)
-
+  const { sendTransaction } = useSendTransaction()
   // const { data }:any = useSimulateContract({
   //   address: sellTokenAddress,
   //   abi: abi,
@@ -773,39 +776,68 @@ function ApproveOrReviewButton({
   //   },
   // }as any);
 
-  const {
-    writeContract, data, isLoading, isSuccess, isError,error
-  }:any = useWriteContract({
-    abi:DexRouter,
-  }as any);
+  // const {
+  //   writeContract, data, isLoading, isSuccess, isError,error
+  // }:any = useWriteContract({
+  //   abi:DexRouter,
+  //   config
+  // }as any);
+
+  //   const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
+  //   hash: data ? data?.hash : undefined,
+  //   onSuccess(data:any) {
+  //     console.log("SUCCESS",data)
+  //   },
+  // }as any);
 
   const handleSwapR = async () => {
-    refetch()
-
     const chains = await axios.get(`/api/network?chainname=${geckoId === 'binance-smart-chain' ? 'bsc' : geckoId}`)
     const chaindata = chains.data
     const chainID = chaindata?.chain_identifier
+
     const respo = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${sellTokenAddress}&approveAmount=${amount}`)
     const approve = respo.data.data[0]
     const { dexContractAddress } = approve
     console.log("dexContractAddress",dexContractAddress)
+
     const res = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${sellTokenAddress}&fromTokenAddress=${fromTokenAddress}&slippage=${slippage}&userWalletAddress=${takerAddress}`)
     const datas = res.data.data[0];
     const { tx } = datas 
     console.log("datas",datas)
+    const calldata = tx.data;
 
-    const swap = await writeContract({args:[dexContractAddress,tx.data]})
 
-    console.log("swap",swap)
-    console.log("data",data)
-    console.log("isLoading",isLoading)
-    console.log("isSuccess",isSuccess)
-    console.log("isError",isError)
+    let signTransactionParams = {
+      data: tx.data,
+      gasPrice: tx.gasPrice,
+      gas: tx.gas,
+      to: tx.to,
+      value: tx.value,
+    };
+
+    const result = await sendTransaction(config,{ to:tx.to,hash: calldata }as any)
+
+    console.log("writeData",result)
+    // const web3 = useWeb3js({chainId:chainID})
+    // const { rawTransaction } = await web3.eth.accounts.signTransaction(
+    //   signTransactionParams,
+    //   privateKey
+    // );
+    // const chainTxInfo = await web3.eth.sendSignedTransaction(rawTransaction);
+    // console.log('chainTxInfo', chainTxInfo);
+
+
+
+    // console.log("swap",swap)
+    // console.log("data",data)
+    // console.log("isLoading",isLoading)
+    // console.log("isSuccess",isSuccess)
+    // console.log("isError",isError)
   }
 
-  if (isError) {
-    return <div>Something went wrong: {error.message}</div>;
-  }
+  // if (isError) {
+  //   return <div>Something went wrong: {error.message}</div>;
+  // }
   //@ts-ignore
   if (allowance === 0n ) {
     return (
