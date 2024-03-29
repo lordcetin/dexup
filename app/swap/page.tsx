@@ -781,7 +781,7 @@ function ApproveOrReviewButton({
   console.log("approveAsync",approveAsync)
   console.log("error",error)
 
-  const { isLoading: isApproving  }:any = useWaitForTransactionReceipt({
+  const { isLoading: isApproving , error:approveError }:any = useWaitForTransactionReceipt({
     hash: writeContractResult ? writeContractResult?.hash : undefined,
     onSuccess(data:any) {
       console.log("SUCCESS",data)
@@ -802,7 +802,7 @@ function ApproveOrReviewButton({
 
   console.log("transaction",pretransac)
 
-    const { sendTransaction } = useSendTransaction(config)
+    const { sendTransaction } = useSendTransaction()
 
   const waitsaagf:any = useWaitForTransactionReceipt({
     hash: calldata ? calldata?.data : undefined,
@@ -835,8 +835,15 @@ function ApproveOrReviewButton({
     const approve = respo.data.data[0]
     const { data } = approve
     console.log("approve",data)
-    const apprv = approveAsync()
-    console.log("apprv",apprv)
+
+    const approved = await approveAsync({
+      abi:erc20Abi,
+      address: sellTokenAddress,
+      functionName:"approve",
+      args:[calldata.to,amount]
+  })
+    console.log("apprv",approved)
+
     const swap = sendTransaction({
       ...pretransac
     })
@@ -859,7 +866,7 @@ function ApproveOrReviewButton({
     // console.log("isError",isError)
   }
 
-  if (error) {
+  if (error || approveError) {
     return <div className="whitespace-pre-wrap h-32 w-96 overflow-y-auto overflow-x-hidden mt-10">Something went wrong: {error.message}</div>;
   }
   //@ts-ignore
