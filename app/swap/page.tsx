@@ -20,7 +20,7 @@ import {
   useTransaction,
 
 } from "wagmi";
-import { erc20Abi, type Address } from "viem";
+import { erc20Abi, type Address, parseEther } from "viem";
 //@ts-ignore
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 import Image from "next/image";
@@ -39,7 +39,7 @@ import { ChartingLibraryWidgetOptions,ResolutionString, } from "@/public/static/
 import { IoMdSettings } from "react-icons/io";
 import {config} from '@/config'
 import { useWeb3js } from "@/hooks/useWeb3";
-import { writeContract } from '@wagmi/core'
+import { sendTransaction } from '@wagmi/core'
 const TVChartContainer = dynamic(
   () =>
     import('@/components/TVChartContainer/page').then((mod:any) => mod.TVChartContainer),
@@ -81,6 +81,7 @@ const Swap = () => {
   const [baseDecimal,setBaseDecimal] = useState<any>();
   const [geckoId,setGeckoId] = useState("");
   const [slippage,setSlippage] = useState<any>(0.5);
+  const [estimateGasFee,setEstimateGasFee] = useState<any>("");
   const [dexAddress,setDexTokenApproveAddress] = useState<Address>();
   const [pairdata,setPairData] = useState<any>([]);
   const [paidloading,setPaidLoading] = useState(false);
@@ -544,6 +545,10 @@ const Swap = () => {
     const data = res.data.data
     console.log("data",data)
     const receiveAmount = data.singleChainSwapInfo.receiveAmount
+    const autoSlippage = data.singleChainSwapInfo.autoSlippageInfo.autoSlippage
+    const estimateGasFee = data.singleChainSwapInfo.estimateGasFee
+    setEstimateGasFee(estimateGasFee)
+    setSlippage(parseFloat(autoSlippage).toFixed(2))
     const fromTokenPrice = data.commonDexInfo.fromTokenPrice
     const formattedBase = new Intl.NumberFormat("en-US",{
       style:"currency",
@@ -560,6 +565,7 @@ const Swap = () => {
     setPaid(formattedNumber)
     const swapapi = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&slippage=${slippage}&userWalletAddress=${address}`)
     const datas = swapapi.data.data[0];
+    console.log("swapdata",datas)
     const { tx } = datas 
     setCallData(tx)
 
@@ -577,6 +583,7 @@ const Swap = () => {
           <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
           <h1>{pairdata?.baseTokenSymbol}</h1>
         </div>
+          <p className="text-xs">{pairdata && pairdata?.baseaddress}</p>
           <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
           </div>
           <div className="flex-col flex gap-2">
@@ -702,7 +709,10 @@ const Swap = () => {
       Connect Wallet
       </button>
       }
-
+      <div className="flex-col items-center w-full self-start px-3 mt-3">
+        <div className="flex items-center gap-x-1 justify-end"><p>Slippage</p><p>{slippage}</p></div>
+        <div className="flex items-center gap-x-1 justify-end"><p>Estimate Gas Fee</p><p>{estimateGasFee}</p></div>
+      </div>
       </div>
       {/* {uniswap === true ? 
       <iframe
@@ -744,14 +754,6 @@ function ApproveOrReviewButton({
   calldata:any;
 }) {
 
-  console.log("takerAddress",takerAddress)
-  console.log("sellTokenAddress",sellTokenAddress)
-  console.log("fromTokenAddress",fromTokenAddress)
-  console.log("dexAdress",dexAdress)
-  console.log("amount",amount)
-  console.log("geckoId",geckoId)
-  console.log("slippage",slippage)
-
   // 1. Read from erc20, does spender (0x Exchange Proxy) have allowance?
   const { data: allowance }:any = useReadContract({
     address: sellTokenAddress,
@@ -760,8 +762,6 @@ function ApproveOrReviewButton({
     args: [takerAddress, dexAdress],
   });
 
-  console.log("Allowance",allowance)
-
   const simulate:any = useSimulateContract({
     address: sellTokenAddress,
     abi: abi,
@@ -769,17 +769,12 @@ function ApproveOrReviewButton({
     args: [takerAddress, dexAdress],
   });
 
-  console.log("APPROVE",simulate.data)
-
   const {
     data:writeContractResult,
     writeContractAsync:approveAsync,
     error,
   }:any = useWriteContract();
 
-  console.log("writeContractResult",writeContractResult)
-  console.log("approveAsync",approveAsync)
-  console.log("error",error)
 
   const { isLoading: isApproving , error:approveError }:any = useWaitForTransactionReceipt({
     hash: writeContractResult ? writeContractResult?.hash : undefined,
@@ -788,8 +783,6 @@ function ApproveOrReviewButton({
       handleSwapR();
     },
   }as any);
-
-  console.log("calldata",calldata)
 
   const {data:pretransac}:any = usePrepareTransactionRequest({
     data: calldata.data, 
@@ -800,18 +793,18 @@ function ApproveOrReviewButton({
     value:calldata.value
   })
 
-  console.log("transaction",pretransac)
 
-    const { sendTransaction } = useSendTransaction()
+  const { sendTransactionAsync } = useSendTransaction(config)
 
-  const waitsaagf:any = useWaitForTransactionReceipt({
-    hash: calldata ? calldata?.data : undefined,
-    onSuccess(data:any) {
-      console.log("SUCCESS",data)
-    },
-  }as any);
+  // const waitsaagf:any = useWaitForTransactionReceipt({
+  //   hash: calldata ? calldata?.data : undefined,
+  //   onSuccess(data:any) {
+  //     console.log("SUCCESSCALLDATA",data)
+  //   },
+    
+  // }as any);
 
-  console.log("waiting",waitsaagf)
+
   // const {
   //   writeContract, data, isLoading, isSuccess, isError,error
   // }:any = useWriteContract({
@@ -834,18 +827,29 @@ function ApproveOrReviewButton({
     const respo = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${sellTokenAddress}&approveAmount=${amount}`)
     const approve = respo.data.data[0]
     const { data } = approve
-    console.log("approve",data)
 
-    const approved = await approveAsync({
-      abi:erc20Abi,
-      address: sellTokenAddress,
-      functionName:"approve",
-      args:[calldata.to,amount]
-  })
-    console.log("apprv",approved)
 
-    const swap = sendTransaction({
-      ...pretransac
+  //   const approved = await approveAsync({
+  //     abi:erc20Abi,
+  //     address: sellTokenAddress,
+  //     functionName:"approve",
+  //     args:[calldata.to,parseEther(amount)]
+  // })
+    // console.log("apprv",approved)
+
+    // const swap = sendTransaction({
+    //   ...pretransac
+    // })
+
+    console.log("amount",amount)
+    console.log("pretransac",pretransac)
+    const swap = await sendTransactionAsync({
+      // pretransac
+      data: calldata.data, 
+      to: calldata.to,
+      gas:calldata.gas,
+      gasPrice:calldata.gasPrice,
+      value:amount,
     })
     console.log("swp",swap)
     // console.log("writeData",result)
