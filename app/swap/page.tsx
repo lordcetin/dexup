@@ -743,8 +743,7 @@ function ApproveOrReviewButton({
   });
   console.log("Allowance",allowance)
 
-  //@ts-ignore
-  const { sendTransaction } = useSendTransaction(config as any)
+
 
   const simulate:any = useSimulateContract({
     address: sellTokenAddress,
@@ -772,6 +771,9 @@ function ApproveOrReviewButton({
       handleSwapR();
     },
   }as any);
+
+    //@ts-ignore
+    const { sendTransaction } = useSendTransaction(config as any)
 
   // const {
   //   writeContract, data, isLoading, isSuccess, isError,error
