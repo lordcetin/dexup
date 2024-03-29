@@ -805,14 +805,14 @@ function ApproveOrReviewButton({
 
     const calldata = tx.data;
 
-    const approved = await approveAsync({
-      abi:erc20Abi,
-      address: sellTokenAddress,
-      functionName:"approve",
-      args:[tx.to,amount]
-  })
+    // const approved = await approveAsync({
+    //   abi:erc20Abi,
+    //   address: sellTokenAddress,
+    //   functionName:"approve",
+    //   args:[tx.to,amount]
+    // })
 
-    console.log("approved",approved)
+    // console.log("approved",approved)
 
     let signTransactionParams = {
       data: tx.data,
@@ -822,7 +822,7 @@ function ApproveOrReviewButton({
       value: tx.value,
     };
 
-    const result = await sendTransaction({
+    const result = sendTransaction({
       to:tx.to,
       data:tx.data,
       }as any)
