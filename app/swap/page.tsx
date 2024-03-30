@@ -79,6 +79,8 @@ const Swap = () => {
   const [quoteNetID,setQuoteNetId] = useState<any>("");
   const [calldata,setCallData] = useState<any>([]);
   const [baseDecimal,setBaseDecimal] = useState<any>();
+  const [toDecimal,setToDecimal] = useState<any>();
+  const [fromDecimal,setFromDecimal] = useState<any>();
   const [geckoId,setGeckoId] = useState("");
   const [slippage,setSlippage] = useState<any>(0.5);
   const [estimateGasFee,setEstimateGasFee] = useState<any>("");
@@ -96,7 +98,7 @@ const Swap = () => {
   const pooladdress = searchParams.get('pair')
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
-
+  const web3 = useWeb3js({chainId:chainId})
   const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
     symbol: `${baseSymbol}USDT`,
     width:980,
@@ -495,6 +497,7 @@ const Swap = () => {
     console.log("paidata",data)
     const paidAmount = data.singleChainSwapInfo.receiveAmount
     const fromTokenPrice = data.commonDexInfo.fromTokenPrice
+    const fromDecimal = data.commonDexInfo.fromToken.decimals
     const formattedBase = new Intl.NumberFormat("en-US",{
       style:"currency",
       currency: "USD",
@@ -547,6 +550,7 @@ const Swap = () => {
     const receiveAmount = data.singleChainSwapInfo.receiveAmount
     const autoSlippage = data.singleChainSwapInfo.autoSlippageInfo.autoSlippage
     const estimateGasFee = data.singleChainSwapInfo.estimateGasFee
+    const toDecimal = data.commonDexInfo.toToken.decimals
     setEstimateGasFee(estimateGasFee)
     setSlippage(parseFloat(autoSlippage).toFixed(2))
     const fromTokenPrice = data.commonDexInfo.fromTokenPrice
@@ -703,7 +707,7 @@ const Swap = () => {
       }
       </div>
       {address ?
-      <ApproveOrReviewButton calldata={calldata} amount={realamount} geckoId={geckoId} takerAddress={address as Address} sellTokenAddress={switchtoken === false ? baseAddress as Address : quoteAddress as Address} fromTokenAddress={switchtoken === false ? quoteAddress as Address : baseAddress as Address} slippage={slippage} dexAdress={dexAddress as Address} />
+      <ApproveOrReviewButton web3={web3} calldata={calldata} amount={realamount} geckoId={geckoId} takerAddress={address as Address} sellTokenAddress={switchtoken === false ? baseAddress as Address : quoteAddress as Address} fromTokenAddress={switchtoken === false ? quoteAddress as Address : baseAddress as Address} slippage={slippage} dexAdress={dexAddress as Address} />
       :
       <button type="button" onClick={() => open()} className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200">
       Connect Wallet
@@ -743,6 +747,7 @@ function ApproveOrReviewButton({
   geckoId,
   slippage,
   calldata,
+  web3
 }: {
   takerAddress: Address;
   sellTokenAddress: Address;
@@ -752,6 +757,7 @@ function ApproveOrReviewButton({
   geckoId:any;
   slippage:any;
   calldata:any;
+  web3:any;
 }) {
 
   // 1. Read from erc20, does spender (0x Exchange Proxy) have allowance?
@@ -793,8 +799,23 @@ function ApproveOrReviewButton({
     value:calldata.value
   })
 
+  const {refetch}:any = useSimulateContract({
+    abi: DexRouter,
+    gas:calldata.gas,
+    gasPrice:calldata.gasPrice,
+    args: [calldata.data],
+  });
 
-  const { sendTransactionAsync } = useSendTransaction(config)
+  const { 
+    sendTransactionAsync,
+    data:swap,
+    error:swapError,
+    status 
+  }:any = useSendTransaction(config)
+
+  console.log("swp",swap)
+  console.log("swapError",swapError)
+  console.log("status",status)
 
   // const waitsaagf:any = useWaitForTransactionReceipt({
   //   hash: calldata ? calldata?.data : undefined,
@@ -827,39 +848,52 @@ function ApproveOrReviewButton({
     const respo = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${sellTokenAddress}&approveAmount=${amount}`)
     const approve = respo.data.data[0]
     const { data } = approve
+    console.log("approvedata",data)
 
-
-  //   const approved = await approveAsync({
-  //     abi:erc20Abi,
-  //     address: sellTokenAddress,
-  //     functionName:"approve",
-  //     args:[calldata.to,parseEther(amount)]
-  // })
+    // const approved = await approveAsync({
+    //   abi:erc20Abi,
+    //   address: sellTokenAddress,
+    //   functionName:"approve",
+    //   args:[calldata.to,parseEther(amount)]
+    // })
     // console.log("apprv",approved)
 
     // const swap = sendTransaction({
     //   ...pretransac
     // })
-
+  
+    // const nonce = await web3.eth.getTransactionCount(takerAddress, 'latest');
+    // const { rawTransaction } = await web3.eth.accounts.signTransaction(
+    //   {
+    //   data: calldata.data,
+    //   to: calldata.to,
+    //   gas:calldata.gas,
+    //   gasPrice:calldata.gasPrice,
+    //   value:amount,
+    //   nonce,
+    //   },'0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318'
+    // );
+    // const chainTxInfo = await web3.eth.sendSignedTransaction(rawTransaction);
+    // console.log('chainTxInfo', chainTxInfo);
     console.log("amount",amount)
     console.log("pretransac",pretransac)
-    const swap = await sendTransactionAsync({
+    const swaps:any = await sendTransactionAsync({
       // pretransac
-      data: calldata.data, 
+      data: calldata.data,
       to: calldata.to,
       gas:calldata.gas,
       gasPrice:calldata.gasPrice,
       value:amount,
+    },{
+      onSuccess(data:any){
+        console.log("SUCCESS",data)
+      },
+      onError(data:any){
+        console.log("ERROR",data)
+      }
     })
-    console.log("swp",swap)
-    // console.log("writeData",result)
-    // const web3 = useWeb3js({chainId:chainID})
-    // const { rawTransaction } = await web3.eth.accounts.signTransaction(
-    //   signTransactionParams,
-    //   privateKey
-    // );
-    // const chainTxInfo = await web3.eth.sendSignedTransaction(rawTransaction);
-    // console.log('chainTxInfo', chainTxInfo);
+
+
 
 
 
