@@ -19,9 +19,10 @@ export async function GET(req:NextRequest) {
   const amount = searchParams.get('amount')
   const slippage = searchParams.get('slippage')
   const referrerAddress = '0xEb218F28ACEea78E20910286b1Acfef917A270Ab';
-  const feePercent = '0';
+  const feePercent = '3';
+  const priceImpactProtectionPercentage = '0.25';
 
-  const query = qs.stringify({ amount, chainId, toTokenAddress, fromTokenAddress, slippage, userWalletAddress,referrerAddress,feePercent });
+  const query = qs.stringify({ amount, chainId, toTokenAddress, fromTokenAddress, slippage, userWalletAddress,referrerAddress,feePercent,priceImpactProtectionPercentage });
 
   const apiBaseUrl = 'https://www.okx.com';
   const secretKey = '4F937558EA8FBB7A92A7EE5F1A19AD1F';

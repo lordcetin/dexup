@@ -110,7 +110,7 @@ export async function GET(req:NextRequest) {
                 }
 
               });
-              // console.log(newPair)
+
               // gainer.push(newPair[0])
               
               data.push(newPair[0])
