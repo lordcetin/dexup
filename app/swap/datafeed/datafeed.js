@@ -53,6 +53,7 @@ async function getAllSymbols() {
     return allSymbols;
 }
 
+
 export default {
     onReady: (callback) => {
         console.log('[onReady]: Method call');

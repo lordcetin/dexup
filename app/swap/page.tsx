@@ -94,6 +94,8 @@ const Swap = () => {
   const [geckoId,setGeckoId] = useState("");
   const [slippage,setSlippage] = useState<any>(0.5);
   const [estimateGasFee,setEstimateGasFee] = useState<any>("");
+  const [baseCoinId,setBaseCoinId] = useState<any>("");
+  const [quoteCoinId,setQuoteCoinId] = useState<any>("");
   const [dexAddress,setDexTokenApproveAddress] = useState<Address>();
   const [pairdata,setPairData] = useState<any>([]);
   const [paidloading,setPaidLoading] = useState(false);
@@ -110,7 +112,7 @@ const Swap = () => {
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
   const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-    symbol: `Gateio:${baseSymbol.toUpperCase()}/USDT`,
+    symbol: `${baseCoinId}/USD`,
     width:980,
     height:600,
     interval: "1D" as ResolutionString,
@@ -335,6 +337,8 @@ const Swap = () => {
               dex:response.data.relationships.dex.data.id,
             }
             
+          setBaseCoinId(basecoinId)
+          setQuoteCoinId(quotecoinId)
           setPairData(newPair)
           setBaseSymbol(baseTokenSymbol)
           setQuoteSymbol(quoteTokenSymbol)
@@ -371,7 +375,7 @@ const Swap = () => {
           if(res.data.msg){
             console.log(res.data.msg)
           }
-          const fromTokenPrice = data.commonDexInfo.fromTokenPrice
+          const fromTokenPrice = data?.commonDexInfo?.fromTokenPrice
 
           const baseUnitPrice = parseFloat(fromTokenPrice);
           // let baseAmount:any = formatEther(data?.fromTokenAmount.toString());
