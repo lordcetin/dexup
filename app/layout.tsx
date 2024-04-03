@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-sync-scripts */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable @next/next/no-img-element */
 import type { Metadata } from "next";
@@ -45,9 +46,13 @@ const fontSans = FontSans({
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
 
   const initialState = cookieToInitialState(config, headers().get('cookie'))
+  
 
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+      <script src="https://terminal.jup.ag/main-v1.js" data-preload />
+      </head>
       <body className={`${fontSans.variable} bgradient w-screen h-screen text-white font-sans antialiased overflow-x-hidden`}>
       {/* <WalletContextProvider> */}
       {/* <SocketProvider> */}

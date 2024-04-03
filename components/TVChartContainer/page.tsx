@@ -1,6 +1,7 @@
 import styles from "./styles.module.css";
 import { useEffect, useRef } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
+import DataFeed from "@/app/swap/datafeed/datafeed";
 
 export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) => {
 	const chartContainerRef =
@@ -10,14 +11,7 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
 		const widgetOptions: ChartingLibraryWidgetOptions = {
 			symbol: props.symbol,
 			// BEWARE: no trailing slash is expected in feed URL
-			datafeed: new (window as any).Datafeeds.UDFCompatibleDatafeed(
-				"https://demo_feed.tradingview.com",
-				undefined,
-				{
-					maxResponseLength: 1000,
-					expectedOrder: "latestFirst",
-				}
-			),
+			datafeed: DataFeed,
 			interval: props.interval as ResolutionString,
       //@ts-ignore
 			container: chartContainerRef.current,
@@ -63,8 +57,10 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
 	}, [props]);
 
 	return (
-		<div className="w-[980px] h-[610px]">
+		<>
+		<div className="w-[980px] h-[600px] overflow-hidden rounded-xl">
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</div>
+		</>
 	);
 };

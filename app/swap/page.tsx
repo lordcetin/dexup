@@ -42,8 +42,12 @@ import {config} from '@/config'
 import { useWeb3js } from "@/hooks/useWeb3";
 import {getEthersProvider} from '@/lib/ethersProvider'
 import {getEthersSigner } from '@/lib/ethersSigner'
+import DataFeed from '@/app/swap/datafeed/datafeed'
 
-
+const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
+  referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
+  feeBps: 100,
+};
 
 const TVChartContainer = dynamic(
   () =>
@@ -106,9 +110,9 @@ const Swap = () => {
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
   const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-    symbol: `${baseSymbol}USDT`,
+    symbol: `Gateio:${baseSymbol.toUpperCase()}/USDT`,
     width:980,
-    height:300,
+    height:600,
     interval: "1D" as ResolutionString,
     library_path: "/static/charting_library/",
     locale: "en",
@@ -118,9 +122,8 @@ const Swap = () => {
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
-    fullscreen: true,
-    autosize: true,
-
+    // fullscreen: true,
+    // autosize:true,
   };
   // useEffect(() => {
   //   const chartOptions:any = { 
@@ -341,14 +344,9 @@ const Swap = () => {
           setQuoteNetId(baseNetId)
 
 
-          const chain = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
-          const chaindata = chain.data
+          const chains = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
+          const chaindata = chains.data
           const chainID = chaindata?.chain_identifier
-
-
-          // setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
-          setUniUrl(`https://raydium.io/swap?outputCurrency=${switchtoken === false ? baseAddress : quoteAddress}`)
-          // setUniUrl(`https://quote-api.jup.ag/v6/quote?inputMint=So11111111111111111111111111111111111111112&outputMint=${baseaddress}&amount=1000000&slippageBps=1`)
 
           const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetId : quoteNetId}&baseaddress=${switchtoken === false ? baseaddress : quoteaddress}`)
           const datas = dec.data.data[0]
@@ -360,8 +358,15 @@ const Swap = () => {
           const res = await axios.get(`/api/getPri?amount=${paid}&chainId=${chainID}&toTokenAddress=${quoteaddress}&fromTokenAddress=${baseaddress}&slippage=${slippage}`)
           // const data = res.data.data[0]
           const data = res.data.data
-          const paidAmount = data.singleChainSwapInfo.receiveAmount
+          const paidAmount = data?.singleChainSwapInfo?.receiveAmount
           const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
+
+          if(chain === 'ethereum'){
+            setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
+          }else if(chain === 'binance-smart-chain'){
+            setUniUrl(`https://pancakeswap.finance/swap?outputCurrency=${baseaddress}&chainId=56`)
+            // setUniUrl(`https://kyberswap.com/partner-swap?chainId=56&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}&clientId=dexup&feeReceiver=0xEb218F28ACEea78E20910286b1Acfef917A270Ab&enableTip=true&chargeFeeBy=currency_out&feeAmount=30`)
+          }
 
           if(res.data.msg){
             console.log(res.data.msg)
@@ -379,623 +384,92 @@ const Swap = () => {
             // notation: 'compact',
             // compactDisplay: 'short'
           }).format(baseUnitPrice)
-          // const price = baseAmount / quoteAmount;
-          // const formattedQuote = new Intl.NumberFormat("en-US",{
-          //   style:"currency",
-          //   currency: "USD",
-          //   notation: 'compact',
-          //   compactDisplay: 'short'
-          // }).format(price)
-    
-          
+
           setFromBase(formattedBase)
           // setToQuote(formattedQuote)
           setReceived(formattedNumber)
-
-          const swapapi = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&slippage=${slippage}&userWalletAddress=${address}`)
-          const datasa = swapapi.data.data[0];
-          const { tx } = datasa 
-          setCallData(tx)
         
       })
     })
     }
     getPair()
 
-  }, [switchtoken]);
-  
-  // useEffect(() => {
-  //   handleAllowance()
-  // },[])
+  }, []);
 
-  const handleSwap = async () => {
-    handleAllowance()
-  }
-
-  const handleAllowance = async () => {
-
-    
-    const chains = await axios.get(`/api/network?chainname=${geckoId}`)
-    const chaindata = chains.data
-    const chainID = chaindata?.chain_identifier
-    // const data = await writeContractAsync({
-    //   chainId:chainId,
-    //   address:baseAddress as any,
-    //   functionName: 'allowance',
-    //   abi:abi,
-    //   args:[address,baseAddress]
-    // })
-
-    // console.log("DATA",data)
-    const amount = generateDecimal(paid,baseDecimal)
-    const approve = await axios.get(`/api/approve?chainId=${chain === 'solana' ? 501 : chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
-    const datasapprove = approve.data.data[0]
-    const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
-
-    setDexTokenApproveAddress(dexContractAddress)
-    // const {  } = await writeContractAsync({
-    //   chainId:chainId,
-    //   address:dexContractAddress as any,
-    //   functionName: 'approve',
-    //   abi:abi,
-    //   args:[address,dexContractAddress]
-    // })
-      const result = await useReadContract({
-        address: dexContractAddress,
-        abi: abi,
-        functionName: "allowance",
-        args: [address, dexContractAddress],
-      }as any)
-      console.log("RESULT DATA",result)
-
-      const { config }:any = await usePrepareTransactionRequest({
-        address: dexContractAddress,
-        abi: abi,
-        functionName: "approve",
-        args: [dexAddress, MAX_ALLOWANCE],
-      }as any);
-
-    console.log("APPROVE DATA",config)
-
-  }
-
-  const handleChangePaid = async (paids:any) => {
-    setPaid(paids)
-    const chains = await axios.get(`/api/network?chainname=${geckoId === 'binance-smart-chain' ? 'bsc' : geckoId}`)
-    const chaindata = chains.data
-    const chainID = chaindata?.chain_identifier
-    const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetID : quoteNetID}&baseaddress=${switchtoken === false ? baseAddress : quoteAddress}`)
-    const datas = dec.data.data[0]
-    const decimal = datas.attributes.decimals
-    const amount = generateDecimal(paids,baseDecimal)
-    const approve = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
-    const datasapprove = approve.data.data[0]
-    const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
-
-    setDexTokenApproveAddress(dexContractAddress)
-
-    if(!isEmpty(paids)){
-    setPaidLoading(true)
-    const amount = generateDecimal(paids,decimal)
-    setRealAmout(amount)
-    // const res = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&amount=${amount}&chainId=${chainID}`)
-    const res = await axios.get(`/api/getPri?amount=${paids}&chainId=${chainID}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&slippage=${slippage}`)
-    if (res.data?.msg) {
-      setPaidLoading(false)
-    };
-    // const data = res.data.data[0]
-    const data = res.data.data
-    // console.log("paidata",data)
-    const paidAmount = data.singleChainSwapInfo.receiveAmount
-    const fromTokenPrice = data.commonDexInfo.fromTokenPrice
-    const fromDecimal = data.commonDexInfo.fromToken.decimals
-    const formattedBase = new Intl.NumberFormat("en-US",{
-      style:"currency",
-      currency: "USD",
-      // notation: 'compact',
-      // compactDisplay: 'short'
-    }).format(fromTokenPrice)
-    setFromBase(formattedBase)
-    // const baseAmount = formatEther(data?.toTokenAmount.toString());
-    const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
-    setReceived(formattedNumber)
-    const swapapi = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&fromTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&slippage=${slippage}&userWalletAddress=${address}`)
-    const datas = swapapi.data.data[0];
-    const { tx } = datas 
-    setCallData(tx)
-    setPaidLoading(false)
+useEffect(() => {
+  (window as any)?.Jupiter?.init({
+    displayMode: "integrated",
+    integratedTargetId: "integrated-terminal",
+    endpoint: "https://api.mainnet-beta.solana.com",
+    platformFeeAndAccounts: TEST_PLATFORM_FEE_AND_ACCOUNTS,
+    formProps:{
+      fixedOutputMint: true,
+      initialAmount: '10000000',
+      initialInputMint:baseAddress ? baseAddress : null,
+      initalOutputMint: quoteAddress ? quoteAddress : null,
     }
-  }
+  })
 
-  const handleChangeReceive = async (receive:any) => {
-    setReceived(receive)
-    const chains = await axios.get(`/api/network?chainname=${geckoId === 'binance-smart-chain' ? 'bsc' : geckoId}`)
-    const chaindata = chains.data
-    const chainID = chaindata?.chain_identifier
-    const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetID : quoteNetID}&baseaddress=${switchtoken === false ? baseAddress : quoteAddress}`)
-    const datas = dec.data.data[0]
-    const decimal = datas.attributes.decimals
-
-    const amount = generateDecimal(receive,baseDecimal)
-    const approve = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${baseAddress}&approveAmount=${amount}`)
-    const datasapprove = approve.data.data[0]
-    const {data,dexContractAddress,gasLimit,gasPrice} = datasapprove
-
-    setDexTokenApproveAddress(dexContractAddress)
-
-    if(!isEmpty(receive)){
-    setReceiveLoading(true)
-    // const amount = generateDecimal(receive,decimal)
-    setRealAmout(amount)
-    
-    // const resdata = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? quoteAddress : baseAddress}&toTokenAddress=${switchtoken === false ? baseAddress : quoteAddress}&amount=${amount}&chainId=${chainID}`)
-    const res = await axios.get(`/api/getPri?amount=${receive}&chainId=${chainID}&toTokenAddress=${baseAddress}&fromTokenAddress=${quoteAddress}&slippage=${slippage}`)
-
-    if (res.data?.msg) {
-      setReceiveLoading(false)
-    };
-    // const data = res.data.data[0]
-    const data = res.data.data
-    console.log("data",data)
-    const receiveAmount = data.singleChainSwapInfo.receiveAmount
-    const autoSlippage = data.singleChainSwapInfo.autoSlippageInfo.autoSlippage
-    const estimateGasFee = data.singleChainSwapInfo.estimateGasFee
-    const toDecimal = data.commonDexInfo.toToken.decimals
-    const toAddress = data.commonDexInfo.toToken.tokenContractAddress
-    const fromAddress = data.commonDexInfo.fromToken.tokenContractAddress
-    setEstimateGasFee(estimateGasFee)
-    setSlippage(parseFloat(autoSlippage).toFixed(2))
-    const fromTokenPrice = data.commonDexInfo.fromTokenPrice
-    const formattedBase = new Intl.NumberFormat("en-US",{
-      style:"currency",
-      currency: "USD",
-      notation: 'compact',
-      compactDisplay: 'short'
-    }).format(fromTokenPrice)
-    setFromBase(formattedBase)
-    // const quoteAmount = formatNumber(parseFloat(switchtoken === false ? data?.fromTokenAmount : data?.toTokenAmount));
-    // const calc = data?.fromTokenAmount / data?.toTokenAmount;
-    // const total = String(calc)
-    const formattedNumber = Number(receiveAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
-    console.log("swapamount",amount)
-
-    setPaid(formattedNumber)
-    console.log("toAddress",toAddress)
-    console.log("fromAddress",fromAddress)
-    const respo = await axios.get(`/api/approve?chainId=${chainID}&tokenContractAddress=${fromAddress}&approveAmount=${amount}`)
-    const approve = respo.data.data[0]
-
-    setApproveData(approve)
-    console.log("slippage1",slippage)
-    const swapapi = await axios.get(`/api/swap?amount=${amount}&chainId=${chainID}&toTokenAddress=${toAddress}&fromTokenAddress=${fromAddress}&slippage=${slippage}&userWalletAddress=${address}`)
-    const datas = swapapi.data.data[0];
-    console.log("swapdata",datas)
-    const routerResult = datas.routerResult
-    let fromAmount = routerResult.fromTokenAmount
-    let toAmount = routerResult.toTokenAmount
-    const total = (amount * toDecimal) / fromAmount
-    console.log("total",total)
-    const { tx } = datas 
-    setCallData(tx)
-
-    setReceiveLoading(false)
-    }
-  }
-
+}, []);
 
   return (
     <main className="flex justify-between items-center w-full mt-28 gap-x-6">
+
       <div className="flex-col items-center">
+
+
         <div className="flex items-center gap-x-6 my-5">
+
           <div className="flex-col flex gap-2">
-        <div className="flex gap-x-2 items-center">
-          <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-          <h1>{pairdata?.baseTokenSymbol}</h1>
-        </div>
-          <p className="text-xs">{pairdata && pairdata?.baseaddress}</p>
-          <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
+            <div className="flex gap-x-2 items-center">
+              <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
+              <h1>{pairdata?.baseTokenSymbol}</h1>
+            </div>
+              <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
           </div>
+
           <div className="flex-col flex gap-2">
-        <div className="flex gap-x-2 items-center">
-          <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-          <h1>{pairdata?.quoteTokenSymbol}</h1>
+            <div className="flex gap-x-2 items-center">
+              <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
+              <h1>{pairdata?.quoteTokenSymbol}</h1>
+            </div>
+            <p className="text-xs">{pairdata && pairdata?.quoteaddress?.slice(0,5) + '...' + pairdata?.quoteaddress?.slice(38)}</p>
+          </div>
+
         </div>
-        <p className="text-xs">{pairdata && pairdata?.quoteaddress?.slice(0,5) + '...' + pairdata?.quoteaddress?.slice(38)}</p>
-        </div>
-        </div>
-        <Script
-        src="/static/datafeeds/udf/dist/bundle.js"
-        strategy="lazyOnload"
-        onReady={() => {
-          setIsScriptReady(true);
-        }}
+
+
+      <Script
+      src="/static/datafeeds/udf/dist/bundle.js"
+      strategy="lazyOnload"
+      onReady={() => {
+        setIsScriptReady(true);
+      }}
       />
       {isScriptReady && 
       //@ts-ignore
-      <TVChartContainer {...defaultWidgetProps} />
+      <TVChartContainer {...defaultWidgetProps}/>
       }
-      {/* {pairdata?.baseTokenSymbol ? <Chart baseSymbol={pairdata?.baseTokenSymbol}/> : null} */}
-      {/* <div className="border rounded-xl border-white border-opacity-10" ref={container} style={{ height: "600px", width: "100%" }}>
-      </div> */}
+
       </div>
-      <div className={chain === 'solana' ? "hidden" : "flex-col flex gap-y-1 justify-center items-center relative bg-gradient-to-t to-brandblack via-brandblack from-transparent p-12 rounded-xl border border-white border-opacity-10"}>
-        <div className="absolute top-5 right-5 z-50 self-end">
-        <IoMdSettings onClick={() => setSettings(!settings)} title="Settings" size={22} className="text-neutral-400 hover:rotate-90 transition-all duration-500 cursor-pointer"/>
-        </div>
-        {settings ?
-        <div className="transition-all duration-500 translate-y-6 border-[1px] border-white/20 rounded-xl p-5 flex-col absolute top-6 right-6 z-50 bg-brandblack">
-          <h1>Slippage</h1>
-          <div className="flex items-center gap-x-1 mt-2">
-          <input onChange={(e:any) => setSlippage(e.target.value)} value={slippage} className="bg-transparent px-3 py-1 border-[1px] border-white/20 rounded-lg text-right outline-none text-neutral-300 font-semibold placeholder:text-neutral-500 w-20" inputMode="decimal" autoComplete="off" autoCorrect="off" type="number" pattern="^(0(\.\d+)?|1(\.0)?)$" placeholder="0.5" minLength={1} maxLength={3} spellCheck="false"></input>
-          <span>%</span>
-          </div>
-        </div>
-        : null}
-      {paidloading ? <div className="absolute z-[999] w-full flex justify-center items-center h-full bg-black/25 rounded-xl"><AiOutlineLoading3Quarters className="animate-spin size-10"/></div> : null}
-      {receiveloading ? <div className="absolute z-[999] w-full flex justify-center items-center h-full bg-black/25 rounded-xl"><AiOutlineLoading3Quarters className="animate-spin size-10"/></div> : null}
-      <div className="flex-col flex gap-y-1 justify-center items-center relative">
-      {switchtoken === false ?
-      <div className="flex justify-center items-center w-[500px] box-content flex-shrink-0">
-        <div className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-between items-center bg-brandsecond p-7 transition-all">
-          <div className="flex-col justify-start items-center w-full">
-          <h1 className="text-lg antialiased text-neutral-500 font-semibold">From</h1>
-          <input onChange={(e:any) => handleChangePaid(e.target.value)} className="bg-transparent py-3 text-3xl outline-none text-neutral-300 font-semibold placeholder:text-neutral-500 w-full" inputMode="decimal" autoComplete="off" autoCorrect="off" type="number" pattern="^[0-9]*[.,]?[0-9]*$" placeholder="0" minLength={1} maxLength={10000000000} spellCheck="false" value={paid}></input>
-          <small className="text-neutral-600 font-semibold">{frombase}</small>
-          </div>
-          <div className="flex-col justify-end items-center w-full">
-            <div className="flex items-center justify-end self-end px-3 py-2">
-              <button className="border px-3 py-2 rounded-lg border-white border-opacity-10 flex justify-center items-center gap-x-2 hover:border-opacity-20 transition-all">
-                <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-                {pairdata?.baseTokenSymbol} <IoIosArrowDown className="size-5"/>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      :
-      <div className="flex justify-center items-center w-[500px] box-content flex-shrink-0">
-        <div className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-between items-center bg-brandsecond p-7 transition-all">
-          <div className="flex-col justify-start items-center w-full">
-          <h1 className="text-lg antialiased text-neutral-500 font-semibold">To</h1>
-          <input onChange={(e:any) => handleChangeReceive(e.target.value)} className="bg-transparent py-3 text-3xl outline-none text-neutral-300 font-semibold placeholder:text-neutral-500 w-full" inputMode="decimal" autoComplete="off" autoCorrect="off" type="text" pattern="^[0-9]*[.,]?[0-9]*$" placeholder="0" minLength={1} maxLength={10000000000} spellCheck="false" value={received}></input>
-          <small className="text-neutral-600 font-semibold">{frombase}</small>
-          </div>
-          <div className="flex-col justify-end items-center w-full">
-            <div className="flex items-center justify-end self-end px-3 py-2">
-              <button className="border px-3 py-2 rounded-lg border-white border-opacity-10 flex justify-center items-center gap-x-2 hover:border-opacity-20 transition-all">
-                <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-                {pairdata?.quoteTokenSymbol} <IoIosArrowDown className="size-5"/>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-      <div onClick={() => setSwitch(!switchtoken)} className="size-9 rounded-md bg-brandsecond ring-4 group transition-all ring-brandblack border border-transparent hover:border-white hover:border-opacity-10 cursor-pointer flex justify-center items-center absolute mt-5">
-        <IoIosArrowDown className="group-hover:rotate-180 transition-all duration-500 ease-in-out"/>
-      </div>
-      {switchtoken === false ? 
-      <div className="flex justify-center items-center w-[500px] box-content flex-shrink-0">
-        <div className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-between items-center bg-brandsecond p-7 transition-all">
-          <div className="flex-col justify-start items-center w-full">
-          <h1 className="text-lg antialiased text-neutral-500 font-semibold">To</h1>
-          <input onChange={(e:any) => handleChangeReceive(e.target.value)} disabled className="bg-transparent py-3 text-3xl outline-none text-neutral-300 font-semibold placeholder:text-neutral-500 w-full" inputMode="decimal" autoComplete="off" autoCorrect="off" type="text" pattern="^[0-9]*[.,]?[0-9]*$" placeholder="0" minLength={1} maxLength={10000000000} spellCheck="false" value={received}></input>
-          {/* <small className="text-neutral-600 font-semibold">{toquote}</small> */}
-          </div>
-          <div className="flex-col justify-end items-center w-full">
-            <div className="flex items-center justify-end self-end px-3 py-2">
-              <button className="border px-3 py-2 rounded-lg border-white border-opacity-10 flex justify-center items-center gap-x-2 hover:border-opacity-20 transition-all">
-                <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-                {pairdata?.quoteTokenSymbol} <IoIosArrowDown className="size-5"/>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      :
-      <div className="flex justify-center items-center w-[500px] box-content flex-shrink-0">
-        <div className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-between items-center bg-brandsecond p-7 transition-all">
-          <div className="flex-col justify-start items-center w-full">
-          <h1 className="text-lg antialiased text-neutral-500 font-semibold">From</h1>
-          <input onChange={(e:any) => handleChangePaid(e.target.value)} className="bg-transparent py-3 text-3xl outline-none text-neutral-300 font-semibold placeholder:text-neutral-500 w-full" disabled inputMode="decimal" autoComplete="off" autoCorrect="off" type="text" pattern="^[0-9]*[.,]?[0-9]*$" placeholder="0" minLength={1} maxLength={10000000000} spellCheck="false" value={paid}></input>
-          </div>
-          <div className="flex-col justify-end items-center w-full">
-            <div className="flex items-center justify-end self-end px-3 py-2">
-              <button className="border px-3 py-2 rounded-lg border-white border-opacity-10 flex justify-center items-center gap-x-2 hover:border-opacity-20 transition-all">
-                <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-                {pairdata?.baseTokenSymbol} <IoIosArrowDown className="size-5"/>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      }
-      </div>
-      {address ?
-      <ApproveOrReviewButton
-      estimateGasFee={estimateGasFee}
-      approveData={approveData}
-      web3={web3} calldata={calldata}
-      amount={realamount}
-      geckoId={geckoId} 
-      takerAddress={address as Address} 
-      sellTokenAddress={switchtoken === false ? baseAddress as Address : quoteAddress as Address} 
-      fromTokenAddress={switchtoken === false ? quoteAddress as Address : baseAddress as Address} 
-      slippage={slippage} 
-      dexAdress={dexAddress as Address} />
-      :
-      <button type="button" onClick={() => open()} className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200">
-      Connect Wallet
-      </button>
-      }
-      <div className="flex-col items-center w-full self-start px-3 mt-3">
-        <div className="flex items-center gap-x-1 justify-end"><p>Slippage</p><p>{slippage}</p></div>
-        <div className="flex items-center gap-x-1 justify-end"><p>Estimate Gas Fee</p><p>{estimateGasFee}</p></div>
-      </div>
-      </div>
-      {/* {uniswap === true ? 
-      <iframe
-      src={urluni}
-      height="660px"
-      width="100%"
-      className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]"
-      /> : null} */}
+
 
       {chain === 'solana' ?
+      <>
+      <div id="integrated-terminal" className="border border-white/10 m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]"></div>
+      </>
+      : 
       <iframe
       src={urluni}
       height="660px"
       width="100%"
-      className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]"
-      /> : null}
+      scrolling="no"
+      className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px] overflow-hidden"
+      />
+      }
 
     </main>
   );
 }
 
-function ApproveOrReviewButton({
-  takerAddress,
-  sellTokenAddress,
-  fromTokenAddress,
-  dexAdress,
-  amount,
-  geckoId,
-  slippage,
-  calldata,
-  web3,
-  estimateGasFee,
-  approveData,
-}: {
-  takerAddress: Address;
-  sellTokenAddress: Address;
-  fromTokenAddress:Address;
-  dexAdress:Address;
-  amount: any;
-  geckoId:any;
-  slippage:any;
-  calldata:any;
-  web3:any;
-  estimateGasFee:any;
-  approveData:any;
-}) {
-
-  console.log("dexAddrs",dexAdress)
-  console.log("realamount",amount)
-  console.log("approveData",approveData)
-  console.log("slippage",slippage)
-
-  const {data:balance} = useReadContracts({ 
-    allowFailure: false, 
-    contracts: [ 
-      { 
-        address: sellTokenAddress, 
-        abi: erc20Abi, 
-        functionName: 'balanceOf', 
-        args: [takerAddress], 
-      }, 
-      { 
-        address: sellTokenAddress, 
-        abi: erc20Abi, 
-        functionName: 'decimals', 
-      }, 
-      { 
-        address: sellTokenAddress, 
-        abi: erc20Abi, 
-        functionName: 'symbol', 
-      }, 
-    ] 
-  })
-  const  amnt:any= balance?.['0']
-  const  decimals:any= balance?.['1']
-  const  symbol:any= balance?.['2']
-  console.log("amnt",amnt)
-  console.log("decimals",decimals)
-  console.log("symbol",symbol)
-
-  const {data: allowance} = useReadContract({
-    address: sellTokenAddress,
-    abi: abi,
-    functionName: "allowance",
-    args: [takerAddress, sellTokenAddress],
-  }as any)
-  console.log("allowance DATA",allowance)
-
-  const preapare:any = usePrepareTransactionRequest({
-    address: sellTokenAddress,
-    abi: abi,
-    functionName: "approve",
-    args: [sellTokenAddress, MAX_ALLOWANCE],
-  }as any);
-  
-  console.log("APPROVE DATA",preapare)
-  
-
-  const {
-    data:writeContractResult,
-    writeContractAsync:approveAsync,
-    error,
-  }:any = useWriteContract();
-
-
-  const { isLoading:isApproving , error:approveError }:any = useWaitForTransactionReceipt({
-    hash: writeContractResult ? writeContractResult : undefined,
-    onSuccess(data:any) {
-      console.log("SUCCESS",data)
-      // handleSwapR();
-    },
-  }as any);
-
-  console.log("writeContractResult",writeContractResult)
-
-  const prepare:any = usePrepareTransactionRequest({
-    data: calldata.data, 
-    to: calldata.to,
-    gas: calldata.gas,
-    gasPrice:calldata.gasPrice,
-    value:calldata.value
-  })
-console.log("prepare",prepare)
-  const { 
-    sendTransactionAsync,
-    data:swap,
-    error:swapError,
-    status 
-  }:any = useSendTransaction(config)
-
-  const { isLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: swap ? swap : undefined,
-  })
-
-  console.log("isLoading",isLoading)
-  console.log("isSuccess",isSuccess)
-  console.log("swapError",swapError)
-  console.log("status",status)
-
-  // console.log("swp",swap)
-  // console.log("swapError",swapError)
-  // console.log("status",status)
-
-  // const waitsaagf:any = useWaitForTransactionReceipt({
-  //   hash: calldata ? calldata?.data : undefined,
-  //   onSuccess(data:any) {
-  //     console.log("SUCCESSCALLDATA",data)
-  //   },
-  // }as any);
-
-  // const {
-  //   writeContractAsync, data, isLoading, isSuccess, isError,error:swapError
-  // }:any = useWriteContract({
-  //   abi:DexRouter,
-  //   config
-  // }as any);
-
-
-  const handleApprove  = async () =>{
-    const approved = await approveAsync({
-      abi:erc20Abi,
-      address: sellTokenAddress,
-      functionName:"approve",
-      args:[sellTokenAddress,MAX_ALLOWANCE]
-    })
-    console.log("apprv",approved)
-
-  }
-
-  const handleSwapR = async () => {
-    
-    const chains = await axios.get(`/api/network?chainname=${geckoId === 'binance-smart-chain' ? 'bsc' : geckoId}`)
-    const chaindata = chains.data
-    const chainID = chaindata?.chain_identifier
-
-    // const provider = getEthersProvider(config)
-    // const signer = await getEthersSigner(config)
-    // const contract = new Contract(calldata.to, DexRouter, provider)
-    // const signedTransaction:any = await signer.signTransaction({
-    //   to:calldata.to,
-    //   data:calldata.data,
-    // });
-    // console.log("contract",contract)
-    // console.log("signedTransaction",signedTransaction)
-
-    // const txResponse = await signer.sendTransaction(signedTransaction);
-    // console.log('Transaction hash:', txResponse.hash);
-
-
-
-    // const swap = sendTransaction({
-    //   ...pretransac
-    // })
-  
-    // const nonce = await web3.eth.getTransactionCount(takerAddress, 'latest');
-    // const { rawTransaction } = await web3.eth.accounts.signTransaction(
-    //   {
-    //   data: calldata.data,
-    //   to: calldata.to,
-    //   gas:calldata.gas,
-    //   gasPrice:calldata.gasPrice,
-    //   value:amount,
-    //   nonce,
-    //   },'0x4c0883a69102937d6231471b5dbb6204fe5129617082792ae468d01a3f362318'
-    // );
-    // const chainTxInfo = await web3.eth.sendSignedTransaction(rawTransaction);
-    // console.log('chainTxInfo', chainTxInfo);
-
-    console.log("calldata",calldata.data)
-    const swaps:any = await sendTransactionAsync({
-      // pretransac
-      data: calldata.data,
-      to: calldata.to,
-      gas:calldata.gas * 1.5,
-      gasPrice:calldata.gasPrice.toString(),
-      value:amount,
-    })
-    console.log("swaps",swaps)
-
-    // console.log("swap",swap)
-    // console.log("data",data)
-    // console.log("isLoading",isLoading)
-    // console.log("isSuccess",isSuccess)
-    // console.log("isError",isError)
-  }
-
-  if (error || approveError) {
-    return <div className="whitespace-pre-wrap h-32 w-96 overflow-y-auto overflow-x-hidden mt-10">Something went wrong: {error.message}</div>;
-  }
-  //@ts-ignore
-  if (allowance === 0n ) {
-    return (
-      <>
-
-        <button
-          type="button"
-          className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
-          onClick={async () => {
-            const approve = await handleApprove();
-
-          }}
-        >
-          {isApproving ? "Approving…" : "Approve"}
-        </button>
-        
-      </>
-    );
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={async () => {
-        const swap = await handleSwapR();
-
-      }}
-      className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
-    >
-      
-      {
-      //@ts-ignore
-      amnt === 0n ? `Insufficient ${symbol?.toUpperCase()} Balance` : "Swap"
-      }
-    </button>
-  );
-}
 export default Swap;
