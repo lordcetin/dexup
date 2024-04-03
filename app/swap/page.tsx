@@ -126,6 +126,7 @@ const Swap = () => {
     user_id: "public_user_id",
     baseCoinId,
     quoteCoinId,
+    show_exchange_logos: 'true'
     // fullscreen: true,
     // autosize:true,
   };

@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./styles.module.css";
 import { useEffect, useRef } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
 import DataFeed from "@/app/swap/datafeed/datafeed";
+import { generateSymbol } from "@/app/swap/datafeed/helpers";
 
 export const TVChartContainer = (props: any) => {
 	const chartContainerRef =
@@ -42,6 +44,8 @@ export const TVChartContainer = (props: any) => {
 			supports_search: false,
 			supports_timescale_marks: false,
 	};
+
+
 	const getAllSymbols = async () => {
 		const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId}?tickers=true`,{
 			method:'GET',
@@ -79,18 +83,26 @@ export const TVChartContainer = (props: any) => {
         onResolveErrorCallback:any,
         extension:any
     ) => {
-
+			try {
+				
 				const symbols = await getAllSymbols()
-				console.log("datasasgfad",symbols)
+
+				const parseSYMB = symbolName.split('/');
+				const fromT =  parseSYMB[0];
+				const toT =  parseSYMB[1];
+				const sym = generateSymbol(symbols?.tickers[0]?.market?.name,fromT,toT)
 
 				const symbolInfo = {
-					ticker: symbols?.name,
-					name: symbols?.symbol,
-					description: symbols?.description,
+					symbol: sym.short,
+					ticker: sym.full,
+					description: sym.short,
+					name:sym.full,
 					type: 'crypto',
 					session: '24x7',
 					timezone: 'America/New_York',
 					exchange: 'DEXUP',
+					exchange_logo: symbols?.image?.large,
+					listed_exchange: symbols?.tickers[0]?.market?.name,
 					minmov: 1,
 					pricescale: 100,
 					has_intraday: false,
@@ -98,27 +110,48 @@ export const TVChartContainer = (props: any) => {
 					supported_resolution: ['1D', '1W', '1M'],
 					volume_precision: 2,
 					data_status: 'streaming',
+					visible_plots_set:"ohlc",
 				}
 
 				onSymbolResolvedCallback(symbolInfo);
+			} catch (error) {
+				onResolveErrorCallback("RESOLVERROR",error)
+			}
     },
 			getBars: async (symbolInfo: any, resolution: string, periodParams:any, onHistoryCallback: any, onErrorCallback: any) => {
 
         const { from, to, firstDataRequest } = periodParams;
-
+				console.log("periodParams",periodParams)
 					try {
-						const responseOHLC  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
+						const responseOHLCV  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 							cache:'no-store',
 						});
-						const data = await responseOHLC.json()
+						const data = await responseOHLCV.json()
+
 						console.log("data",data)
-						const bars = data
-						console.log(`[getBars]:`,bars);
-						onHistoryCallback(bars, { noData: false });
+
+					// 	let bars: any[] = [];
+					// 	ohlc.forEach((item: any, index: number) => {
+
+					// 		// if (item.time >= (from * 1000) && item.time < (to * 1000)) {
+					// 		const volume = voldata[index][1];
+					// 		bars = [...bars, { 
+					// 				time: item[0] / 1000,
+					// 				open: item[1],
+					// 				high: item[2],
+					// 				low: item[3],
+					// 				close: item[4],
+					// 				volume: volume
+					// 				}]
+
+					// 		// }
+					// });
+
+						onHistoryCallback(data, { noData: false });
 					} catch (error) {
-							onErrorCallback(error);
+							onErrorCallback("BARS",error);
 					}
 			},
 			subscribeBars: (symbolInfo: any, resolution: string, onRealtimeCallback: any, subscriberUID: string, onResetCacheNeededCallback: any) => {
@@ -149,6 +182,7 @@ export const TVChartContainer = (props: any) => {
       theme: props.theme,
       width: props.width,
       height: props.height,
+			show_exchange_logos: props.show_exchange_logos
 		};
 
 		const tvWidget = new widget(widgetOptions);
@@ -185,3 +219,7 @@ export const TVChartContainer = (props: any) => {
 		</>
 	);
 };
+
+function useCallback(arg0: () => void, arg1: any[]) {
+	throw new Error("Function not implemented.");
+}
