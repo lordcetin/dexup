@@ -111,8 +111,8 @@ const Swap = () => {
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
-  const defaultWidgetProps: Partial<ChartingLibraryWidgetOptions> = {
-    symbol: `${baseCoinId}/USD`,
+  const defaultWidgetProps:any= {
+    symbol: `${baseSymbol.toUpperCase()}/USD`,
     width:980,
     height:600,
     interval: "1D" as ResolutionString,
@@ -124,6 +124,8 @@ const Swap = () => {
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
+    baseCoinId,
+    quoteCoinId,
     // fullscreen: true,
     // autosize:true,
   };

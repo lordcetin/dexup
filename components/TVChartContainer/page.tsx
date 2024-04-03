@@ -1,20 +1,77 @@
+'use client'
+/* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./styles.module.css";
 import { useEffect, useRef } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
 import DataFeed from "@/app/swap/datafeed/datafeed";
 
-export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) => {
+export const TVChartContainer = (props: any) => {
 	const chartContainerRef =
 		useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
+	const {
+		baseCoinId,
+		quoteCoinId,
+	} = props
 	useEffect(() => {
-
-	const datafeeds = {
+		const configurationData = {
+			// Represents the resolutions for bars supported by your datafeed
+			supported_resolutions: ['1D', '1W', '1M'],
+			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
+			exchanges: [
+					{ value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
+					{ value: 'Kraken', name: 'Kraken', desc: 'Kraken bitcoin exchange'},
+					{ value: 'OKEX', name: 'OKEX', desc: 'OKEX bitcoin exchange'},
+					{ value: 'nominex', name: 'nominex', desc: 'nominex bitcoin exchange'},
+					{ value: 'bitget', name: 'bitget', desc: 'bitget bitcoin exchange'},
+					{ value: 'Binance', name: 'Binance', desc: 'Binance bitcoin exchange'},
+					{ value: 'BitMart', name: 'BitMart', desc: 'BitMart bitcoin exchange'},
+					{ value: 'uniswap', name: 'uniswap', desc: 'UNI bitcoin exchange'},
+					{ value: 'Coinbase', name: 'Coinbase', desc: 'Coinbase bitcoin exchange'},
+					{ value: 'CoinEx', name: 'CoinEx', desc: 'CoinEx bitcoin exchange'},
+					{ value: 'Gateio', name: 'Gateio', desc: 'Gateio bitcoin exchange'},
+					{ value: 'Kucoin', name: 'Kucoin', desc: 'Kucoin bitcoin exchange'},
+					{ value: 'mexc', name: 'mexc', desc: 'mexc bitcoin exchange'},
+			],
+			// The `symbols_types` arguments are used for the `searchSymbols` method if a user selects this symbol type
+			symbols_types: [
+					{ name: 'crypto', value: 'crypto'}
+			],
+			supports_group_request: true,
+			supports_marks: false,
+			supports_search: false,
+			supports_timescale_marks: false,
+	};
+	const getAllSymbols = async () => {
+		const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId}?tickers=true`,{
+			method:'GET',
+			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+			cache:'no-store',
+		});
+		const dataALLTOKEN = await responseALLTOKEN.json();
+		return dataALLTOKEN
+	}
+	const datafeed:any = {
 			onReady: (callback: any) => {
-					setTimeout(() => callback({ supported_resolutions: ['1D', '1W', '1M'] }), 0);
+        console.log('[onReady]: Method call');
+        setTimeout(() => callback(configurationData),0);
 			},
-			searchSymbols: (userInput: string, exchange: string, symbolType: string, onResultReadyCallback: any) => {
+			searchSymbols: async (
+				userInput:any,
+        exchange:any,
+        symbolType:any,
+        onResultReadyCallback:any) => {
 					// You can implement symbol search if needed
+					console.log('[searchSymbols]: Method call');
+					const symbols = await getAllSymbols();
+					console.log("symbol",symbols)
+
+					const isExchangeValid = exchange === '' || symbols.tickers[0]?.market?.name === exchange;
+					const isFullSymbolContainsInput = symbols.tickers[0]?.base
+							.toLowerCase()
+							.indexOf(userInput.toLowerCase()) !== -1;
+					const result = isExchangeValid && isFullSymbolContainsInput
+					onResultReadyCallback(result);
 			},
 			resolveSymbol: async (
         symbolName:any,
@@ -22,25 +79,24 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
         onResolveErrorCallback:any,
         extension:any
     ) => {
-        console.log('[resolveSymbol]: Method call', symbolName);
-        console.log('[onResolveErrorCallback]: ', onResolveErrorCallback);
-        console.log('[extension]: ', extension);
-				const symbolParts = symbolName.split('/');
-				const sembol = symbolParts[0];
+
+				const symbols = await getAllSymbols()
+				console.log("datasasgfad",symbols)
 
 				const symbolInfo = {
-					name: symbolName,
-					ticker: sembol,
-					description: sembol,
+					ticker: symbols?.name,
+					name: symbols?.symbol,
+					description: symbols?.description,
 					type: 'crypto',
 					session: '24x7',
+					timezone: 'America/New_York',
 					exchange: 'DEXUP',
 					minmov: 1,
 					pricescale: 100,
-					has_intraday: true,
+					has_intraday: false,
 					intraday_multipliers: ['1', '5', '15', '30', '60'],
 					supported_resolution: ['1D', '1W', '1M'],
-					volume_precision: 8,
+					volume_precision: 2,
 					data_status: 'streaming',
 				}
 
@@ -49,36 +105,17 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
 			getBars: async (symbolInfo: any, resolution: string, periodParams:any, onHistoryCallback: any, onErrorCallback: any) => {
 
         const { from, to, firstDataRequest } = periodParams;
-				const { ticker: semname } = symbolInfo
 
 					try {
-						const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${semname}/ohlc?vs_currency=usd&days=1`,{
+						const responseOHLC  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 							cache:'no-store',
 						});
-						const dataOHLC = await responseOHLC.json();
-						const responseVolume  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${semname}/market_chart/range?vs_currency=usd&from=${from}&to=${to}`,{
-							method:'GET',
-							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-							cache:'no-store',
-						});
-						const dataVolume = await responseVolume.json();
-
-						const bars = dataOHLC.prices.map((price: any, index: number) => {
-
-							const fik = {
-								time: Math.floor(price[0] / 1000),
-								open: price[1],
-								high: price[2],
-								low: price[3],
-								close: price[4],
-								volume: dataVolume[index][1] // Hacim verisini OHLC verilere göre dizin eşleştirerek alın
-							}
-							console.log("FIK",fik)
-							return fik
-					});
-
+						const data = await responseOHLC.json()
+						console.log("data",data)
+						const bars = data
+						console.log(`[getBars]:`,bars);
 						onHistoryCallback(bars, { noData: false });
 					} catch (error) {
 							onErrorCallback(error);
@@ -91,10 +128,11 @@ export const TVChartContainer = (props: Partial<ChartingLibraryWidgetOptions>) =
 					// Unsubscribe from real-time updates if available
 			}
 		};
-		const widgetOptions: ChartingLibraryWidgetOptions = {
+		
+		const widgetOptions: any = {
 			symbol: props.symbol,
 			// BEWARE: no trailing slash is expected in feed URL
-			datafeed: datafeeds as any,
+			datafeed: datafeed,
 			interval: props.interval as ResolutionString,
       //@ts-ignore
 			container: chartContainerRef.current,
