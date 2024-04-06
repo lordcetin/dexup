@@ -82,6 +82,8 @@ const Swap = () => {
   const [quoteData,setQuteData] = useState("");
   const [baseAddress,setBaseAddress] = useState("");
   const [quoteAddress,setQuoteAddress] = useState("");
+  // const [basecoinId,setBaseCoinId] = useState("");
+  // const [quotecoinId,setQuoteCoinId] = useState("");
   const [solanaAddress,setSolanaAddress] = useState("");
   const [realamount,setRealAmout] = useState<any>("");
   const [baseNetID,setBaseNetId] = useState<any>("");
@@ -94,8 +96,7 @@ const Swap = () => {
   const [geckoId,setGeckoId] = useState("");
   const [slippage,setSlippage] = useState<any>(0.5);
   const [estimateGasFee,setEstimateGasFee] = useState<any>("");
-  const [baseCoinId,setBaseCoinId] = useState<any>("");
-  const [quoteCoinId,setQuoteCoinId] = useState<any>("");
+
   const [dexAddress,setDexTokenApproveAddress] = useState<Address>();
   const [pairdata,setPairData] = useState<any>([]);
   const [paidloading,setPaidLoading] = useState(false);
@@ -111,11 +112,13 @@ const Swap = () => {
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
+
+  const { setBaseCoinId } = useAppContext()
   const defaultWidgetProps:any= {
-    symbol: `${baseSymbol.toUpperCase()}/USD`,
+    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
     width:980,
     height:600,
-    interval: "1D" as ResolutionString,
+    interval: "D" as ResolutionString,
     library_path: "/static/charting_library/",
     locale: "en",
     theme: 'dark',
@@ -124,8 +127,6 @@ const Swap = () => {
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
-    baseCoinId,
-    quoteCoinId,
     show_exchange_logos: 'true'
     // fullscreen: true,
     // autosize:true,
@@ -314,6 +315,7 @@ const Swap = () => {
             const baseaddress = response.included.find((i:any)=> i.id  == baseId).attributes.address;
             const quoteaddress = response.included.find((i:any)=> i.id  == quoteId).attributes.address;
 
+
             const newPair:any = {
               id: response.data.id,
               name:response.data.attributes.name,
@@ -341,7 +343,7 @@ const Swap = () => {
             }
             
           setBaseCoinId(basecoinId)
-          setQuoteCoinId(quotecoinId)
+          // setQuoteCoinId(quotecoinId)
           setPairData(newPair)
           setBaseSymbol(baseTokenSymbol)
           setQuoteSymbol(quoteTokenSymbol)
@@ -455,7 +457,7 @@ useEffect(() => {
       />
       {isScriptReady && 
       //@ts-ignore
-      <TVChartContainer {...defaultWidgetProps}/>
+      <TVChartContainer poolAddress={pooladdress} {...defaultWidgetProps}/>
       }
 
       </div>

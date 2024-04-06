@@ -5,20 +5,35 @@ import styles from "./styles.module.css";
 import { useEffect, useRef } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
 import DataFeed from "@/app/swap/datafeed/datafeed";
+import { useSearchParams } from "next/navigation";
+import { useAppContext } from "@/context/AppContext";
 import { generateSymbol } from "@/app/swap/datafeed/helpers";
 
-export const TVChartContainer = (props: any) => {
+export const TVChartContainer = (props:any) => {
+	const searchParams = useSearchParams()
+	const chain = searchParams.get('chain')
+	const pooladdress = searchParams.get('pair')
+
+
+	const {baseCoinId} = useAppContext()
 	const chartContainerRef =
 		useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
-	const {
-		baseCoinId,
-		quoteCoinId,
-	} = props
 	useEffect(() => {
+
+		const getAllSymbols = async () => {
+
+			const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId.toLowerCase()}?tickers=true`,{
+					method:'GET',
+					headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+					cache:'no-store',
+			});
+			const dataALLTOKEN = await responseALLTOKEN.json();
+			return dataALLTOKEN
+	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ['1D', '1W', '1M'],
+			supported_resolutions: ['1D', '1W', '1M','15'],
 			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
 			exchanges: [
 					{ value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
@@ -44,58 +59,33 @@ export const TVChartContainer = (props: any) => {
 			supports_search: false,
 			supports_timescale_marks: false,
 	};
+		const datafeed = {
+    
+			onReady: (callback:any) => {
 
+			setTimeout(() => callback(configurationData),0);
 
-	const getAllSymbols = async () => {
-		const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId}?tickers=true`,{
-			method:'GET',
-			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-			cache:'no-store',
-		});
-		const dataALLTOKEN = await responseALLTOKEN.json();
-		return dataALLTOKEN
-	}
-	const datafeed:any = {
-			onReady: (callback: any) => {
-        console.log('[onReady]: Method call');
-        setTimeout(() => callback(configurationData),0);
-			},
-			searchSymbols: async (
-				userInput:any,
-        exchange:any,
-        symbolType:any,
-        onResultReadyCallback:any) => {
-					// You can implement symbol search if needed
-					console.log('[searchSymbols]: Method call');
-					const symbols = await getAllSymbols();
-					console.log("symbol",symbols)
-
-					const isExchangeValid = exchange === '' || symbols.tickers[0]?.market?.name === exchange;
-					const isFullSymbolContainsInput = symbols.tickers[0]?.base
-							.toLowerCase()
-							.indexOf(userInput.toLowerCase()) !== -1;
-					const result = isExchangeValid && isFullSymbolContainsInput
-					onResultReadyCallback(result);
 			},
 			resolveSymbol: async (
-        symbolName:any,
-        onSymbolResolvedCallback:any,
-        onResolveErrorCallback:any,
-        extension:any
-    ) => {
+			symbolName:any,
+			onSymbolResolvedCallback:any,
+			onResolveErrorCallback:any,
+			extension:any
+			) => {
 			try {
-				
-				const symbols = await getAllSymbols()
 
-				const parseSYMB = symbolName.split('/');
-				const fromT =  parseSYMB[0];
-				const toT =  parseSYMB[1];
-				const sym = generateSymbol(symbols?.tickers[0]?.market?.name,fromT,toT)
-
-				const symbolInfo = {
+			const parseSYMB = symbolName.split('/');
+			const fromT =  parseSYMB[0];
+			const toT =  parseSYMB[1];
+	
+			const symbols = await getAllSymbols()
+	
+			const sym = generateSymbol(symbols?.tickers[0]?.market?.name,fromT,toT)
+			console.log("SYM",sym)
+			const symbolInfo = {
 					symbol: sym.short,
-					ticker: sym.full,
-					description: sym.short,
+					ticker: sym.short,
+					description: sym.short.toUpperCase(),
 					name:sym.full,
 					type: 'crypto',
 					session: '24x7',
@@ -107,61 +97,110 @@ export const TVChartContainer = (props: any) => {
 					pricescale: 100,
 					has_intraday: false,
 					intraday_multipliers: ['1', '5', '15', '30', '60'],
-					supported_resolution: ['1D', '1W', '1M'],
-					volume_precision: 2,
+					supported_resolution: ['1D', '1W', '1M','15'],
+					volume_precision: 4,
 					data_status: 'streaming',
 					visible_plots_set:"ohlc",
-				}
-
-				onSymbolResolvedCallback(symbolInfo);
-			} catch (error) {
-				onResolveErrorCallback("RESOLVERROR",error)
 			}
-    },
-			getBars: async (symbolInfo: any, resolution: string, periodParams:any, onHistoryCallback: any, onErrorCallback: any) => {
+	
+			onSymbolResolvedCallback(symbolInfo);
+			} catch (error) {
+					onResolveErrorCallback("RESOLVERROR",error)
+			}
+			},
+			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
+	
+			const { from, to, firstDataRequest } = periodParams;
+			console.log("resolution",resolution)
+	
+			try {
+					// const responseOHLCV  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
+					// 	method:'GET',
+					// 	headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+					// 	cache:'no-store',
+					// 	next:{revalidate:3600}
+					// });
+					// const dataOHLC = await responseOHLCV.json()
 
-        const { from, to, firstDataRequest } = periodParams;
-				console.log("periodParams",periodParams)
-					try {
-						const responseOHLCV  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
+					const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+						method:'GET',
+						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+					})
+					const net = await resda.json()
+					const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+					const chaId = network[0]?.id
+
+	
+					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId}/pools/${pooladdress}/ohlcv/day?aggregate=1&limit=1000&currency=usd`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-							cache:'no-store',
-						});
-						const data = await responseOHLCV.json()
-
-						console.log("data",data)
-
-					// 	let bars: any[] = [];
-					// 	ohlc.forEach((item: any, index: number) => {
-
-					// 		// if (item.time >= (from * 1000) && item.time < (to * 1000)) {
-					// 		const volume = voldata[index][1];
-					// 		bars = [...bars, { 
-					// 				time: item[0] / 1000,
-					// 				open: item[1],
-					// 				high: item[2],
-					// 				low: item[3],
-					// 				close: item[4],
-					// 				volume: volume
-					// 				}]
-
-					// 		// }
+					});
+					const dataOHLC = await responseOHLC.json();
+					const datas = dataOHLC?.data?.attributes?.ohlcv_list
+	
+	
+					// const responseVolume  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${symbolInfo.symbol}/market_chart/range?vs_currency=usd&from=${from}&to=${to}&precision=4`,{
+					//     method:'GET',
+					//     headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 					// });
+					// const dataVolume = await responseVolume.json();
+					// console.log("dataVolume",dataVolume)
+	
+			// 	let bars: any[] = [];
+			// 	datas.forEach((item: any, index: number) => {
 
-						onHistoryCallback(data, { noData: false });
-					} catch (error) {
-							onErrorCallback("BARS",error);
-					}
-			},
-			subscribeBars: (symbolInfo: any, resolution: string, onRealtimeCallback: any, subscriberUID: string, onResetCacheNeededCallback: any) => {
-					// Subscribe to real-time updates if available
-			},
-			unsubscribeBars: (subscriberUID: string) => {
-					// Unsubscribe from real-time updates if available
+
+			// 		bars = { 
+			// 				time: ...item[0],
+			// 				open: ...item[1].toFixed(4),
+			// 				high: ...item[2].toFixed(4),
+			// 				low: ...item[3].toFixed(4),
+			// 				close: ...item[4].toFixed(4),
+			// 				volume: ...item[5].toFixed(4)
+			// 				} as any
+
+			// });
+
+			// let bars:any[] = [];
+		// 	datas.forEach((bar:any) => {
+		// 		console.log("bar",bar)
+		// 				bars = [...bars, {
+		// 						time: bar.time,
+		// 						low: bar.low,
+		// 						high: bar.high,
+		// 						open: bar.open,
+		// 						close: bar.close,
+		// 				}]
+				
+		// });
+
+	
+			const bars = datas.map((ohlcItem:any) => {
+
+					return {
+							time: ohlcItem[0] * 1000, //dataVolume?.prices[index][0],
+							open: ohlcItem[1],
+							high: ohlcItem[2],
+							low: ohlcItem[3],
+							close: ohlcItem[4],
+							volume: ohlcItem[5]
+					};
+			});
+	
+					onHistoryCallback(bars, { noData: false });
+			} catch (error) {
+				console.log("ERROR",error)
+							onErrorCallback(error);
 			}
-		};
-		
+			},
+			subscribeBars: (symbolInfo:any, resolution:any, onRealtimeCallback:any, subscriberUID:any, onResetCacheNeededCallback:any) => {
+							// Subscribe to real-time updates if available
+			},
+			unsubscribeBars: (subscriberUID:any) => {
+							// Unsubscribe from real-time updates if available
+			}
+	}
+
 		const widgetOptions: any = {
 			symbol: props.symbol,
 			// BEWARE: no trailing slash is expected in feed URL
@@ -219,7 +258,3 @@ export const TVChartContainer = (props: any) => {
 		</>
 	);
 };
-
-function useCallback(arg0: () => void, arg1: any[]) {
-	throw new Error("Function not implemented.");
-}

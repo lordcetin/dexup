@@ -21,34 +21,20 @@ export async function GET(req:NextRequest) {
   });
   const dataOHLC:any = await responseOHLC.json();
 
-  const responseVolume  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId}/market_chart/range?vs_currency=usd&from=${from}&to=${to}&precision=4`,{
-    method:'GET',
-    headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-    cache:'no-store',
-  });
-  const dataVolume:any = await responseVolume.json();
+  // const responseVolume  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId}/market_chart/range?vs_currency=usd&from=${from}&to=${to}&precision=4`,{
+  //   method:'GET',
+  //   headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+  //   cache:'no-store',
+  // });
+  // const dataVolume:any = await responseVolume.json();
+  // console.log("dataVolume",dataVolume?.prices)
 
-  // Hacim verileri mevcut değilse veya boşsa, boş bir dizi döndür
-  if (!dataVolume.prices || dataVolume.prices.length === 0) {
-    // OHLC verilerini dön
-    return NextResponse.json(dataOHLC, { status: 200 });
-  }
 
-  // OHLC ve hacim verilerini birleştirerek OHLCV formatında bir veri seti oluştur
-  const bars = dataOHLC.map((ohlcItem: any, index: number) => {
-    // Hacim verileri mevcutsa ve index'e göre bir elemanı varsa hacim değerini al, yoksa 0 olarak ayarla
-    const volume = dataVolume.prices[index] ? dataVolume.prices[index][1] : 0;
-    return {
-      time: ohlcItem[0],
-      open: ohlcItem[1],
-      high: ohlcItem[2],
-      low: ohlcItem[3],
-      close: ohlcItem[4],
-      volume: volume
-    };
-  });
+  // if (!dataVolume.prices || dataVolume.prices.length === 0) {
+  //   return NextResponse.json(dataOHLC, { status: 200 });
+  // }
 
-  const data = bars
+  const data = dataOHLC
   return NextResponse.json(data,{status:200})
 
 }

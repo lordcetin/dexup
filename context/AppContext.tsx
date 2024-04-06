@@ -22,8 +22,8 @@ type AppContextType = {
   setActive: React.Dispatch<React.SetStateAction<boolean>>;
   isMuted: boolean;
   setMute: React.Dispatch<React.SetStateAction<boolean>>;
-  animeId:string;
-  setMovieId:React.Dispatch<React.SetStateAction<string>>;
+  baseCoinId:string;
+  setBaseCoinId:React.Dispatch<React.SetStateAction<string>>;
   littleanimeId:string;
   setLittleMovieId:React.Dispatch<React.SetStateAction<string>>;
   movieUrl:string;
@@ -71,8 +71,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [networkId, setNetworkId] = useState('');
   const [networkShort, setNetworkShort] = useState('');
   const [networkSymbol, setNetworkSymbol] = useState('');
-  const [animeId, setMovieId] = useState('');
-  const [littleanimeId, setLittleMovieId] = useState('');
+  const [baseCoinId, setBaseCoinId] = useState('');
+  const [quoteCoinId, setQuoteCoinId] = useState('');
   const [movieUrl, setMovieUrl] = useState('');
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
@@ -102,7 +102,9 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       isOpenSidebar,
       setSidebarToggle,
       isWallet,
-      setIsWallet
+      setIsWallet,
+      baseCoinId, setBaseCoinId,
+      quoteCoinId, setQuoteCoinId
       }}>
       {children}
     </AppContext.Provider>
