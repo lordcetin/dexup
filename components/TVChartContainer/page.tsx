@@ -80,18 +80,13 @@ export const TVChartContainer = (props:any) => {
 					session: '24x7',
 					timezone: 'Etc/UTC',
 					exchange: 'DEXUP',
-					exchange_logo: symbols?.image?.large,
 					minmov: 1,
 					pricescale: 100,
 					has_intraday: false,
-					// intraday_multipliers: ['1', '5', '15', '30', '60'],
-					// supported_resolution: ['1D', '1W', '1M','15'],
-					supported_resolution: ['15'],
-					volume_precision: 8,
+					intraday_multipliers: ['1', '5', '15', '30', '60'],
+					supported_resolution: ['1D', '1W', '1M','15'],
+					volume_precision: 2,
 					data_status: 'streaming',
-					visible_plots_set:"ohlc",
-					has_daily: true,
-					format:'price'
 			}
 	
 			onSymbolResolvedCallback(symbolInfo);
@@ -100,7 +95,7 @@ export const TVChartContainer = (props:any) => {
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
-	
+	console.log("resoulution",resolution)
 			const { from, to, firstDataRequest } = periodParams;
 	
 			try {
@@ -121,7 +116,7 @@ export const TVChartContainer = (props:any) => {
 					const chaId = network[0]?.id
 
 	
-					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId}/pools/${pooladdress}/ohlcv/minute?aggregate=15&limit=300&currency=usd`,{
+					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId && chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=300&currency=usd`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 							next:{revalidate:3000} // 60 second
@@ -166,14 +161,13 @@ export const TVChartContainer = (props:any) => {
 
 	
 			const bars = datas.map((ohlcItem:any) => {
-
 					return {
 							time: ohlcItem[0] * 1000, //dataVolume?.prices[index][0],
-							open: ohlcItem[1],
-							high: ohlcItem[2],
-							low: ohlcItem[3],
-							close: ohlcItem[4],
-							volume: ohlcItem[5]
+							open: ohlcItem[1].toFixed(4),
+							high: ohlcItem[2].toFixed(4),
+							close: ohlcItem[4].toFixed(4),
+							low: ohlcItem[3].toFixed(4),
+							volume: ohlcItem[5].toFixed(4)
 					};
 			});
 	

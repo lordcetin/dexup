@@ -118,7 +118,7 @@ const Swap = () => {
     symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
     width:980,
     height:600,
-    interval: "15" as ResolutionString,
+    interval: "15m" as ResolutionString,
     library_path: "/static/charting_library/",
     locale: "en",
     theme: 'dark',
