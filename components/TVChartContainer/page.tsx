@@ -23,37 +23,26 @@ export const TVChartContainer = (props:any) => {
 
 		const getAllSymbols = async () => {
 
-			const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId.toLowerCase()}?tickers=true`,{
+			const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId && baseCoinId.toLowerCase()}?tickers=true`,{
 					method:'GET',
 					headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-					cache:'no-store',
 			});
 			const dataALLTOKEN = await responseALLTOKEN.json();
 			return dataALLTOKEN
 	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ['1D', '1W', '1M','15'],
-			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
-			exchanges: [
-					{ value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
-					{ value: 'Kraken', name: 'Kraken', desc: 'Kraken bitcoin exchange'},
-					{ value: 'OKEX', name: 'OKEX', desc: 'OKEX bitcoin exchange'},
-					{ value: 'nominex', name: 'nominex', desc: 'nominex bitcoin exchange'},
-					{ value: 'bitget', name: 'bitget', desc: 'bitget bitcoin exchange'},
-					{ value: 'Binance', name: 'Binance', desc: 'Binance bitcoin exchange'},
-					{ value: 'BitMart', name: 'BitMart', desc: 'BitMart bitcoin exchange'},
-					{ value: 'uniswap', name: 'uniswap', desc: 'UNI bitcoin exchange'},
-					{ value: 'Coinbase', name: 'Coinbase', desc: 'Coinbase bitcoin exchange'},
-					{ value: 'CoinEx', name: 'CoinEx', desc: 'CoinEx bitcoin exchange'},
-					{ value: 'Gateio', name: 'Gateio', desc: 'Gateio bitcoin exchange'},
-					{ value: 'Kucoin', name: 'Kucoin', desc: 'Kucoin bitcoin exchange'},
-					{ value: 'mexc', name: 'mexc', desc: 'mexc bitcoin exchange'},
-			],
-			// The `symbols_types` arguments are used for the `searchSymbols` method if a user selects this symbol type
-			symbols_types: [
-					{ name: 'crypto', value: 'crypto'}
-			],
+			// supported_resolutions: ['1D', '1W', '1M','15'],
+			// supported_resolutions: ['15'],
+			// // The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
+			// exchanges: [
+			// 		{ value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
+			// 		{ value: 'Kraken', name: 'Kraken', desc: 'Kraken bitcoin exchange'},
+			// ],
+			// // The `symbols_types` arguments are used for the `searchSymbols` method if a user selects this symbol type
+			// symbols_types: [
+			// 		{ name: 'crypto', value: 'crypto'}
+			// ],
 			supports_group_request: true,
 			supports_marks: false,
 			supports_search: false,
@@ -81,26 +70,28 @@ export const TVChartContainer = (props:any) => {
 			const symbols = await getAllSymbols()
 	
 			const sym = generateSymbol(symbols?.tickers[0]?.market?.name,fromT,toT)
-			console.log("SYM",sym)
+
 			const symbolInfo = {
 					symbol: sym.short,
 					ticker: sym.short,
 					description: sym.short.toUpperCase(),
-					name:sym.full,
+					name:sym.short,
 					type: 'crypto',
 					session: '24x7',
-					timezone: 'America/New_York',
+					timezone: 'Etc/UTC',
 					exchange: 'DEXUP',
 					exchange_logo: symbols?.image?.large,
-					listed_exchange: symbols?.tickers[0]?.market?.name,
 					minmov: 1,
 					pricescale: 100,
 					has_intraday: false,
-					intraday_multipliers: ['1', '5', '15', '30', '60'],
-					supported_resolution: ['1D', '1W', '1M','15'],
-					volume_precision: 4,
+					// intraday_multipliers: ['1', '5', '15', '30', '60'],
+					// supported_resolution: ['1D', '1W', '1M','15'],
+					supported_resolution: ['15'],
+					volume_precision: 8,
 					data_status: 'streaming',
 					visible_plots_set:"ohlc",
+					has_daily: true,
+					format:'price'
 			}
 	
 			onSymbolResolvedCallback(symbolInfo);
@@ -111,7 +102,6 @@ export const TVChartContainer = (props:any) => {
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
 	
 			const { from, to, firstDataRequest } = periodParams;
-			console.log("resolution",resolution)
 	
 			try {
 					// const responseOHLCV  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
@@ -131,13 +121,13 @@ export const TVChartContainer = (props:any) => {
 					const chaId = network[0]?.id
 
 	
-					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId}/pools/${pooladdress}/ohlcv/day?aggregate=1&limit=1000&currency=usd`,{
+					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId}/pools/${pooladdress}/ohlcv/minute?aggregate=15&limit=300&currency=usd`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+							next:{revalidate:3000} // 60 second
 					});
 					const dataOHLC = await responseOHLC.json();
 					const datas = dataOHLC?.data?.attributes?.ohlcv_list
-	
 	
 					// const responseVolume  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${symbolInfo.symbol}/market_chart/range?vs_currency=usd&from=${from}&to=${to}&precision=4`,{
 					//     method:'GET',
@@ -187,6 +177,7 @@ export const TVChartContainer = (props:any) => {
 					};
 			});
 	
+			console.log("bars",bars)
 					onHistoryCallback(bars, { noData: false });
 			} catch (error) {
 				console.log("ERROR",error)
@@ -216,8 +207,6 @@ export const TVChartContainer = (props:any) => {
 			charts_storage_api_version: props.charts_storage_api_version,
 			client_id: props.client_id,
 			user_id: props.user_id,
-			fullscreen: props.fullscreen,
-			autosize: props.autosize,
       theme: props.theme,
       width: props.width,
       height: props.height,
