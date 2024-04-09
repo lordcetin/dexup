@@ -115,24 +115,24 @@ const Swap = () => {
   const { setBaseCoinId } = useAppContext()
   
   const defaultWidgetProps:any= {
-    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
+    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/USD`,
     width:980,
     height:600,
     interval: '15' as ResolutionString,
-    library_path: "/static/charting_library/",
+    library_path: "/static/charting_library/charting_library",
     locale: "en",
     theme: 'dark',
-    timeframe:'15',
-    disabled_features: ['volume_overlay','symbol_search'],
-    enabled_features: ["study_templates"],
-    charts_storage_url: "https://saveload.tradingview.com",
+    // timeframe:'15',
+    // disabled_features: ['volume_overlay','symbol_search'],
+    // enabled_features: ["study_templates"],
+    // charts_storage_url: "https://saveload.tradingview.com",
     charts_storage_api_version: "1.1",
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
-    allow_symbol_change:false,
-    show_exchange_logos: 'true',
-    logo_urls:pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg,
+
+    // show_exchange_logos: 'true',
+    // logo_urls:pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg,
     // debug:'true',
 
   };

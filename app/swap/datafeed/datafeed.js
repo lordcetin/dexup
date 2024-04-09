@@ -87,6 +87,7 @@ export default {
         console.log('[resolveSymbol]: Method call', symbolName);
         const symbols = await getAllSymbols();
         const symbolItem = symbols.find(({ ticker }) => ticker === symbolName);
+        console.log("Ticker",ticker)
         if (!symbolItem) {
             console.log('[resolveSymbol]: Cannot resolve symbol', symbolName);
             onResolveErrorCallback('Cannot resolve symbol');

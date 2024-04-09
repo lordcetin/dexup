@@ -32,7 +32,9 @@ export const TVChartContainer = (props:any) => {
 	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ['1D', '1W', '1M','1','3','5','15','30','45'],
+			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M"],
+			intraday_multipliers: ['1','3','5','15','30','45'],
+			seconds_multipliers: ['1S','3S','5S'],
 
 			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
 			exchanges: [
@@ -91,7 +93,7 @@ export const TVChartContainer = (props:any) => {
 			const symbolInfo = {
 					symbol: sym.short,
 					ticker: sym.short,
-					description: sym.short.toUpperCase(),
+					description: sym.short,
 					name:sym.short,
 					type: 'crypto',
 					session: '24x7',//24x7
@@ -100,17 +102,14 @@ export const TVChartContainer = (props:any) => {
 					listed_exchange: symbols?.tickers[0]?.market?.name,
 					minmov: 1,
 					pricescale: 1000000,
-					has_empty_bars:true,
-					has_intradey:true,
-					has_seconds:true,
-					has_ticks:true,
 					logo_urls:symbols.image.thumb,
+					has_intraday:true,
+					has_seconds:true,
 					intraday_multipliers: ['1','3','5','15','30','45'],
 					seconds_multipliers: ['1S','3S','5S'],
 					supported_resolution: ['1D', '1W', '1M','1','3','5','15','30','45'],
 					volume_precision: 2,
-					data_status: 'delayed_streaming',
-					visible_plots_set:'ohlcv',
+					data_status: 'streaming',
 					// debug:true,
 			}
 	
@@ -122,7 +121,7 @@ export const TVChartContainer = (props:any) => {
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
 			// console.log("resoulution",resolution) // 1D
 			const { from, to, firstDataRequest } = periodParams;
-			console.log("from",from * 1000)
+			console.log("countback",periodParams.countback)
 			try {
 					// const responseOHLCV  = await fetch(`/api/chartdata?baseCoinId=${baseCoinId}&from=${from}&to=${to}`,{
 					// 	method:'GET',
@@ -216,24 +215,23 @@ export const TVChartContainer = (props:any) => {
 			symbol: props.symbol,
 			// BEWARE: no trailing slash is expected in feed URL
 			datafeed: datafeed,
-			interval: '15',//,
-			allow_symbol_change: true,
+			interval: props.interval,//,
       //@ts-ignore
 			container: chartContainerRef.current,
 			library_path: props.library_path,
 			locale: props.locale as LanguageCode,
-			disabled_features: ["use_localstorage_for_settings"],
-			enabled_features: ["study_templates"],
-			charts_storage_url: props.charts_storage_url,
+			// disabled_features: ["use_localstorage_for_settings"],
+			// enabled_features: ["study_templates"],
+			// charts_storage_url: props.charts_storage_url,
 			charts_storage_api_version: props.charts_storage_api_version,
 			client_id: props.client_id,
 			user_id: props.user_id,
       theme: props.theme,
       width: props.width,
       height: props.height,
-			show_exchange_logos: props.show_exchange_logos,
+			// show_exchange_logos: props.show_exchange_logos,
 			// debug: props.debug,
-			timeframe:props.timeframe
+			// timeframe:props.timeframe
 		};
 
 		const tvWidget = new widget(widgetOptions);
