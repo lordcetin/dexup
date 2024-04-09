@@ -263,83 +263,83 @@ export const TVChartContainer = (props:any) => {
 		};
 	}, [props]);
 
-	// useEffect(() => {
-	// 	const getOHLCV = async () => {
-	// 		const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
-	// 			method:'GET',
-	// 			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-	// 		})
-	// 		const net = await resda.json()
-	// 		const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-	// 		const chaId = network[0]?.id
+	useEffect(() => {
+		const getOHLCV = async () => {
+			const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+				method:'GET',
+				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+			})
+			const net = await resda.json()
+			const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+			const chaId = network[0]?.id
 
-	// 		const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId && chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=100&currency=usd`,{
-	// 			method:'GET',
-	// 			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-	// 			cache:'force-cache',
-	// 	});
-	// 	const dataOHLC = await responseOHLC.json();
-	// 	const datas = dataOHLC?.data?.attributes?.ohlcv_list
+			const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId && chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=100&currency=usd`,{
+				method:'GET',
+				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+				cache:'force-cache',
+		});
+		const dataOHLC = await responseOHLC.json();
+		const datas = dataOHLC?.data?.attributes?.ohlcv_list
 
-	// 	const bars = datas.sort((a:any, b:any) => a[0] - b[0]).map((ohlcItem:any) => {
-	// 		return {
-	// 				time: ohlcItem[0],
-	// 				open: ohlcItem[1],
-	// 				high: ohlcItem[2],
-	// 				low: ohlcItem[3],
-	// 				close: ohlcItem[4],
-	// 				volume: ohlcItem[5]
-	// 		};
-	// });
+		const bars = datas.sort((a:any, b:any) => a[0] - b[0]).map((ohlcItem:any) => {
+			return {
+					time: ohlcItem[0],
+					open: ohlcItem[1],
+					high: ohlcItem[2],
+					low: ohlcItem[3],
+					close: ohlcItem[4],
+					volume: ohlcItem[5]
+			};
+	});
 
-	// const chartOptions:any = { 
-	// 	layout: { 
-	// 		textColor: 'white', 
-	// 		background: { 
-	// 			type: 'solid', 
-	// 			color: 'transparent' 
-	// 		} 
-	// 	}, 
-	// 	grid: {  
-	// 		vertLines: { visible: false }, 
-	// 		horzLines: { visible: false },
-	// 	},
-	// 	crosshair: {
-	// 		// Change mode from default 'magnet' to 'normal'.
-	// 		// Allows the crosshair to move freely without snapping to datapoints
-	// 		mode: CrosshairMode.Normal,
-	// 		// Vertical crosshair line (showing Date in Label)
-	// 		vertLine: {
-	// 				width: 8,
-	// 				color: '#C3BCDB44',
-	// 				style: LineStyle.Solid,
-	// 				labelBackgroundColor: '#9B7DFF',
-	// 		},
+	const chartOptions:any = { 
+		layout: { 
+			textColor: 'white', 
+			background: { 
+				type: 'solid', 
+				color: 'transparent' 
+			} 
+		}, 
+		grid: {  
+			vertLines: { visible: false }, 
+			horzLines: { visible: false },
+		},
+		crosshair: {
+			// Change mode from default 'magnet' to 'normal'.
+			// Allows the crosshair to move freely without snapping to datapoints
+			mode: CrosshairMode.Normal,
+			// Vertical crosshair line (showing Date in Label)
+			vertLine: {
+					width: 8,
+					color: '#C3BCDB44',
+					style: LineStyle.Solid,
+					labelBackgroundColor: '#9B7DFF',
+			},
 
-	// 		// Horizontal crosshair line (showing Price in Label)
-	// 		horzLine: {
-	// 				color: '#9B7DFF',
-	// 				labelBackgroundColor: '#9B7DFF',
-	// 		},
-	// },
-	// };
-	// const chart = createChart('tvchart', chartOptions);
+			// Horizontal crosshair line (showing Price in Label)
+			horzLine: {
+					color: '#9B7DFF',
+					labelBackgroundColor: '#9B7DFF',
+			},
+	},
+	};
+	const chart = createChart('tvchart', chartOptions);
 
-	// 	const candleSeries = chart.addCandlestickSeries({
-	// 		upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
-	// 		wickUpColor: '#26a69a', wickDownColor: '#ef5350',
-	// });
-	// 	candleSeries.setData(bars);
-	// 	chart.timeScale().fitContent();
-	// }
-	// getOHLCV()
-	// },[])
+		const candleSeries = chart.addCandlestickSeries({
+			upColor: '#26a69a', downColor: '#ef5350', borderVisible: false,
+			wickUpColor: '#26a69a', wickDownColor: '#ef5350',
+	});
+		candleSeries.setData(bars);
+		chart.timeScale().fitContent();
+	}
+	getOHLCV()
+	},[])
 
 	return (
 		<>
 		<div className="w-[980px] h-[600px] overflow-hidden rounded-xl">
-		{/* <div id="tvchart" className={styles.TVChartContainer}></div> */}
-			<div ref={chartContainerRef} className={styles.TVChartContainer} />
+		<div id="tvchart" className={styles.TVChartContainer}></div>
+			<div ref={chartContainerRef} className={styles.TVChartContainer}  style={{display:'none'}} />
 		</div>
 		</>
 	);
