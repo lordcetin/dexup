@@ -40,9 +40,7 @@ import { ChartingLibraryWidgetOptions,ResolutionString, } from "@/public/static/
 import { IoMdSettings } from "react-icons/io";
 import {config} from '@/config'
 import { useWeb3js } from "@/hooks/useWeb3";
-import {getEthersProvider} from '@/lib/ethersProvider'
-import {getEthersSigner } from '@/lib/ethersSigner'
-import DataFeed from '@/app/swap/datafeed/datafeed'
+
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -99,6 +97,7 @@ const Swap = () => {
 
   const [dexAddress,setDexTokenApproveAddress] = useState<Address>();
   const [pairdata,setPairData] = useState<any>([]);
+  const [alltoken,setDataALLTOKEN] = useState<any>([]);
   const [paidloading,setPaidLoading] = useState(false);
   const [settings,setSettings] = useState(false);
   const [receiveloading,setReceiveLoading] = useState(false);
@@ -114,22 +113,28 @@ const Swap = () => {
   const web3 = useWeb3js({chainId:chainId})
 
   const { setBaseCoinId } = useAppContext()
+  
   const defaultWidgetProps:any= {
     symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
     width:980,
     height:600,
-    interval: "15m" as ResolutionString,
+    interval: '15' as ResolutionString,
     library_path: "/static/charting_library/",
     locale: "en",
     theme: 'dark',
+    timeframe:'15',
+    disabled_features: ['volume_overlay','symbol_search'],
+    enabled_features: ["study_templates"],
     charts_storage_url: "https://saveload.tradingview.com",
     charts_storage_api_version: "1.1",
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
-    show_exchange_logos: 'true'
-    // fullscreen: true,
-    // autosize:true,
+    allow_symbol_change:false,
+    show_exchange_logos: 'true',
+    logo_urls:pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg,
+    // debug:'true',
+
   };
   // useEffect(() => {
   //   const chartOptions:any = { 
@@ -285,6 +290,7 @@ const Swap = () => {
 
 
   useEffect(() => {
+
     const getPair = async () => {
       fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
         method:'GET',
@@ -315,7 +321,7 @@ const Swap = () => {
             const baseaddress = response.included.find((i:any)=> i.id  == baseId).attributes.address;
             const quoteaddress = response.included.find((i:any)=> i.id  == quoteId).attributes.address;
 
-
+          
             const newPair:any = {
               id: response.data.id,
               name:response.data.attributes.name,
