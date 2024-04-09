@@ -141,7 +141,7 @@ export const TVChartContainer = (props:any) => {
 					const chaId = network[0]?.id
 
 	
-					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId && chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${periodParams.from * 1000}&limit=1000&currency=usd`,{
+					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId && chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=1000&currency=usd`,{
 							method:'GET',
 							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 							cache:'no-cache',
