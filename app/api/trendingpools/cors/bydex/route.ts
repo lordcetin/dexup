@@ -58,6 +58,7 @@ export async function GET(req:NextRequest) {
       dexname,
       basename,
       quotename,
+      networkname:dexname === 'uniswap_v3' ? 'ethereum' : dexname === 'uniswap_v2' ? 'ethereum' : dexname === 'pancakeswap_v2' ? 'binance-smart-chain' : dexname === 'raydium' ? 'solana' : dexname === 'stonfi' ? 'ton' : dexname === 'aerodrome-base' ? 'base' : 'ethereum',
       baseSymbol,
       quoteSymbol,
       baseaddress,

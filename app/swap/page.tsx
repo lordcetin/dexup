@@ -40,8 +40,13 @@ import { ChartingLibraryWidgetOptions,ResolutionString, } from "@/public/static/
 import { IoMdSettings } from "react-icons/io";
 import {config} from '@/config'
 import { useWeb3js } from "@/hooks/useWeb3";
-
-
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import { MdContentCopy } from "react-icons/md";
+import Link from "next/link";
+import { GoCodescan } from "react-icons/go";
+import { DataTable } from "./DataTable/data-table";
+import { columns } from "./DataTable/columns";
+import { IoChevronDown } from "react-icons/io5";
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
   feeBps: 100,
@@ -71,6 +76,9 @@ const Swap = () => {
   const [received,setReceived] = useState<any>(0);
   const [CHAINID,setCHAINID] = useState<any>();
   const [switchtoken,setSwitch] = useState<boolean>(false);
+  const [details,setOpenDetails] = useState<boolean>(false);
+  const [copied,setCopied] = useState<boolean>(false);
+  const [loadingtrader,setloadingtrader] = useState<boolean>(false);
   const [frombase,setFromBase] = useState<any>(null);
   const [toquote,setToQuote] = useState<any>(null);
   const [baseSymbol,setBaseSymbol] = useState<any>("");
@@ -88,6 +96,7 @@ const Swap = () => {
   const [quoteNetID,setQuoteNetId] = useState<any>("");
   const [calldata,setCallData] = useState<any>([]);
   const [approveData,setApproveData] = useState<any>([]);
+  const [traderData,setTraderData] = useState<any>([]);
   const [baseDecimal,setBaseDecimal] = useState<any>();
   const [toDecimal,setToDecimal] = useState<any>();
   const [fromDecimal,setFromDecimal] = useState<any>();
@@ -112,29 +121,24 @@ const Swap = () => {
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
 
-  const { setBaseCoinId } = useAppContext()
+  const { setBaseCoinId,setBTokenSymbol,setQTokenSymbol } = useAppContext()
   
   const defaultWidgetProps:any= {
-    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/USD`,
+    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
     width:980,
     height:600,
     interval: '15' as ResolutionString,
     library_path: "/static/charting_library/charting_library",
     locale: "en",
     theme: 'dark',
-    // timeframe:'15',
-    // disabled_features: ['volume_overlay','symbol_search'],
-    // enabled_features: ["study_templates"],
-    // charts_storage_url: "https://saveload.tradingview.com",
     charts_storage_api_version: "1.1",
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
-
-    // show_exchange_logos: 'true',
-    // logo_urls:pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg,
-    // debug:'true',
-
+    supports_group_request: false,
+    supports_marks: false,
+    supports_search: false,
+    supports_timescale_marks: false,
   };
   // useEffect(() => {
   //   const chartOptions:any = { 
@@ -289,6 +293,7 @@ const Swap = () => {
   // }, []);
 
 
+
   useEffect(() => {
 
     const getPair = async () => {
@@ -299,9 +304,11 @@ const Swap = () => {
         const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
         const chaId = network[0]?.id
         const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
+        if(coingecko_asset_platform_id === null) return
+        console.log("coingecko_asset_platform_id",coingecko_asset_platform_id)
         setGeckoId(coingecko_asset_platform_id)
 
-      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
+      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'ton' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
         cache:'no-store',
@@ -321,7 +328,6 @@ const Swap = () => {
             const baseaddress = response.included.find((i:any)=> i.id  == baseId).attributes.address;
             const quoteaddress = response.included.find((i:any)=> i.id  == quoteId).attributes.address;
 
-          
             const newPair:any = {
               id: response.data.id,
               name:response.data.attributes.name,
@@ -353,56 +359,65 @@ const Swap = () => {
           setPairData(newPair)
           setBaseSymbol(baseTokenSymbol)
           setQuoteSymbol(quoteTokenSymbol)
+          setBTokenSymbol(baseTokenSymbol)
+          setQTokenSymbol(quoteTokenSymbol)
           setBaseAddress(baseaddress)
           setQuoteAddress(quoteaddress)
           setBaseNetId(baseNetId)
           setQuoteNetId(baseNetId)
 
 
-          const chains = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
-          const chaindata = chains.data
-          const chainID = chaindata?.chain_identifier
+          // const chains = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
+          // const chaindata = chains.data
+          // const chainID = chaindata?.chain_identifier
 
-          const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetId : quoteNetId}&baseaddress=${switchtoken === false ? baseaddress : quoteaddress}`)
-          const datas = dec.data.data[0]
-          const decimal = datas.attributes.decimals
-          setBaseDecimal(decimal)
+          // const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetId : quoteNetId}&baseaddress=${switchtoken === false ? baseaddress : quoteaddress}`)
+          // const datas = dec.data.data[0]
+          // const decimal = datas.attributes.decimals
+          // setBaseDecimal(decimal)
 
-          const amount = generateDecimal(switchtoken === false ? paid : received, decimal)
-          // const res = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? baseaddress : quoteaddress}&toTokenAddress=${switchtoken === false ? quoteaddress : baseaddress}&amount=${amount}&chainId=${chaId === 'solana' ? 501 : chainID}`)
-          const res = await axios.get(`/api/getPri?amount=${paid}&chainId=${chainID}&toTokenAddress=${quoteaddress}&fromTokenAddress=${baseaddress}&slippage=${slippage}`)
-          // const data = res.data.data[0]
-          const data = res.data.data
-          const paidAmount = data?.singleChainSwapInfo?.receiveAmount
-          const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
+          // const amount = generateDecimal(switchtoken === false ? paid : received, decimal)
+          // // const res = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? baseaddress : quoteaddress}&toTokenAddress=${switchtoken === false ? quoteaddress : baseaddress}&amount=${amount}&chainId=${chaId === 'solana' ? 501 : chainID}`)
+          // const res = await axios.get(`/api/getPri?amount=${paid}&chainId=${chainID}&toTokenAddress=${quoteaddress}&fromTokenAddress=${baseaddress}&slippage=${slippage}`)
+          // // const data = res.data.data[0]
+          // const data = res.data.data
+          // const paidAmount = data?.singleChainSwapInfo?.receiveAmount
+          // const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
 
           if(chain === 'ethereum'){
             setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
           }else if(chain === 'binance-smart-chain'){
             setUniUrl(`https://pancakeswap.finance/swap?outputCurrency=${baseaddress}&chainId=56`)
             // setUniUrl(`https://kyberswap.com/partner-swap?chainId=56&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}&clientId=dexup&feeReceiver=0xEb218F28ACEea78E20910286b1Acfef917A270Ab&enableTip=true&chargeFeeBy=currency_out&feeAmount=30`)
+          }else if(chain === 'arbitrum'){
+            setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
+          }else if(chain === 'ton'){
+            //change the referal address
+            setUniUrl(`https://app.ston.fi/swap?referral_address=UQCthC8ICK7K8Hkfm9smblLFroKrYrEMwZuoD4Nbm5LswUnc&chartVisible=false&ft=${quoteTokenSymbol.toUpperCase()}&tt=${baseTokenSymbol.toUpperCase()}`)
+          }else if(chain === 'base'){
+            setUniUrl(`https://aerodrome.finance/swap?from=${baseaddress}&to=${quoteaddress}`)
           }
 
-          if(res.data.msg){
-            console.log(res.data.msg)
-          }
-          const fromTokenPrice = data?.commonDexInfo?.fromTokenPrice
+          // if(res.data.msg){
+          //   console.log(res.data.msg)
+          // }
+          // const fromTokenPrice = data?.commonDexInfo?.fromTokenPrice
 
-          const baseUnitPrice = parseFloat(fromTokenPrice);
-          // let baseAmount:any = formatEther(data?.fromTokenAmount.toString());
-          setRealAmout(amount)
+          // const baseUnitPrice = parseFloat(fromTokenPrice);
+          // // let baseAmount:any = formatEther(data?.fromTokenAmount.toString());
+          // setRealAmout(amount)
 
           // let quoteAmount:any = formatEther(data?.toTokenAmount.toString());
-          const formattedBase = new Intl.NumberFormat("en-US",{
-            style:"currency",
-            currency: "USD",
-            // notation: 'compact',
-            // compactDisplay: 'short'
-          }).format(baseUnitPrice)
+          // const formattedBase = new Intl.NumberFormat("en-US",{
+          //   style:"currency",
+          //   currency: "USD",
+          //   // notation: 'compact',
+          //   // compactDisplay: 'short'
+          // }).format(baseUnitPrice)
 
-          setFromBase(formattedBase)
-          // setToQuote(formattedQuote)
-          setReceived(formattedNumber)
+          // setFromBase(formattedBase)
+          // // setToQuote(formattedQuote)
+          // setReceived(formattedNumber)
         
       })
     })
@@ -411,36 +426,82 @@ const Swap = () => {
 
   }, []);
 
-useEffect(() => {
-  (window as any)?.Jupiter?.init({
-    displayMode: "integrated",
-    integratedTargetId: "integrated-terminal",
-    endpoint: "https://api.mainnet-beta.solana.com",
-    platformFeeAndAccounts: TEST_PLATFORM_FEE_AND_ACCOUNTS,
-    formProps:{
-      fixedOutputMint: true,
-      initialAmount: '10000000',
-      initialInputMint:baseAddress ? baseAddress : null,
-      initalOutputMint: quoteAddress ? quoteAddress : null,
-    }
-  })
+  useEffect(() => {
+    (window as any)?.Jupiter?.init({
+      displayMode: "integrated",
+      integratedTargetId: "integrated-terminal",
+      endpoint: "https://api.mainnet-beta.solana.com",
+      platformFeeAndAccounts: TEST_PLATFORM_FEE_AND_ACCOUNTS,
+      formProps:{
+        fixedOutputMint: true,
+        initialAmount: '10000000',
+        initialInputMint:baseAddress ? baseAddress : null,
+        initalOutputMint: quoteAddress ? quoteAddress : null,
+      }
+    })
 
-}, []);
+  }, []);
+
+useEffect(() => {
+  const fetchTraders = async () => {
+    setloadingtrader(true)
+    try {
+    const res = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'ton' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}/trades`,{
+      method:'GET',
+      headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+      cache:'no-store',
+    }).then((res:any) => res.json()).then((data:any) => {
+
+      const tradedata = data.data.map((item:any) => {
+
+        return {
+          block_number:item.attributes.block_number,
+          block_timestamp:item.attributes.block_timestamp,
+          price:Number(item.attributes.from_token_amount) * Number(item.attributes.price_to_in_usd),
+          from_token_address:item.attributes.from_token_address,
+          from_token_amount:item.attributes.from_token_amount,
+          kind:item.attributes.kind,
+          price_from_in_currency_token:item.attributes.price_from_in_currency_token,
+          price_from_in_usd:item.attributes.price_from_in_usd,
+          price_to_in_currency_token:item.attributes.price_to_in_currency_token,
+          price_to_in_usd:item.attributes.price_to_in_usd,
+          to_token_address:item.attributes.to_token_address,
+          to_token_amount:item.attributes.to_token_amount,
+          tx_from_address:item.attributes.tx_from_address,
+          tx_hash:item.attributes.tx_hash,
+          volume_in_usd:item.attributes.volume_in_usd,
+        }
+      })
+       setTraderData(tradedata)
+    }).catch((err)=>console.log('error in fetching traders',err))
+    setloadingtrader(false)
+  } catch (error) {
+      console.log("ERROR",error)
+      setloadingtrader(false)
+  }
+  }
+    fetchTraders()
+},[])
 
   return (
-    <main className="flex justify-between items-center w-full mt-28 gap-x-6">
+    <main className="flex-col items-center w-full mt-7 gap-x-6">
 
+      <div className="flex gap-x-2 items-center">
       <div className="flex-col items-center">
 
 
-        <div className="flex items-center gap-x-6 my-5">
+        <div className={details ? "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[610px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
 
+          <div className={details ? "flex items-center gap-x-6 w-1/12 self-start" : "flex items-center gap-x-6 w-1/12"}>
           <div className="flex-col flex gap-2">
             <div className="flex gap-x-2 items-center">
               <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
               <h1>{pairdata?.baseTokenSymbol}</h1>
             </div>
+            <div className="flex items-center gap-x-1">
               <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
+              <CopyToClipboard text={pairdata?.baseaddress} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+            </div>
           </div>
 
           <div className="flex-col flex gap-2">
@@ -448,7 +509,24 @@ useEffect(() => {
               <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
               <h1>{pairdata?.quoteTokenSymbol}</h1>
             </div>
+            <div className="flex items-center gap-x-1">
             <p className="text-xs">{pairdata && pairdata?.quoteaddress?.slice(0,5) + '...' + pairdata?.quoteaddress?.slice(38)}</p>
+            <CopyToClipboard text={pairdata?.baseaddress} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+            </div>
+          </div>
+          </div>
+
+          <div className={details ? "flex justify-center items-center w-full self-start" : "flex justify-center items-center w-full"}>
+            <div onClick={() => setOpenDetails(!details)} className="flex items-center gap-x-1 outline-none border border-white/10 rounded-lg px-3 py-2 text-white/50 hover:text-white hover:border-white transition-all cursor-pointer">
+              <h1>Details</h1>
+              <IoChevronDown size={23}/>
+            </div>
+          </div>
+
+          <div className={details ? "flex ju items-center gap-x-2 self-start" : "flex ju items-center gap-x-2"}>
+            <div className="flex items-center gap-x-1">
+            <Link href={chain === 'ton' ? `https://tonviewer.com/${baseAddress}` : ''} target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
+            </div> 
           </div>
 
         </div>
@@ -482,6 +560,17 @@ useEffect(() => {
       className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px] overflow-hidden"
       />
       }
+      </div>
+
+      <div className="flex-col items-center w-full rounded-xl p-5 bg-[#131722] mt-2">
+        <h1 className="flex items-center w-full text-white/50">Past 24 Hour Trades</h1>
+        <div className="flex items-center w-full gap-x-2">
+        <DataTable loadingtrader={loadingtrader} columns={columns} data={traderData} />
+        <div className="w-3/6 border border-white/10 rounded-xl p-5 h-[520px] flex-col justify-center items-center">
+          <p className="flex justify-center items-center w-full text-white/50">Comments</p>
+        </div>
+        </div>
+      </div>
 
     </main>
   );

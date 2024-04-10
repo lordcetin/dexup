@@ -24,8 +24,10 @@ type AppContextType = {
   setMute: React.Dispatch<React.SetStateAction<boolean>>;
   baseCoinId:string;
   setBaseCoinId:React.Dispatch<React.SetStateAction<string>>;
-  littleanimeId:string;
-  setLittleMovieId:React.Dispatch<React.SetStateAction<string>>;
+  tokenBSymbol:string;
+  setBTokenSymbol:React.Dispatch<React.SetStateAction<string>>;
+  tokenQSymbol:string;
+  setQTokenSymbol:React.Dispatch<React.SetStateAction<string>>;
   movieUrl:string;
   setMovieUrl:React.Dispatch<React.SetStateAction<string>>;
   networkId:string;
@@ -73,6 +75,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [networkSymbol, setNetworkSymbol] = useState('');
   const [baseCoinId, setBaseCoinId] = useState('');
   const [quoteCoinId, setQuoteCoinId] = useState('');
+  const [tokenBSymbol, setBTokenSymbol] = useState('');
+  const [tokenQSymbol, setQTokenSymbol] = useState('');
   const [movieUrl, setMovieUrl] = useState('');
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
@@ -96,6 +100,10 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       setNetworkShort,
       networkSymbol,
       setNetworkSymbol,
+      setBTokenSymbol,
+      setQTokenSymbol,
+      tokenBSymbol,
+      tokenQSymbol,
       setMute,
       isActive,
       setActive,

@@ -2,22 +2,6 @@ import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
 
-async function getNetworkId(chain:any) {
-  if(chain === undefined) return null; // chain undefined olduğunda null döndür
-  const response = await axios.get(`https://pro-api.coingecko.com/api/v3/asset_platforms/`,{
-    headers:{
-      'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'
-    }
-  });
-
-
-  let platform:any = response.data.filter((item:any) => item.shortname.toLowerCase() === chain?.toLowerCase())
-  if (platform.length === 0) return null; // platform bulunamadığında null döndür
-  let py = platform[0]
-  const data = py
-  return data
-}
-
 export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const networkname = searchParams.get('networkname')
@@ -47,14 +31,13 @@ export async function GET(req:NextRequest) {
     const quotename = pooldata.included.find((i: any) => i.id == quoteId).attributes.name;
     const baseaddress = pooldata.included.find((i: any) => i.id == baseId).attributes.address;
     const quoteaddress = pooldata.included.find((i: any) => i.id == quoteId).attributes.address;
-
-
+    
     const paircoin: any = {
       name: item.attributes.name,
       baseImg,
       quoteImg,
       pooladdress: item.attributes.address,
-      networkname,
+      networkname:networkname === 'eth' ? 'ethereum' : networkname === 'bsc' ? 'binance-smart-chain' : networkname,
       basename,
       quotename,
       baseSymbol,
