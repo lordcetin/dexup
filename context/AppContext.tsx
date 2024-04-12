@@ -28,8 +28,8 @@ type AppContextType = {
   setBTokenSymbol:React.Dispatch<React.SetStateAction<string>>;
   tokenQSymbol:string;
   setQTokenSymbol:React.Dispatch<React.SetStateAction<string>>;
-  movieUrl:string;
-  setMovieUrl:React.Dispatch<React.SetStateAction<string>>;
+  netchain:string;
+  setChain:React.Dispatch<React.SetStateAction<string>>;
   networkId:string;
   setNetworkId:React.Dispatch<React.SetStateAction<string>>;
   networkShort:string;
@@ -77,7 +77,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [quoteCoinId, setQuoteCoinId] = useState('');
   const [tokenBSymbol, setBTokenSymbol] = useState('');
   const [tokenQSymbol, setQTokenSymbol] = useState('');
-  const [movieUrl, setMovieUrl] = useState('');
+  const [netchain, setChain] = useState('');
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
   const [littleMovieDatas, setLittleMovieDatas] = useState<UserProfile | string[] | any>([]);
@@ -112,7 +112,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       isWallet,
       setIsWallet,
       baseCoinId, setBaseCoinId,
-      quoteCoinId, setQuoteCoinId
+      quoteCoinId, setQuoteCoinId,
+      netchain,setChain,
       }}>
       {children}
     </AppContext.Provider>

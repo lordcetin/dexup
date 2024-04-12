@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images:{
+    dangerouslyAllowSVG: true,
     remotePatterns: [
       {
         protocol: 'https',
@@ -30,6 +31,22 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'aerodrome.finance'
+      },
+      {
+        protocol: 'https',
+        hostname: 'avatars.githubusercontent.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'cryptoeccetera.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'bscscan.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'arbiscan.io'
       },
     ]
   },

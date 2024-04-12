@@ -101,13 +101,6 @@ const Pool = (props: Props) => {
       const response = await data.json()
       setDexPoolData(response)
 
-      const resaa = await fetch(`https://pro-api.coingecko.com/api/v3/asset_platforms/`,{
-        method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-        cache:'no-store',
-      })
-      const dataasda = await resaa.json()
-      console.log("filteredNET",dataasda)
     }
     getNetworkByPool()
   },[dexname])

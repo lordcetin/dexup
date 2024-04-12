@@ -121,7 +121,7 @@ const Swap = () => {
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
 
-  const { setBaseCoinId,setBTokenSymbol,setQTokenSymbol } = useAppContext()
+  const { setBaseCoinId,setBTokenSymbol,setQTokenSymbol,setChain } = useAppContext()
   
   const defaultWidgetProps:any= {
     symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
@@ -308,7 +308,7 @@ const Swap = () => {
         console.log("coingecko_asset_platform_id",coingecko_asset_platform_id)
         setGeckoId(coingecko_asset_platform_id)
 
-      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'ton' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
+      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
         cache:'no-store',
@@ -361,6 +361,7 @@ const Swap = () => {
           setQuoteSymbol(quoteTokenSymbol)
           setBTokenSymbol(baseTokenSymbol)
           setQTokenSymbol(quoteTokenSymbol)
+          setChain(chain)
           setBaseAddress(baseaddress)
           setQuoteAddress(quoteaddress)
           setBaseNetId(baseNetId)
@@ -391,7 +392,7 @@ const Swap = () => {
             // setUniUrl(`https://kyberswap.com/partner-swap?chainId=56&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}&clientId=dexup&feeReceiver=0xEb218F28ACEea78E20910286b1Acfef917A270Ab&enableTip=true&chargeFeeBy=currency_out&feeAmount=30`)
           }else if(chain === 'arbitrum'){
             setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
-          }else if(chain === 'ton'){
+          }else if(chain === 'the-open-network'){
             //change the referal address
             setUniUrl(`https://app.ston.fi/swap?referral_address=UQCthC8ICK7K8Hkfm9smblLFroKrYrEMwZuoD4Nbm5LswUnc&chartVisible=false&ft=${quoteTokenSymbol.toUpperCase()}&tt=${baseTokenSymbol.toUpperCase()}`)
           }else if(chain === 'base'){
@@ -446,7 +447,7 @@ useEffect(() => {
   const fetchTraders = async () => {
     setloadingtrader(true)
     try {
-    const res = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'ton' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}/trades`,{
+    const res = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}/trades`,{
       method:'GET',
       headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
       cache:'no-store',
@@ -525,7 +526,16 @@ useEffect(() => {
 
           <div className={details ? "flex ju items-center gap-x-2 self-start" : "flex ju items-center gap-x-2"}>
             <div className="flex items-center gap-x-1">
-            <Link href={chain === 'ton' ? `https://tonviewer.com/${baseAddress}` : ''} target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
+            <Link href={
+              chain === 'ethereum' ? `https://etherscan.io/token/${baseAddress}` 
+              : chain === 'binance-smart-chain' ? `https://bscscan.com/token/${baseAddress}` 
+              : chain === 'the-open-network' ? `https://tonviewer.com/${baseAddress}` 
+              : chain === 'solana' ? `https://solscan.io/token/${baseAddress}` 
+              : chain === 'arbitrum' ? `https://arbiscan.io/token/${baseAddress}` 
+              : chain === 'base' ? `https://basescan.org/token/${baseAddress}` 
+              : ''
+              } 
+              target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
             </div> 
           </div>
 
