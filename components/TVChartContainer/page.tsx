@@ -12,7 +12,7 @@ import { CrosshairMode, LineStyle, createChart } from 'lightweight-charts';
 
 
 export const TVChartContainer = (props:any) => {
-	const searchParams = useSearchParams()
+	const searchParams:any = useSearchParams()
 	const chain = searchParams.get('chain')
 	const pooladdress = searchParams.get('pair')
 

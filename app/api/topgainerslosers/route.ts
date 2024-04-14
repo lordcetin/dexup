@@ -160,8 +160,8 @@ export async function GET(req:NextRequest,res: NextApiResponseServerIo) {
   data.push({ gainer, loser });
 
 
-  // fs.writeFileSync('./config/data.json', JSON.stringify(data));
-  // return NextResponse.json("Succesfull",{status:200})
-  return NextResponse.json(data,{status:200})
+  fs.writeFileSync('./config/data.json', JSON.stringify(data));
+  return NextResponse.json("Succesfull",{status:200})
+
 }
 
