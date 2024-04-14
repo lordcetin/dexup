@@ -2,6 +2,7 @@
 'use client'
 import React, { useEffect, useState } from "react";
 import ConnectButton from "../ConnectButton";
+import { SocketIndicator } from "../SocketIndicator/page";
 
 
 type Props = {
@@ -29,7 +30,7 @@ const Navbar = ({}: Props) => {
     <div className="flex justify-end items-center gap-x-4">
       {/* {isWallet ? <WalletMultiButton className='!bg-orange-500 hover:!bg-black transition-all duration-200 !rounded-full' /> : <ConnectButton/>} */}
       <ConnectButton/>
-      {/* <div className="fixed top-0 right-2"><SocketIndicator/></div> */}
+      <div className="fixed top-0 right-2"><SocketIndicator/></div>
     </div>
   </nav>
   );

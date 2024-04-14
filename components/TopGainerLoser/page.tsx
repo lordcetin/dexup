@@ -27,8 +27,8 @@ const TopGainerLoser = ({}: Props) => {
   useEffect(() => {
     const getGainLos = async () => {
       setLoadingGainLos(true);
-      // const res = await axios.get(`/api/topgainerslosers`)
-      const res = await axios.get(`/api/pooldatas`)
+      const res = await axios.get(`/api/topgainerslosers`)
+      // const res = await axios.get(`/api/pooldatas`)
       const getter = res.data[0];
       setTopGainers(getter?.gainer)
       setTopLosers(getter?.loser)

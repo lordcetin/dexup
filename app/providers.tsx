@@ -12,11 +12,13 @@ import { io as ClientIO } from  "socket.io-client";
 type SocketContextType = {
   socket: any | null;
   isConnected: boolean;
+  glData: any | null,
 }
 
 const SocketContext = createContext<SocketContextType>({
   socket:null,
   isConnected: false,
+  glData: null,
 });
 
 export const useSocket = () => {
@@ -26,6 +28,7 @@ export const useSocket = () => {
 export const SocketProvider = ({ children }: {children:React.ReactNode}) => {
   const [socket,setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
+  const [glData, setData] = useState<any>();
 
   useEffect(() => {
     const socketInstance = new (ClientIO as any)(process.env.NEXT_PUBLIC_SITE_URL!,{
@@ -35,7 +38,11 @@ export const SocketProvider = ({ children }: {children:React.ReactNode}) => {
 
     socketInstance.on("connect",()=>{
       setIsConnected(true);
-    } );
+    });
+
+    socketInstance.on('gainerslosers',(data:any) => {
+      setData(data)
+    })
 
     socketInstance.on( "disconnect" ,()=>{
       setIsConnected(false);
@@ -50,7 +57,7 @@ export const SocketProvider = ({ children }: {children:React.ReactNode}) => {
   },[])
 
   return (
-    <SocketContext.Provider value={{ socket,isConnected }}>
+    <SocketContext.Provider value={{ socket,isConnected,glData }}>
       {children}
     </SocketContext.Provider>
   )

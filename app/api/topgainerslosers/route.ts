@@ -1,7 +1,16 @@
 import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
-
+import { broadcastData } from "@/pages/api/socket/io";
+import { NextApiResponseServerIo } from "@/lib/types";
+import { Server as NetServer,Socket } from 'net'
+export const dynamic = 'auto'
+export const dynamicParams = true
+export const revalidate = 3600
+export const fetchCache = 'auto'
+export const runtime = 'nodejs'
+export const preferredRegion = 'auto'
+export const maxDuration = 5
 // API anahtarınızı bir değişkende saklayın
 const apiKey = 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ';
 
@@ -117,7 +126,7 @@ async function processToken(token: any, assetPlatforms: any[]) {
   return null;
 }
 
-export async function GET(req:NextRequest) {
+export async function GET(req:NextRequest,res: NextApiResponseServerIo) {
   const gainer: any[] = [];
   const loser: any[] = [];
   const data: any[] = [];
@@ -150,6 +159,9 @@ export async function GET(req:NextRequest) {
 
   data.push({ gainer, loser });
 
-  fs.writeFileSync('./config/data.json', JSON.stringify(data));
-  return NextResponse.json("Succesfull",{status:200})
+
+  // fs.writeFileSync('./config/data.json', JSON.stringify(data));
+  // return NextResponse.json("Succesfull",{status:200})
+  return NextResponse.json(data,{status:200})
 }
+

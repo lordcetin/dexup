@@ -13,6 +13,7 @@ import { Web3ModalProvider } from '@/context'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { headers } from "next/headers";
+import { SocketProvider } from "./providers";
 // import WalletContextProvider from '@/context/WalletContextProvider'
 // import { SocketProvider } from "./providers";
 export const metadata: Metadata = {
@@ -49,13 +50,16 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
   
 
   return (
+    <>
+    <SocketProvider>
+
     <html lang="en" suppressHydrationWarning>
       <head>
       <script src="https://terminal.jup.ag/main-v1.js" data-preload />
       </head>
       <body className={`${fontSans.variable} bgradient w-screen h-screen text-white font-sans antialiased overflow-x-hidden`}>
       {/* <WalletContextProvider> */}
-      {/* <SocketProvider> */}
+      
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -79,9 +83,12 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
         </div>
           </AppContextProvider>
           </Web3ModalProvider>
-          {/* </SocketProvider> */}
+
         {/* </WalletContextProvider> */}
       </body>
     </html>
+    
+    </SocketProvider>
+    </>
   );
 }
