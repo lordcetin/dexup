@@ -31,22 +31,22 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     });
     res.socket.server.io = io;
 
-    //Veri güncelleme olayını dinleme
-    io.on('connection',(socket:any) => {
-      console.log('WebSocket client connected');
+    // //Veri güncelleme olayını dinleme
+    // io.on('connection',(socket:any) => {
+    //   console.log('WebSocket client connected');
 
-      // Örnek olarak bağlantı kurulduğunda veri gönder
-      // Gerçek kullanımda bu, veri güncellendiğinde tetiklenmelidir.
-      socket.on('requestUpdate',() => {
-        // Bu fonksiyon, API'den güncel veri çekip bunu yayınlayacak
-        const data = { message: 'Hello World' };  // Örnek veri
-        broadcastData(io, data);
-      });
+    //   // Örnek olarak bağlantı kurulduğunda veri gönder
+    //   // Gerçek kullanımda bu, veri güncellendiğinde tetiklenmelidir.
+    //   socket.on('requestUpdate',() => {
+    //     // Bu fonksiyon, API'den güncel veri çekip bunu yayınlayacak
+    //     const data = { message: 'Hello World' };  // Örnek veri
+    //     broadcastData(io, data);
+    //   });
 
-      socket.on('disconnect', () => {
-        console.log('WebSocket client disconnected');
-      })
-    })
+    //   socket.on('disconnect', () => {
+    //     console.log('WebSocket client disconnected');
+    //   })
+    // })
 
   }
 

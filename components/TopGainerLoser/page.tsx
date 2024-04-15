@@ -15,6 +15,7 @@ type Prices = {
   Date:string,
   Price:number
 };
+
 const TopGainerLoser = ({}: Props) => {
   const [topGainers, setTopGainers] = useState([]);
   const [topLosers, setTopLosers] = useState([]);
@@ -34,13 +35,11 @@ const TopGainerLoser = ({}: Props) => {
       setTopLosers(getter?.loser)
       setLoadingGainLos(false);
     }
-    setTimeout(() => {     
+    setInterval(() => {     
       getGainLos()
     }, 3000);
 
   }, [router]);
-  
-
 
   return (
   <div className="flex-col flex justify-center items-center w-full">

@@ -1,9 +1,7 @@
 import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
-import { broadcastData } from "@/pages/api/socket/io";
-import { NextApiResponseServerIo } from "@/lib/types";
-import { Server as NetServer,Socket } from 'net'
+import { client } from "@/lib/db";
 export const dynamic = 'auto'
 export const dynamicParams = true
 export const revalidate = 3600
@@ -126,7 +124,7 @@ async function processToken(token: any, assetPlatforms: any[]) {
   return null;
 }
 
-export async function GET(req:NextRequest,res: NextApiResponseServerIo) {
+export async function GET(req:NextRequest) {
   const gainer: any[] = [];
   const loser: any[] = [];
   const data: any[] = [];
@@ -143,9 +141,10 @@ export async function GET(req:NextRequest,res: NextApiResponseServerIo) {
 
   for (const token of topGainersLosersResponse.top_gainers) {
     const processedToken = await processToken(token, assetPlatforms);
-
+    
     if (processedToken) {
       gainer.push(processedToken[0]);
+      // await client.set(`gainer:${processedToken[0].id}`,JSON.stringify(processedToken[0]))
     }
   }
 
@@ -153,12 +152,15 @@ export async function GET(req:NextRequest,res: NextApiResponseServerIo) {
     const processedToken = await processToken(token, assetPlatforms);
     if (processedToken) {
       loser.push(processedToken[0]);
+      // await client.set(`loser:${processedToken[0].id}`,JSON.stringify(processedToken[0]))
     }
   }
 
 
   data.push({ gainer, loser });
-
+  // const gainerData:any = await client.get('gainer')
+  // const loserData:any = await client.get('loser')
+  // data.push({ gainer:JSON.parse(gainerData), loser:JSON.parse(loserData) });
 
   fs.writeFileSync('./config/data.json', JSON.stringify(data));
   return NextResponse.json("Succesfull",{status:200})

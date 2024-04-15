@@ -18,8 +18,8 @@ export const TVChartContainer = (props:any) => {
 
 
 	const {baseCoinId} = useAppContext()
-	const chartContainerRef =
-		useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
+
+	const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
 	useEffect(() => {
 
@@ -33,7 +33,7 @@ export const TVChartContainer = (props:any) => {
 	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M"],
+			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1S','3S','5S'],
 			intraday_multipliers: ['1','3','5','15','30','45'],
 			seconds_multipliers: ['1S','3S','5S'],
 
@@ -88,7 +88,7 @@ export const TVChartContainer = (props:any) => {
 					has_seconds:true,
 					intraday_multipliers: ['1','3','5','15','30','45'],
 					seconds_multipliers: ['1S','3S','5S'],
-					supported_resolution: ['1D', '1W', '1M','1','3','5','15','30','45'],
+					supported_resolution: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1S','3S','5S'],
 					volume_precision: 2,
 					data_status: 'streaming',
 					supports_group_request: false,
@@ -104,42 +104,115 @@ export const TVChartContainer = (props:any) => {
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
-			// console.log("resoulution",resolution) // 1D
-			const { from, to, firstDataRequest } = periodParams;
+			// console.log("resoulution",resolution)
+			const { from, to, firstDataRequest,countBack } = periodParams;
 
 			try {
 
-					const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+			// 	if(baseCoinId !== null){
+			// 		const resp = await fetch(`/api/chartdata?basecoinId=${baseCoinId}&from=${from}&to=${to}`)
+			// 		const datas = await resp.json();
+
+			// 		if (!datas || !Array.isArray(datas[0]) || !datas[0].length) {
+			// 			onHistoryCallback([], { noData: true });
+			// 			return;
+			// 		}
+
+			// 		// Sonuç olarak, bars dizisini onHistoryCallback ile döndürebilirsiniz
+	
+			// 		const ohlcData = datas[0]; // OHLC verileri, doğrulandı
+			
+			// 		// Her bir OHLC verisini kontrol et
+			// 		const bars = ohlcData.reduce((acc, ohlcItem) => {
+			// 			// Zaman damgasını kontrol et
+			// 			if (typeof ohlcItem[0] !== 'number') {
+			// 				console.error('Invalid time value', ohlcItem);
+			// 				return acc; // Geçersiz zaman damgası olan veriyi atla
+			// 			}
+			
+			// 			// Hacim verisini bul
+			// 			const volume = datas[1].find((v:any) => v[0] === ohlcItem[0])?.[1] || 0;
+			
+			// 			// Bar objesi oluştur
+			// 			const bar = {
+			// 				time: ohlcItem[0],
+			// 				open: parseFloat(ohlcItem[1].toFixed(4)),
+			// 				high: parseFloat(ohlcItem[2].toFixed(4)),
+			// 				low: parseFloat(ohlcItem[3].toFixed(4)),
+			// 				close: parseFloat(ohlcItem[4].toFixed(4)),
+			// 				volume: parseFloat(volume.toFixed(4))
+			// 			};
+						
+			// 			acc.push(bar);
+			// 			return acc;
+			// 		}, []);
+			
+			// 		if (!bars.length) {
+			// 			onHistoryCallback([], { noData: true });
+			// 			return;
+			// 		}
+
+			// 		onHistoryCallback(bars, { noData: false });
+			// 	}else{
+
+			// 		const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+			// 			method:'GET',
+			// 			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+			// 		})
+			// 		const net = await resda.json()
+			// 		const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+			// 		const chaId = network[0]?.id
+
+			// 		const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=1000&currency=usd`,{
+			// 				method:'GET',
+			// 				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+			// 				cache:'no-cache',
+			// 		});
+
+			// 		const dataOHLC = await responseOHLC.json();
+			// 		const datas = dataOHLC?.data?.attributes?.ohlcv_list
+	
+			// const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
+			// 		return {
+			// 				time: ohlcItem[0] * 1000,
+			// 				open: parseFloat(ohlcItem[1].toFixed(4)),
+			// 				high: parseFloat(ohlcItem[2].toFixed(4)),
+			// 				low: parseFloat(ohlcItem[3].toFixed(4)),
+			// 				close: parseFloat(ohlcItem[4].toFixed(4)),
+			// 				volume: parseFloat(ohlcItem[5].toFixed(4))
+			// 		};
+			// });
+			// 		onHistoryCallback(bars, { noData: false });
+			// 	}
+
+				const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+					method:'GET',
+					headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+				})
+				const net = await resda.json()
+				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+				const chaId = network[0]?.id
+
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${from}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-					})
-					const net = await resda.json()
-					const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-					const chaId = network[0]?.id
+						cache:'no-cache',
+				});
 
-					const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=1000&currency=usd`,{
-							method:'GET',
-							headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-							cache:'no-cache',
-					});
+				const dataOHLC = await responseOHLC.json();
+				const datas = dataOHLC?.data?.attributes?.ohlcv_list
 
-					const dataOHLC = await responseOHLC.json();
-					const datas = dataOHLC?.data?.attributes?.ohlcv_list
-
-		// console.log("from", new Date(periodParams.from * 1000)); // Mon Jun 16 1456 01:55:52 GMT+0155 (GMT+03:00)
-		// console.log("time", new Date(datas[0][0] * 1000)); // Mon Apr 08 2024 12:15:00 GMT+0300 (GMT+03:00)
-	
-			const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
-					return {
-							time: ohlcItem[0] * 1000,
-							open: parseFloat(ohlcItem[1].toFixed(4)),
-							high: parseFloat(ohlcItem[2].toFixed(4)),
-							low: parseFloat(ohlcItem[3].toFixed(4)),
-							close: parseFloat(ohlcItem[4].toFixed(4)),
-							volume: parseFloat(ohlcItem[5].toFixed(4))
-					};
-			});
-					onHistoryCallback(bars, { noData: false });
+		const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
+				return {
+						time: ohlcItem[0] * 1000,
+						open: parseFloat(ohlcItem[1].toFixed(4)),
+						high: parseFloat(ohlcItem[2].toFixed(4)),
+						low: parseFloat(ohlcItem[3].toFixed(4)),
+						close: parseFloat(ohlcItem[4].toFixed(4)),
+						volume: parseFloat(ohlcItem[5].toFixed(4))
+				};
+		});
+				onHistoryCallback(bars, { noData: false, });
 			} catch (error) {
 				console.log("ERROR",error)
 				onErrorCallback(error);

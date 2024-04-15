@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export const SocketIndicator = () => {
   const { isConnected,glData} = useSocket();
-console.log("socket",glData)
+
   if(!isConnected){
     return (
 

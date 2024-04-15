@@ -40,9 +40,9 @@ export const SocketProvider = ({ children }: {children:React.ReactNode}) => {
       setIsConnected(true);
     });
 
-    socketInstance.on('gainerslosers',(data:any) => {
-      setData(data)
-    })
+    // socketInstance.on('gainerslosers',(data:any) => {
+    //   setData(data)
+    // })
 
     socketInstance.on( "disconnect" ,()=>{
       setIsConnected(false);

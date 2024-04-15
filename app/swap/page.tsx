@@ -121,7 +121,12 @@ const Swap = () => {
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
 
-  const { setBaseCoinId,setBTokenSymbol,setQTokenSymbol,setChain } = useAppContext()
+  const { 
+    setBaseCoinId,
+    setBTokenSymbol,
+    setQTokenSymbol,
+    setChain 
+  } = useAppContext()
   
   const defaultWidgetProps:any= {
     symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
@@ -305,7 +310,7 @@ const Swap = () => {
         const chaId = network[0]?.id
         const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
         if(coingecko_asset_platform_id === null) return
-        console.log("coingecko_asset_platform_id",coingecko_asset_platform_id)
+
         setGeckoId(coingecko_asset_platform_id)
 
       fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
@@ -484,6 +489,7 @@ useEffect(() => {
     fetchTraders()
 },[])
 
+
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
 
@@ -549,7 +555,7 @@ useEffect(() => {
         setIsScriptReady(true);
       }}
       />
-      {isScriptReady && 
+      {isScriptReady &&
       //@ts-ignore
       <TVChartContainer poolAddress={pooladdress} {...defaultWidgetProps}/>
       }
