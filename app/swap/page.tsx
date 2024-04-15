@@ -47,6 +47,10 @@ import { GoCodescan } from "react-icons/go";
 import { DataTable } from "./DataTable/data-table";
 import { columns } from "./DataTable/columns";
 import { IoChevronDown } from "react-icons/io5";
+import { FaCircleCheck } from "react-icons/fa6";
+
+
+
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
   feeBps: 100,
@@ -95,6 +99,7 @@ const Swap = () => {
   const [baseNetID,setBaseNetId] = useState<any>("");
   const [quoteNetID,setQuoteNetId] = useState<any>("");
   const [calldata,setCallData] = useState<any>([]);
+  const [goplusecure,setGoPlus] = useState<any>([]);
   const [approveData,setApproveData] = useState<any>([]);
   const [traderData,setTraderData] = useState<any>([]);
   const [baseDecimal,setBaseDecimal] = useState<any>();
@@ -359,6 +364,9 @@ const Swap = () => {
               dex:response.data.relationships.dex.data.id,
             }
             
+            const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${baseaddress}`)
+            const data = await res.json();
+          setGoPlus(data.result[`${baseaddress}`])
           setBaseCoinId(basecoinId)
           // setQuoteCoinId(quotecoinId)
           setPairData(newPair)
@@ -489,6 +497,15 @@ useEffect(() => {
     fetchTraders()
 },[])
 
+useEffect(() => {
+  const getGoPlusSec = async () => {
+
+  }
+  getGoPlusSec()
+},[])
+
+
+console.log("goplusecure",goplusecure)
 
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
@@ -497,8 +514,9 @@ useEffect(() => {
       <div className="flex-col items-center">
 
 
-        <div className={details ? "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[610px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
+        <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[610px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
 
+          <div className="flex justify-between items-center gap-x-6 w-full">
           <div className={details ? "flex items-center gap-x-6 w-1/12 self-start" : "flex items-center gap-x-6 w-1/12"}>
           <div className="flex-col flex gap-2">
             <div className="flex gap-x-2 items-center">
@@ -530,7 +548,7 @@ useEffect(() => {
             </div>
           </div>
 
-          <div className={details ? "flex ju items-center gap-x-2 self-start" : "flex ju items-center gap-x-2"}>
+          <div className={details ? "flex items-center gap-x-2" : "flex ju items-center gap-x-2"}>
             <div className="flex items-center gap-x-1">
             <Link href={
               chain === 'ethereum' ? `https://etherscan.io/token/${baseAddress}` 
@@ -544,7 +562,49 @@ useEffect(() => {
               target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
             </div> 
           </div>
+          </div>
 
+
+          {details ? 
+          <div className="flex items-center w-full mt-5">
+            <div className="flex-col items-center p-5 rounded-lg border border-white/10">
+              <Image src='https://files.readme.io/3fb6486-small-image.png' alt="Go Plus Logo" width={800} height={800} className="object-cover w-20" />
+              <div className="grid grid-cols-2 gap-x-4 items-center mt-5 text-xs">
+                <div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Anti Whale Modifiable</p><p>{goplusecure.anti_whale_modifiable}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Buy Tax</p><p>{goplusecure.buy_tax}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Can Take Back Ownership</p><p>{goplusecure.can_take_back_ownership}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Cannot Buy</p><p>{goplusecure.cannot_buy}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Cannot Sell All</p><p>{goplusecure.cannot_sell_all}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Address</p><p>{goplusecure.creator_address?.slice(0,5) + '...' + goplusecure.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure.creator_balance}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Percent</p><p>{goplusecure.creator_percent}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">External Call</p><p>{goplusecure.external_call}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Hidden Owner</p><p>{goplusecure.hidden_owner}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Holder Count</p><p>{goplusecure.holder_count}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Anti Whale</p><p>{goplusecure.is_anti_whale}</p></div>
+                </div>
+                <div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Blacklisted</p><p>{goplusecure.is_blacklisted}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Honeypot</p><p>{goplusecure.is_honeypot}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is in Dex</p><p>{goplusecure.is_in_dex}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Mintable</p><p>{goplusecure.is_mintable}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Proxy</p><p>{goplusecure.is_proxy}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Whitelisted</p><p>{goplusecure.is_whitelisted}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure.lp_holder_count}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Lp Total Supply</p><p>{parseFloat(goplusecure.lp_total_supply)}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Owner Address</p><p>{goplusecure.owner_address}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Total Supply</p><p>{goplusecure.total_supply}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Trading Cooldown</p><p>{goplusecure.trading_cooldown}</p></div>
+                  <div className="flex items-center gap-x-1"><p className="text-white/50">Transfer Pausable</p><p>{goplusecure.transfer_pausable}</p></div>
+                </div>
+              </div>
+            </div>
+            <div></div>
+
+          </div>
+          
+          : null}
         </div>
 
 

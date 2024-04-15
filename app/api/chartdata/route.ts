@@ -2,7 +2,7 @@ import { NextResponse , NextRequest} from "next/server"
 import axios from 'axios';
 export const dynamic = 'auto'
 export const dynamicParams = true
-export const revalidate = 3600
+export const revalidate = 5
 export const fetchCache = 'auto'
 export const runtime = 'nodejs'
 export const preferredRegion = 'auto'

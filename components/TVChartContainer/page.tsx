@@ -196,7 +196,6 @@ export const TVChartContainer = (props:any) => {
 				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${from}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-						cache:'no-cache',
 				});
 
 				const dataOHLC = await responseOHLC.json();

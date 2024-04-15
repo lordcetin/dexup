@@ -51,6 +51,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'arbiscan.io'
       },
+      {
+        protocol: 'https',
+        hostname: 'files.readme.io'
+      },
     ]
   },
   webpack: config => {
