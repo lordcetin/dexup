@@ -48,7 +48,10 @@ import { DataTable } from "./DataTable/data-table";
 import { columns } from "./DataTable/columns";
 import { IoChevronDown } from "react-icons/io5";
 import { FaCircleCheck } from "react-icons/fa6";
-
+import { PiWarningCircleFill } from "react-icons/pi";
+import { AiFillSafetyCertificate } from "react-icons/ai";
+import { MdDangerous } from "react-icons/md";
+import CustomProgressBar from "@/components/CustomProgressBar/page";
 
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
@@ -92,6 +95,7 @@ const Swap = () => {
   const [quoteData,setQuteData] = useState("");
   const [baseAddress,setBaseAddress] = useState("");
   const [quoteAddress,setQuoteAddress] = useState("");
+  const [transtime,setTransacitonTime] = useState("24");
   // const [basecoinId,setBaseCoinId] = useState("");
   // const [quotecoinId,setQuoteCoinId] = useState("");
   const [solanaAddress,setSolanaAddress] = useState("");
@@ -100,6 +104,7 @@ const Swap = () => {
   const [quoteNetID,setQuoteNetId] = useState<any>("");
   const [calldata,setCallData] = useState<any>([]);
   const [goplusecure,setGoPlus] = useState<any>([]);
+  const [tokenInfo,setTokenInfo] = useState<any>([]);
   const [approveData,setApproveData] = useState<any>([]);
   const [traderData,setTraderData] = useState<any>([]);
   const [baseDecimal,setBaseDecimal] = useState<any>();
@@ -366,6 +371,16 @@ const Swap = () => {
             
             const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${baseaddress}`)
             const data = await res.json();
+
+
+            const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'ethereum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}/contract/${baseaddress}`,{
+              method:'GET',
+              headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+              cache:'no-store',
+            })
+            const tokenInfoData = await responseTokenInfo.json()
+            console.log("tokenInfoData",tokenInfoData)
+          setTokenInfo(tokenInfoData)
           setGoPlus(data.result[`${baseaddress}`])
           setBaseCoinId(basecoinId)
           // setQuoteCoinId(quotecoinId)
@@ -379,7 +394,7 @@ const Swap = () => {
           setQuoteAddress(quoteaddress)
           setBaseNetId(baseNetId)
           setQuoteNetId(baseNetId)
-
+          console.log("pairdata",newPair)
 
           // const chains = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
           // const chaindata = chains.data
@@ -497,16 +512,42 @@ useEffect(() => {
     fetchTraders()
 },[])
 
-useEffect(() => {
-  const getGoPlusSec = async () => {
+const getAmount = (fiat:any) => {
+  const formatted = new Intl.NumberFormat("en-US",{
+    style:"currency",
+    currency: "USD",
+    notation: 'compact',
+    compactDisplay: 'short'
+  }).format(fiat)
+  return formatted
+}
 
+
+function formatCreatedAt(createdAt:any) {
+  const tokenDate:any = new Date(createdAt);
+  const currentDate:any = new Date();
+  const diffMilliseconds = currentDate - tokenDate;
+  const diffSeconds = Math.floor(diffMilliseconds / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
+  const diffHours = Math.floor(diffMinutes / 60);
+  const diffDays = Math.floor(diffHours / 24);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffYears >= 1) {
+      return `${diffYears} year${diffYears > 1 ? 's' : ''}`;
+  } else if (diffDays >= 1) {
+      return `${diffDays} day${diffDays > 1 ? 's' : ''}`;
+  } else if (diffHours >= 1) {
+      return `${diffHours} hour${diffHours > 1 ? 's' : ''}`;
+  } else if (diffMinutes >= 1) {
+      return `${diffMinutes} minute${diffMinutes > 1 ? 's' : ''}`;
+  } else {
+      return `${diffSeconds} second${diffSeconds > 1 ? 's' : ''}`;
   }
-  getGoPlusSec()
-},[])
+}
 
 
-console.log("goplusecure",goplusecure)
-
+console.log("goplus",goplusecure)
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
 
@@ -514,7 +555,7 @@ console.log("goplusecure",goplusecure)
       <div className="flex-col items-center">
 
 
-        <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[610px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
+        <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[720px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
 
           <div className="flex justify-between items-center gap-x-6 w-full">
           <div className={details ? "flex items-center gap-x-6 w-1/12 self-start" : "flex items-center gap-x-6 w-1/12"}>
@@ -566,47 +607,134 @@ console.log("goplusecure",goplusecure)
 
 
           {details ? 
-          <div className="flex items-center w-full mt-5">
-            <div className="flex-col items-center p-5 rounded-lg border border-white/10">
+          <div className="flex items-center w-full mt-5 gap-x-6">
+            <div className="flex-col items-center p-5 rounded-lg border border-white/10 self-start">
               <Image src='https://files.readme.io/3fb6486-small-image.png' alt="Go Plus Logo" width={800} height={800} className="object-cover w-20" />
-              <div className="grid grid-cols-2 gap-x-4 items-center mt-5 text-xs">
+              <div className="items-center mt-5 text-xs">
                 <div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Anti Whale Modifiable</p><p>{goplusecure.anti_whale_modifiable}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Buy Tax</p><p>{goplusecure.buy_tax}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Can Take Back Ownership</p><p>{goplusecure.can_take_back_ownership}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Cannot Buy</p><p>{goplusecure.cannot_buy}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Cannot Sell All</p><p>{goplusecure.cannot_sell_all}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Address</p><p>{goplusecure.creator_address?.slice(0,5) + '...' + goplusecure.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure.creator_balance}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Creator Percent</p><p>{goplusecure.creator_percent}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">External Call</p><p>{goplusecure.external_call}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Hidden Owner</p><p>{goplusecure.hidden_owner}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Holder Count</p><p>{goplusecure.holder_count}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Anti Whale</p><p>{goplusecure.is_anti_whale}</p></div>
-                </div>
-                <div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Blacklisted</p><p>{goplusecure.is_blacklisted}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Honeypot</p><p>{goplusecure.is_honeypot}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is in Dex</p><p>{goplusecure.is_in_dex}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Mintable</p><p>{goplusecure.is_mintable}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Proxy</p><p>{goplusecure.is_proxy}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Is Whitelisted</p><p>{goplusecure.is_whitelisted}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure.lp_holder_count}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Lp Total Supply</p><p>{parseFloat(goplusecure.lp_total_supply)}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Owner Address</p><p>{goplusecure.owner_address}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Total Supply</p><p>{goplusecure.total_supply}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Trading Cooldown</p><p>{goplusecure.trading_cooldown}</p></div>
-                  <div className="flex items-center gap-x-1"><p className="text-white/50">Transfer Pausable</p><p>{goplusecure.transfer_pausable}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Honeypot</p><div className={goplusecure.is_honeypot === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_honeypot === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Whitelisted</p><div className={goplusecure.is_whitelisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_whitelisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Blacklisted</p><div className={goplusecure.is_blacklisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_blacklisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Buy Tax</p><div className={goplusecure.buy_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.buy_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure.buy_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure.buy_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Sell Tax</p><div className={goplusecure.sell_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.sell_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure.sell_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure.sell_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Cannot Buy</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.cannot_buy === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">External Call</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.external_call === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Hidden Owner</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.hidden_owner === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Open Source</p><div className={goplusecure.is_open_source === "1" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_open_source  === "1" ? <span className="flex items-center gap-x-1">Yes <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">No <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Anti Whale</p><div className={goplusecure.is_anti_whale === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_anti_whale  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Mintable</p><div className={goplusecure.is_mintable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_mintable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Proxy</p><div className={goplusecure.is_proxy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_proxy  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Trading Cooldown</p><div className={goplusecure.trading_cooldown === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.trading_cooldown  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Transfer Pausable</p><div className={goplusecure.transfer_pausable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.transfer_pausable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Holder Count</p><p>{goplusecure.holder_count}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure.lp_holder_count}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Total Supply</p><p>{goplusecure.lp_total_supply}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Total Supply</p><p>{goplusecure.total_supply}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Address</p><p>{goplusecure.owner_address?.slice(0,5) + '...' + goplusecure.owner_address?.slice(38)}</p><CopyToClipboard text={goplusecure.owner_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Balance</p><p>{goplusecure.owner_balance} <span className="text-white/50">{parseFloat(goplusecure.owner_percent).toFixed(2)}%</span></p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Address</p><p>{goplusecure.creator_address?.slice(0,5) + '...' + goplusecure.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure.creator_balance} <span className="text-white/50">{parseFloat(goplusecure.creator_percent).toFixed(2)}%</span></p></div>
                 </div>
               </div>
             </div>
-            <div></div>
+
+            <div className="flex-col items-center self-start">
+              <div className="flex justify-center items-center gap-x-4">
+
+            <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs">
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.baseprice)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.quoteprice)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.cap)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.fdv)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.reserve)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h): <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start">
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Trust: {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg font-bold" : "text-orange-500 text-lg font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Created: <span className="text-lg font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
+            </div>
+
+            </div>
+
+            <div className="flex-col items-center p-5 border border-white/10 rounded-lg mt-4">
+              <div className="flex justify-between items-center w-full border p-3 rounded-lg">
+                <div>Price Change</div>
+                <div className="flex-col flex justify-center text-center items-center">
+                    <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">5 minute</div>
+                      <div className={pairdata?.price_change_percentage.m5.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.m5 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.m5}%</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">1 hour</div>
+                      <div className={pairdata?.price_change_percentage.h1.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h1 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h1}%</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">6 hour</div>
+                      <div className={pairdata?.price_change_percentage.h6.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h6 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h6}%</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">24 hour</div>
+                      <div className={pairdata?.price_change_percentage.h24.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h24 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h24}%</div>
+                    </div>
+                    </div>
+
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full border p-3 rounded-lg mt-4">
+                <div>Volume</div>
+                <div className="flex-col flex justify-center text-center items-center">
+                    <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">5 minute</div>
+                      <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.m5)}</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">1 hour</div>
+                      <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h1)}</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">6 hour</div>
+                      <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h6)}</div>
+                    </div>
+                    <div className="flex-col items-center gap-y-2 cursor-pointer">
+                      <div className="text-xs">24 hour</div>
+                      <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h24)}</div>
+                    </div>
+                    </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full border p-3 rounded-lg mt-4">
+                <div className="pr-7">Transaction</div>
+                <div className="flex-col flex justify-center text-center items-center">
+                    <div className="flex items-center gap-x-1 justify-center text-center py-1 px-2 w-full text-xs">
+                      <button className={transtime === '30' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('30')}>30 minute</button>
+                      <button className={transtime === '15' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('15')}>15 minute</button>
+                      <button className={transtime === '5' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('5')}>5 minute</button>
+                      <button className={transtime === '1' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('1')}>1 hour</button>
+                      <button className={transtime === '24' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('24')}>24 hour</button>
+                    </div>
+                    <div className="flex-col flex text-xs justify-center items-center w-full">
+                      <CustomProgressBar title1="Buys" title2="Sells"
+                      buys={transtime === '30' ? pairdata?.transactions.m30.buys : transtime === '15' ? pairdata?.transactions.m15.buys : transtime === '5' ? pairdata?.transactions.m5.buys : transtime === '1' ? pairdata?.transactions.h1.buys : transtime === '24' ? pairdata?.transactions.h24.buys : 0}
+                      sells={transtime === '30' ? pairdata?.transactions.m30.sells : transtime === '15' ? pairdata?.transactions.m15.sells : transtime === '5' ? pairdata?.transactions.m5.sells : transtime === '1' ? pairdata?.transactions.h1.sells : transtime === '24' ? pairdata?.transactions.h24.sells : 0} />
+
+                      <CustomProgressBar title1="Buyers" title2="Sellers"
+                      buys={transtime === '30' ? pairdata?.transactions.m30.buyers : transtime === '15' ? pairdata?.transactions.m15.buyers : transtime === '5' ? pairdata?.transactions.m5.buyers : transtime === '1' ? pairdata?.transactions.h1.buyers : transtime === '24' ? pairdata?.transactions.h24.buyers : 0}
+                      sells={transtime === '30' ? pairdata?.transactions.m30.sellers : transtime === '15' ? pairdata?.transactions.m15.sellers : transtime === '5' ? pairdata?.transactions.m5.sellers : transtime === '1' ? pairdata?.transactions.h1.sellers : transtime === '24' ? pairdata?.transactions.h24.sellers : 0} />
+                    </div>
+                </div>
+              </div>
+            </div>
+
+            </div>
 
           </div>
           
           : null}
         </div>
-
 
       <Script
       src="/static/datafeeds/udf/dist/bundle.js"
