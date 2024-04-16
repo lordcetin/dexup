@@ -47,12 +47,13 @@ import { GoCodescan } from "react-icons/go";
 import { DataTable } from "./DataTable/data-table";
 import { columns } from "./DataTable/columns";
 import { IoChevronDown } from "react-icons/io5";
-import { FaCircleCheck } from "react-icons/fa6";
+import { FaCircleCheck, FaFacebook, FaReddit, FaTelegram, FaTwitter } from "react-icons/fa6";
 import { PiWarningCircleFill } from "react-icons/pi";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { MdDangerous } from "react-icons/md";
 import CustomProgressBar from "@/components/CustomProgressBar/page";
-
+import AuroBanner from "@/components/AuroBanner/page";
+import { BiWorld } from "react-icons/bi";
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -78,6 +79,8 @@ const Swap = () => {
   const container = useRef<any>(null);
   let tvScriptLoadingPromise: Promise<void>;
   const onLoadScriptRef = useRef<(() => void) | null>(null);
+
+
 
   const [paid,setPaid] = useState<any>(10);
   const [received,setReceived] = useState<any>(0);
@@ -380,6 +383,7 @@ const Swap = () => {
             })
             const tokenInfoData = await responseTokenInfo.json()
             console.log("tokenInfoData",tokenInfoData)
+
           setTokenInfo(tokenInfoData)
           setGoPlus(data.result[`${baseaddress}`])
           setBaseCoinId(basecoinId)
@@ -547,7 +551,6 @@ function formatCreatedAt(createdAt:any) {
 }
 
 
-console.log("goplus",goplusecure)
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
 
@@ -612,28 +615,28 @@ console.log("goplus",goplusecure)
               <Image src='https://files.readme.io/3fb6486-small-image.png' alt="Go Plus Logo" width={800} height={800} className="object-cover w-20" />
               <div className="items-center mt-5 text-xs">
                 <div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Honeypot</p><div className={goplusecure.is_honeypot === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_honeypot === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Whitelisted</p><div className={goplusecure.is_whitelisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_whitelisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Blacklisted</p><div className={goplusecure.is_blacklisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_blacklisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Buy Tax</p><div className={goplusecure.buy_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.buy_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure.buy_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure.buy_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Sell Tax</p><div className={goplusecure.sell_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.sell_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure.sell_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure.sell_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Cannot Buy</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.cannot_buy === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">External Call</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.external_call === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Hidden Owner</p><div className={goplusecure.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.hidden_owner === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Open Source</p><div className={goplusecure.is_open_source === "1" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_open_source  === "1" ? <span className="flex items-center gap-x-1">Yes <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">No <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Anti Whale</p><div className={goplusecure.is_anti_whale === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_anti_whale  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Mintable</p><div className={goplusecure.is_mintable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_mintable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Proxy</p><div className={goplusecure.is_proxy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.is_proxy  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Trading Cooldown</p><div className={goplusecure.trading_cooldown === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.trading_cooldown  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Transfer Pausable</p><div className={goplusecure.transfer_pausable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure.transfer_pausable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Holder Count</p><p>{goplusecure.holder_count}</p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure.lp_holder_count}</p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Total Supply</p><p>{goplusecure.lp_total_supply}</p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Total Supply</p><p>{goplusecure.total_supply}</p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Address</p><p>{goplusecure.owner_address?.slice(0,5) + '...' + goplusecure.owner_address?.slice(38)}</p><CopyToClipboard text={goplusecure.owner_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Balance</p><p>{goplusecure.owner_balance} <span className="text-white/50">{parseFloat(goplusecure.owner_percent).toFixed(2)}%</span></p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Address</p><p>{goplusecure.creator_address?.slice(0,5) + '...' + goplusecure.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure.creator_balance} <span className="text-white/50">{parseFloat(goplusecure.creator_percent).toFixed(2)}%</span></p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Honeypot</p><div className={goplusecure?.is_honeypot === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_honeypot === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Whitelisted</p><div className={goplusecure?.is_whitelisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_whitelisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Blacklisted</p><div className={goplusecure?.is_blacklisted === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_blacklisted  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Buy Tax</p><div className={goplusecure?.buy_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.buy_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure?.buy_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure?.buy_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Sell Tax</p><div className={goplusecure?.sell_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.sell_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure?.sell_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure?.sell_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Cannot Buy</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.cannot_buy === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">External Call</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.external_call === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Hidden Owner</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.hidden_owner === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Open Source</p><div className={goplusecure?.is_open_source === "1" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_open_source  === "1" ? <span className="flex items-center gap-x-1">Yes <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">No <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Anti Whale</p><div className={goplusecure?.is_anti_whale === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_anti_whale  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Mintable</p><div className={goplusecure?.is_mintable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_mintable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Proxy</p><div className={goplusecure?.is_proxy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_proxy  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Trading Cooldown</p><div className={goplusecure?.trading_cooldown === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.trading_cooldown  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Transfer Pausable</p><div className={goplusecure?.transfer_pausable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.transfer_pausable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Holder Count</p><p>{goplusecure?.holder_count}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure?.lp_holder_count}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Total Supply</p><p>{goplusecure?.lp_total_supply}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Total Supply</p><p>{goplusecure?.total_supply}</p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Address</p><p>{goplusecure?.owner_address?.slice(0,5) + '...' + goplusecure?.owner_address?.slice(38)}</p><CopyToClipboard text={goplusecure?.owner_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Balance</p><p>{goplusecure?.owner_balance} <span className="text-white/50">{parseFloat(goplusecure?.owner_percent).toFixed(2)}%</span></p></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Address</p><p>{goplusecure?.creator_address?.slice(0,5) + '...' + goplusecure?.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure?.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure?.creator_balance} <span className="text-white/50">{parseFloat(goplusecure?.creator_percent).toFixed(2)}%</span></p></div>
                 </div>
               </div>
             </div>
@@ -736,6 +739,7 @@ console.log("goplus",goplusecure)
           : null}
         </div>
 
+
       <Script
       src="/static/datafeeds/udf/dist/bundle.js"
       strategy="lazyOnload"
@@ -750,7 +754,48 @@ console.log("goplus",goplusecure)
 
       </div>
 
-
+      <div className="flex-col flex items-center w-full gap-y-2 mt-7">
+      {details ? 
+      <div className="flex-col items-center w-full bg-[#131722] rounded-xl h-[720px] relative">
+        <AuroBanner/>
+        <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
+          <img
+          src={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large}
+          alt="Token Logo"
+          width={800}
+          height={800}
+          className="object-cover rounded-full size-16"
+          />
+        </div>
+        <div className="flex-col items-center w-full px-7 py-5 mt-5">
+          <div className="flex-col items-center w-full">
+          <h1 className="flex items-center w-full text-xl font-bold">{tokenInfo?.name}</h1>
+          <div className="flex items-center gap-x-2 mt-2">
+          <p className="font-light text-white/50">{tokenInfo?.symbol}</p>
+          <CopyToClipboard text={tokenInfo?.contract_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none text-xs flex items-center gap-x-1 bg-brandblack hover:bg-zinc-800 transition-all rounded-md p-1">{tokenInfo?.contract_address?.slice(0,5)+ "..." +tokenInfo?.contract_address?.slice(38)} <MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+          </div>
+          <div className="flex items-center w-full mt-5">
+          <p className="flex-wrap whitespace-pre-wrap w-full h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description?.en}</p>
+          </div>
+          <h1 className="flex items-center w-full mt-3">Website Links</h1>
+          <div className="grid grid-cols-3 gap-1 justify-center items-center mt-3">
+            {tokenInfo?.links?.homepage[0] && <Link href={tokenInfo?.links?.homepage[0]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.homepage[0]?.slice(0,20)}</Link>}
+            {tokenInfo?.links?.blockchain_site[0] && <Link href={tokenInfo?.links?.blockchain_site[0]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[0]?.slice(0,20)}</Link>}
+            {tokenInfo?.links?.blockchain_site[1] && <Link href={tokenInfo?.links?.blockchain_site[1]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[1]?.slice(0,20)}</Link>}
+            {tokenInfo?.links?.blockchain_site[2] && <Link href={tokenInfo?.links?.blockchain_site[2]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[2]?.slice(0,20)}</Link>}
+            {tokenInfo?.links?.whitepaper && <Link href={tokenInfo?.links?.whitepaper} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.whitepaper?.slice(0,20)}</Link>}
+          </div>
+          <h1 className="flex items-center w-full mt-3">Social Media</h1>
+          <div className="flex items-center w-full mt-3 gap-x-2">
+            {tokenInfo?.links?.facebook_username && <Link href={`https://facebook.com/${tokenInfo?.links?.facebook_username}`}><FaFacebook size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.links?.telegram_channel_identifier && <Link href={`https://t.me/${tokenInfo?.links?.telegram_channel_identifier}`}><FaTelegram size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.links?.twitter_screen_name && <Link href={`https://twitter.com/${tokenInfo?.links?.twitter_screen_name}`}><FaTwitter size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.links?.subreddit_url && <Link href={tokenInfo?.links?.subreddit_url}><FaReddit size={18} className="hover:opacity-15 transition-all"/></Link>}
+          </div>
+          </div>
+        </div>
+      </div> : null}
+      <div className={details ? "flex justify-center items-center w-full h-[610px] overflow-hidden rounded-xl" : "flex justify-center items-center w-full h-[610px]"}>
       {chain === 'solana' ?
       <>
       <div id="integrated-terminal" className="border border-white/10 m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]"></div>
@@ -764,6 +809,9 @@ console.log("goplus",goplusecure)
       className="border-none m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px] overflow-hidden"
       />
       }
+      </div>
+      </div>
+
       </div>
 
       <div className="flex-col items-center w-full rounded-xl p-5 bg-[#131722] mt-2">
