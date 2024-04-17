@@ -378,8 +378,8 @@ export default function Swap() {
       formProps:{
         fixedOutputMint: true,
         initialAmount: '10000000',
-        initialInputMint:baseAddress ? baseAddress : null,
-        initalOutputMint: quoteAddress ? quoteAddress : null,
+        initialInputMint:pairdata?.baseaddress ? pairdata?.baseaddress : null,
+        initalOutputMint: pairdata?.quoteaddress ? pairdata?.quoteaddress : null,
       }
     })
 
@@ -505,12 +505,12 @@ function formatCreatedAt(createdAt:any) {
           <div className={details ? "flex items-center gap-x-2" : "flex ju items-center gap-x-2"}>
             <div className="flex items-center gap-x-1">
             <Link href={
-              chain === 'ethereum' ? `https://etherscan.io/token/${baseAddress}` 
-              : chain === 'binance-smart-chain' ? `https://bscscan.com/token/${baseAddress}` 
-              : chain === 'the-open-network' ? `https://tonviewer.com/${baseAddress}` 
-              : chain === 'solana' ? `https://solscan.io/token/${baseAddress}` 
-              : chain === 'arbitrum' ? `https://arbiscan.io/token/${baseAddress}` 
-              : chain === 'base' ? `https://basescan.org/token/${baseAddress}` 
+              chain === 'ethereum' ? `https://etherscan.io/token/${pairdata?.baseaddress}` 
+              : chain === 'binance-smart-chain' ? `https://bscscan.com/token/${pairdata?.baseaddress}` 
+              : chain === 'the-open-network' ? `https://tonviewer.com/${pairdata?.baseaddress}` 
+              : chain === 'solana' ? `https://solscan.io/token/${pairdata?.baseaddress}` 
+              : chain === 'arbitrum' ? `https://arbiscan.io/token/${pairdata?.baseaddress}` 
+              : chain === 'base' ? `https://basescan.org/token/${pairdata?.baseaddress}` 
               : ''
               } 
               target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
