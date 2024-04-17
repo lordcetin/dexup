@@ -15,18 +15,18 @@ export function broadcastData(io:any, data:any) {
 const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
   if(!res.socket.server.io){
     console.log('Setting up WebSocket server...');
-    const path = "https://dexup.io/api/socket/io";
-    // const path = "/api/socket/io";
+    const path = "/api/socket/io";
+
     const httpServer: NetServer = res.socket.server as any
     //@ts-ignore
     const io = new ServerIO(httpServer, {
       path: path,
-      // cors: {
-      //   origin: "*", // Bu satırı güvenlik için spesifik bir URL ile değiştirebilirsiniz.
-      //   methods: ["GET", "POST"],
-      //   allowedHeaders: ["my-custom-header"],
-      //   credentials: true
-      // },
+      cors: {
+        origin: "https://dexup.io", // Bu satırı güvenlik için spesifik bir URL ile değiştirebilirsiniz.
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+      },
       //@ts-ignore
       addTrailingSlash: false,
     });
