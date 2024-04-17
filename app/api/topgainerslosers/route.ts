@@ -144,7 +144,7 @@ export async function GET(req:NextRequest) {
     
     if (processedToken) {
       gainer.push(processedToken[0]);
-      // await client.set(`gainer:${processedToken[0].id}`,JSON.stringify(processedToken[0]))
+
     }
   }
 
@@ -152,13 +152,15 @@ export async function GET(req:NextRequest) {
     const processedToken = await processToken(token, assetPlatforms);
     if (processedToken) {
       loser.push(processedToken[0]);
-      // await client.set(`loser:${processedToken[0].id}`,JSON.stringify(processedToken[0]))
+
     }
   }
 
 
   data.push({ gainer, loser });
-  // const gainerData:any = await client.get('gainer')
+
+  await client.set(`gainerLoserData`,JSON.stringify(data))
+
   // const loserData:any = await client.get('loser')
   // data.push({ gainer:JSON.parse(gainerData), loser:JSON.parse(loserData) });
 

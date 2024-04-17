@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-async-client-component */
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -55,6 +56,7 @@ import CustomProgressBar from "@/components/CustomProgressBar/page";
 import AuroBanner from "@/components/AuroBanner/page";
 import { BiWorld } from "react-icons/bi";
 import ImageColorPalette from "@/components/AuroBanner/page";
+import { NextPageContext } from "next";
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -73,15 +75,18 @@ declare global {
   }
 }
 
-const Swap = () => {
+
+export default function Swap() {
+  const searchParams = useSearchParams() as any
+  const chain = searchParams.get('chain')
+  const pooladdress = searchParams.get('pair')
+
   const [isScriptReady, setIsScriptReady] = useState(false);
 
   const {isWallet,setIsWallet} = useAppContext();
   const container = useRef<any>(null);
   let tvScriptLoadingPromise: Promise<void>;
   const onLoadScriptRef = useRef<(() => void) | null>(null);
-
-
 
   const [paid,setPaid] = useState<any>(10);
   const [received,setReceived] = useState<any>(0);
@@ -128,9 +133,6 @@ const Swap = () => {
   const { open,close } = useWeb3Modal()
   const { writeContractAsync } = useWriteContract()
 
-  const searchParams = useSearchParams() as any
-  const chain = searchParams.get('chain')
-  const pooladdress = searchParams.get('pair')
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
   const web3 = useWeb3js({chainId:chainId})
@@ -159,6 +161,61 @@ const Swap = () => {
     supports_search: false,
     supports_timescale_marks: false,
   };
+
+  
+  useLayoutEffect(() => {
+
+    const getPair = async () => {
+      const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
+      const pairData = await response.json()
+
+      setPairData(pairData)
+      const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${pairData?.baseaddress}`)
+      const data = await res.json();
+
+
+      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'ethereum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}/contract/${pairData?.baseaddress}`,{
+        method:'GET',
+        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+        cache:'no-store',
+      })
+      const tokenInfoData = await responseTokenInfo.json()
+      console.log("tokenInfoData",tokenInfoData)
+
+    setTokenInfo(tokenInfoData)
+    setGoPlus(data.result[`${pairData?.baseaddress}`])
+    setBaseCoinId(pairData?.basecoinId)
+
+    setBaseSymbol(pairData?.baseTokenSymbol)
+    setQuoteSymbol(pairData?.quoteTokenSymbol)
+    setBTokenSymbol(pairData?.baseTokenSymbol)
+    setQTokenSymbol(pairData?.quoteTokenSymbol)
+    setChain(chain)
+    setBaseAddress(pairData?.baseaddress)
+    setQuoteAddress(pairData?.quoteaddress)
+    setBaseNetId(pairData?.baseNetId)
+    setQuoteNetId(pairData?.baseNetId)
+    
+
+
+    if(chain === 'ethereum'){
+      setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${pairData?.baseaddress}&outputCurrency=${pairData?.quoteaddress}`)
+    }else if(chain === 'binance-smart-chain'){
+      setUniUrl(`https://pancakeswap.finance/swap?outputCurrency=${pairData?.baseaddress}&chainId=56`)
+      // setUniUrl(`https://kyberswap.com/partner-swap?chainId=56&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}&clientId=dexup&feeReceiver=0xEb218F28ACEea78E20910286b1Acfef917A270Ab&enableTip=true&chargeFeeBy=currency_out&feeAmount=30`)
+    }else if(chain === 'arbitrum'){
+      setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${pairData?.baseaddress}&outputCurrency=${pairData?.quoteaddress}`)
+    }else if(chain === 'the-open-network'){
+      //change the referal address
+      setUniUrl(`https://app.ston.fi/swap?referral_address=UQCthC8ICK7K8Hkfm9smblLFroKrYrEMwZuoD4Nbm5LswUnc&chartVisible=false&ft=${pairData?.quoteTokenSymbol.toUpperCase()}&tt=${pairData?.baseTokenSymbol.toUpperCase()}`)
+    }else if(chain === 'base'){
+      setUniUrl(`https://aerodrome.finance/swap?from=${pairData?.baseaddress}&to=${pairData?.quoteaddress}`)
+    }
+        
+    }
+    getPair()
+
+  }, []);
   // useEffect(() => {
   //   const chartOptions:any = { 
   //     layout: { 
@@ -311,154 +368,6 @@ const Swap = () => {
   //   }
   // }, []);
 
-
-
-  useEffect(() => {
-
-    const getPair = async () => {
-      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
-        method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-      }).then((net:any) => net.json()).then((net:any) => {
-        const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-        const chaId = network[0]?.id
-        const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
-        if(coingecko_asset_platform_id === null) return
-
-        setGeckoId(coingecko_asset_platform_id)
-
-      fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`,{
-        method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-        cache:'no-store',
-      }).then((response:any) => response.json()).then(async (response:any) => {
-            const baseId = response.data.relationships.base_token.data.id
-            const quoteId = response.data.relationships.quote_token.data.id
-            const baseNetId = baseId.split("_")[0];
-            const quoteNetId = quoteId.split("_")[0];
-            let baseImg = response.included.find((i:any)=> i.id  == baseId).attributes.image_url;
-            let quoteImg = response.included.find((i:any)=> i.id  == quoteId).attributes.image_url;
-            const baseTokenSymbol = response.included.find((i:any)=> i.id  == baseId).attributes.symbol;
-            const quoteTokenSymbol = response.included.find((i:any)=> i.id  == quoteId).attributes.symbol;
-            const basecoinId = response.included.find((i:any)=> i.id  == baseId).attributes.coingecko_coin_id;
-            const quotecoinId = response.included.find((i:any)=> i.id  == quoteId).attributes.coingecko_coin_id;
-            const basename = response.included.find((i:any)=> i.id  == baseId).attributes.name;
-            const quotename = response.included.find((i:any)=> i.id  == quoteId).attributes.name;
-            const baseaddress = response.included.find((i:any)=> i.id  == baseId).attributes.address;
-            const quoteaddress = response.included.find((i:any)=> i.id  == quoteId).attributes.address;
-
-            const newPair:any = {
-              id: response.data.id,
-              name:response.data.attributes.name,
-              baseImg,
-              quoteImg,
-              pooladdress:response.data.attributes.address,
-              basename,
-              quotename,
-              baseTokenSymbol,
-              quoteTokenSymbol,
-              baseaddress,
-              quoteaddress,
-              basecoinId,
-              quotecoinId,
-              created:response.data.attributes.pool_created_at,
-              baseprice:response.data.attributes.base_token_price_usd,
-              quoteprice:response.data.attributes.quote_token_price_usd,
-              fdv:response.data.attributes.fdv_usd,
-              cap:response.data.attributes.market_cap_usd,
-              price_change_percentage:response.data.attributes.price_change_percentage,
-              transactions:response.data.attributes.transactions,
-              volume_usd:response.data.attributes.volume_usd,
-              reserve:response.data.attributes.reserve_in_usd,
-              dex:response.data.relationships.dex.data.id,
-            }
-            
-            const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${baseaddress}`)
-            const data = await res.json();
-
-
-            const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'ethereum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}/contract/${baseaddress}`,{
-              method:'GET',
-              headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-              cache:'no-store',
-            })
-            const tokenInfoData = await responseTokenInfo.json()
-            console.log("tokenInfoData",tokenInfoData)
-
-          setTokenInfo(tokenInfoData)
-          setGoPlus(data.result[`${baseaddress}`])
-          setBaseCoinId(basecoinId)
-          // setQuoteCoinId(quotecoinId)
-          setPairData(newPair)
-          setBaseSymbol(baseTokenSymbol)
-          setQuoteSymbol(quoteTokenSymbol)
-          setBTokenSymbol(baseTokenSymbol)
-          setQTokenSymbol(quoteTokenSymbol)
-          setChain(chain)
-          setBaseAddress(baseaddress)
-          setQuoteAddress(quoteaddress)
-          setBaseNetId(baseNetId)
-          setQuoteNetId(baseNetId)
-          console.log("pairdata",newPair)
-
-          // const chains = await axios.get(`/api/network?chainname=${coingecko_asset_platform_id === 'binance-smart-chain' ? 'bsc' : coingecko_asset_platform_id}`)
-          // const chaindata = chains.data
-          // const chainID = chaindata?.chain_identifier
-
-          // const dec = await axios.get(`/api/decimals?baseNetId=${switchtoken === false ? baseNetId : quoteNetId}&baseaddress=${switchtoken === false ? baseaddress : quoteaddress}`)
-          // const datas = dec.data.data[0]
-          // const decimal = datas.attributes.decimals
-          // setBaseDecimal(decimal)
-
-          // const amount = generateDecimal(switchtoken === false ? paid : received, decimal)
-          // // const res = await axios.get(`/api/quote?fromTokenAddress=${switchtoken === false ? baseaddress : quoteaddress}&toTokenAddress=${switchtoken === false ? quoteaddress : baseaddress}&amount=${amount}&chainId=${chaId === 'solana' ? 501 : chainID}`)
-          // const res = await axios.get(`/api/getPri?amount=${paid}&chainId=${chainID}&toTokenAddress=${quoteaddress}&fromTokenAddress=${baseaddress}&slippage=${slippage}`)
-          // // const data = res.data.data[0]
-          // const data = res.data.data
-          // const paidAmount = data?.singleChainSwapInfo?.receiveAmount
-          // const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: decimal })
-
-          if(chain === 'ethereum'){
-            setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
-          }else if(chain === 'binance-smart-chain'){
-            setUniUrl(`https://pancakeswap.finance/swap?outputCurrency=${baseaddress}&chainId=56`)
-            // setUniUrl(`https://kyberswap.com/partner-swap?chainId=56&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}&clientId=dexup&feeReceiver=0xEb218F28ACEea78E20910286b1Acfef917A270Ab&enableTip=true&chargeFeeBy=currency_out&feeAmount=30`)
-          }else if(chain === 'arbitrum'){
-            setUniUrl(`https://app.uniswap.org/#/swap?exactField=input&exactAmount=10&inputCurrency=${baseaddress}&outputCurrency=${quoteaddress}`)
-          }else if(chain === 'the-open-network'){
-            //change the referal address
-            setUniUrl(`https://app.ston.fi/swap?referral_address=UQCthC8ICK7K8Hkfm9smblLFroKrYrEMwZuoD4Nbm5LswUnc&chartVisible=false&ft=${quoteTokenSymbol.toUpperCase()}&tt=${baseTokenSymbol.toUpperCase()}`)
-          }else if(chain === 'base'){
-            setUniUrl(`https://aerodrome.finance/swap?from=${baseaddress}&to=${quoteaddress}`)
-          }
-
-          // if(res.data.msg){
-          //   console.log(res.data.msg)
-          // }
-          // const fromTokenPrice = data?.commonDexInfo?.fromTokenPrice
-
-          // const baseUnitPrice = parseFloat(fromTokenPrice);
-          // // let baseAmount:any = formatEther(data?.fromTokenAmount.toString());
-          // setRealAmout(amount)
-
-          // let quoteAmount:any = formatEther(data?.toTokenAmount.toString());
-          // const formattedBase = new Intl.NumberFormat("en-US",{
-          //   style:"currency",
-          //   currency: "USD",
-          //   // notation: 'compact',
-          //   // compactDisplay: 'short'
-          // }).format(baseUnitPrice)
-
-          // setFromBase(formattedBase)
-          // // setToQuote(formattedQuote)
-          // setReceived(formattedNumber)
-        
-      })
-    })
-    }
-    getPair()
-
-  }, []);
 
   useEffect(() => {
     (window as any)?.Jupiter?.init({
@@ -758,8 +667,8 @@ function formatCreatedAt(createdAt:any) {
       <div className="flex-col flex items-center w-full gap-y-2 mt-7">
       {details ? 
       <div className="flex-col items-center w-full bg-[#131722] rounded-xl h-[720px] relative">
-        {/* <AuroBanner/> */}
-        <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} />
+        <AuroBanner/>
+        {/* <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} /> */}
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
           <img
           src={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large}
@@ -829,5 +738,3 @@ function formatCreatedAt(createdAt:any) {
     </main>
   );
 }
-
-export default Swap;

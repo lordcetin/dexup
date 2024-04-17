@@ -101,7 +101,6 @@ export async function GET(req:NextRequest) {
 
   const agdas = newPair
 
-  // data.push({ gainer, loser });
   fs.writeFileSync('./config/newpool.json', JSON.stringify(agdas));
   return NextResponse.json("Succesfull",{status:200})
 }
