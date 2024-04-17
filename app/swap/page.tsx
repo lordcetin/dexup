@@ -54,6 +54,7 @@ import { MdDangerous } from "react-icons/md";
 import CustomProgressBar from "@/components/CustomProgressBar/page";
 import AuroBanner from "@/components/AuroBanner/page";
 import { BiWorld } from "react-icons/bi";
+import ImageColorPalette from "@/components/AuroBanner/page";
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -757,7 +758,8 @@ function formatCreatedAt(createdAt:any) {
       <div className="flex-col flex items-center w-full gap-y-2 mt-7">
       {details ? 
       <div className="flex-col items-center w-full bg-[#131722] rounded-xl h-[720px] relative">
-        <AuroBanner/>
+        {/* <AuroBanner/> */}
+        <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} />
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
           <img
           src={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large}
