@@ -24,17 +24,16 @@ import React, { useState, useEffect } from 'react';
 
 const ImageColorPalette = ({ imageUrl }) => {
   const [palette, setPalette] = useState([]);
-  const corsProxy = 'https://dexup.io/';
-  const proxiedUrl = corsProxy + imageUrl;
+
   useEffect(() => {
     const img = new Image();
     img.crossOrigin = 'anonymous';  // CORS için gerekli
-    img.src = proxiedUrl;
+    img.src = imageUrl;
     img.onload = () => {
       const palette = extractPalette(img);
       setPalette(palette);
     };
-  }, [proxiedUrl]);
+  }, [imageUrl]);
 
   const extractPalette = (image) => {
     const canvas = document.createElement('canvas');
