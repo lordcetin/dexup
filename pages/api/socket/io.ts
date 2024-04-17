@@ -15,7 +15,8 @@ export function broadcastData(io:any, data:any) {
 const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
   if(!res.socket.server.io){
     console.log('Setting up WebSocket server...');
-    const path = "/api/socket/io";
+    const path = "https://dexup.io/api/socket/io";
+    // const path = "/api/socket/io";
     const httpServer: NetServer = res.socket.server as any
     //@ts-ignore
     const io = new ServerIO(httpServer, {
