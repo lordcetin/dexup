@@ -145,7 +145,7 @@ export default function Swap() {
   } = useAppContext()
   
   const defaultWidgetProps:any= {
-    symbol: `${baseSymbol && baseSymbol.toUpperCase()}/${quoteSymbol && quoteSymbol.toUpperCase()}`,
+    symbol: `${pairdata?.baseTokenSymbol && pairdata?.baseTokenSymbol.toUpperCase()}/${pairdata?.quoteTokenSymbol && pairdata?.quoteTokenSymbol.toUpperCase()}`,
     width:980,
     height:600,
     interval: '15' as ResolutionString,
