@@ -33,6 +33,12 @@ export const SocketProvider = ({ children }: {children:React.ReactNode}) => {
   useEffect(() => {
     const socketInstance = new (ClientIO as any)(process.env.NEXT_PUBLIC_SITE_URL!,{
       path: "/api/socket/io",
+      cors: {
+        origin: "https://dexup.io", // Bu satırı güvenlik için spesifik bir URL ile değiştirebilirsiniz.
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+      },
       addTrailingSlash: false,
     });
 
