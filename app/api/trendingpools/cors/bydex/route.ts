@@ -1,7 +1,7 @@
 import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
-
+import { client } from "@/lib/db";
 async function getNetworkId(chain:any) {
   if(chain === undefined) return null; // chain undefined olduğunda null döndür
   const response = await axios.get(`https://pro-api.coingecko.com/api/v3/asset_platforms/`,{
@@ -98,7 +98,7 @@ export async function GET(req:NextRequest) {
   }
 
   const agdas = newPair
-
+  await client.set(`newPool${dexname?.toLocaleUpperCase()}`,JSON.stringify(agdas))
   // data.push({ gainer, loser });
   fs.writeFileSync(`./config/by${networkname}_${dexname}pool.json`, JSON.stringify(agdas));
   return NextResponse.json("Succesfull",{status:200})

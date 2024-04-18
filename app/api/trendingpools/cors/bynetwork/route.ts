@@ -1,7 +1,7 @@
 import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
-
+import { client } from "@/lib/db";
 export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const networkname = searchParams.get('networkname')
@@ -79,7 +79,7 @@ export async function GET(req:NextRequest) {
   }
 
   const agdas = newPair
-
+  await client.set(`newPool${networkname?.toLocaleUpperCase()}`,JSON.stringify(agdas))
   // data.push({ gainer, loser });
   fs.writeFileSync(`./config/by${networkname}pool.json`, JSON.stringify(agdas));
   return NextResponse.json("Succesfull",{status:200})
