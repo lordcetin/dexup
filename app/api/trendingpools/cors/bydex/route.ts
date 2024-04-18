@@ -100,6 +100,6 @@ export async function GET(req:NextRequest) {
   const agdas = newPair
   await client.set(`newPool${dexname?.toLocaleUpperCase()}`,JSON.stringify(agdas))
   // data.push({ gainer, loser });
-  fs.writeFileSync(`./config/by${networkname}_${dexname}pool.json`, JSON.stringify(agdas));
+  // fs.writeFileSync(`./config/by${networkname}_${dexname}pool.json`, JSON.stringify(agdas));
   return NextResponse.json("Succesfull",{status:200})
 }
