@@ -97,7 +97,33 @@ export function DataTable<TData, TValue>({
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                {loadingpool ? <AiOutlineLoading3Quarters className="animate-spin size-10 flex justify-center items-center w-full"/> : <span>No results.</span>}
+                {loadingpool ?
+                <>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                </>
+                :
+                <>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                <div className="flex items-center w-full rounded-lg bg-gradient-to-l to-neutral-700/50 from-transparent my-3 animate-pulse h-10"></div>
+                </>
+                }
               </TableCell>
             </TableRow>
           )}

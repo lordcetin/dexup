@@ -28,18 +28,22 @@ const TopGainerLoser = ({}: Props) => {
   useEffect(() => {
     const getGainLos = async () => {
       setLoadingGainLos(true);
-      // const res = await axios.get(`/api/topgainerslosers`)
-      const res = await axios.get(`/api/pooldatas`)
-      const getter = res.data[0];
+      // const resto = await axios.get(`/api/topgainerslosers`)
+      // const res = await axios.get(`/api/pooldatas`)
+      const res = await fetch(`/api/getter/topgainerslosers`,{
+
+      })
+      let getter = await res.json()
+      getter = JSON.parse(getter)
+      getter = getter[0]
+      // const getter = res.data[0];
+
       setTopGainers(getter?.gainer)
       setTopLosers(getter?.loser)
       setLoadingGainLos(false);
     }
-    setInterval(() => {     
-      getGainLos()
-    }, 3000);
-
-  }, [router]);
+    getGainLos()
+  }, []);
 
   return (
   <div className="flex-col flex justify-center items-center w-full">

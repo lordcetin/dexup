@@ -5,17 +5,17 @@ export async function GET(req: NextRequest) {
   const chain = searchParams.get('chain');
   const pooladdress = searchParams.get('pooladdress');
 
-  try {
     const netResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`, {
       method: 'GET',
       headers: { 'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ' },
     });
     const netData = await netResponse.json();
-    const network = netData.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain);
-    if (!network.length) return NextResponse.json([], { status: 404 });
+    
+    const network = netData.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+    const chaId = network[0]?.id
+    const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
 
-    const chaId = network[0]?.id;
-    const poolResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`, {
+    const poolResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chaId}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`, {
       method: 'GET',
       headers: { 'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ' },
     });
@@ -52,8 +52,5 @@ export async function GET(req: NextRequest) {
     };
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
-    console.error('API fetch error:', error);
-    return NextResponse.json({ error: 'Failed to fetch data' }, { status: 500 });
-  }
+
 }

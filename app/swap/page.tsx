@@ -120,6 +120,7 @@ export default function Swap() {
   const [toDecimal,setToDecimal] = useState<any>();
   const [fromDecimal,setFromDecimal] = useState<any>();
   const [geckoId,setGeckoId] = useState("");
+  const [detailError,setDetailError] = useState("");
   const [slippage,setSlippage] = useState<any>(0.5);
   const [estimateGasFee,setEstimateGasFee] = useState<any>("");
 
@@ -135,7 +136,7 @@ export default function Swap() {
 
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
-  const web3 = useWeb3js({chainId:chainId})
+  // const web3 = useWeb3js({chainId:chainId})
 
   const { 
     setBaseCoinId,
@@ -170,7 +171,7 @@ export default function Swap() {
       const pairData = await response.json()
 
       setPairData(pairData)
-      const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chainId}?contract_addresses=${pairData?.baseaddress}`)
+      const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chain === 'arbitrum' ? '42161' : chain  === 'ethereum' ? '1' : chain === 'binance-smart-chain' ? '56' : chain === 'solana' ? 'solana' : chain === 'base' ? '8453' : "1"}?contract_addresses=${pairData?.baseaddress}`)
       const data = await res.json();
 
 
@@ -180,6 +181,9 @@ export default function Swap() {
         cache:'no-store',
       })
       const tokenInfoData = await responseTokenInfo.json()
+      if(tokenInfoData.error === 'coin not found'){
+        setDetailError('It will take time for the data for this token to be generated')
+      }
       console.log("tokenInfoData",tokenInfoData)
 
     setTokenInfo(tokenInfoData)
@@ -468,7 +472,7 @@ function formatCreatedAt(createdAt:any) {
       <div className="flex-col items-center">
 
 
-        <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[720px]" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
+        <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[720px] flex-shrink-0 box-border" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
 
           <div className="flex justify-between items-center gap-x-6 w-full">
           <div className={details ? "flex items-center gap-x-6 w-1/12 self-start" : "flex items-center gap-x-6 w-1/12"}>
@@ -496,10 +500,10 @@ function formatCreatedAt(createdAt:any) {
           </div>
 
           <div className={details ? "flex justify-center items-center w-full self-start" : "flex justify-center items-center w-full"}>
-            <div onClick={() => setOpenDetails(!details)} className="flex items-center gap-x-1 outline-none border border-white/10 rounded-lg px-3 py-2 text-white/50 hover:text-white hover:border-white transition-all cursor-pointer">
-              <h1>Details</h1>
-              <IoChevronDown size={23}/>
-            </div>
+            <button disabled={detailError !== ''} onClick={() => setOpenDetails(!details)} className="flex items-center gap-x-1 outline-none border border-white/10 rounded-lg px-3 py-2 text-white/50 hover:text-white hover:border-white transition-all cursor-pointer">
+              <h1 className={detailError ? 'text-xs':''}>{detailError ? detailError : "Details"}</h1>
+              {detailError ? null :<IoChevronDown size={23}/>}
+            </button>
           </div>
 
           <div className={details ? "flex items-center gap-x-2" : "flex ju items-center gap-x-2"}>
@@ -531,8 +535,8 @@ function formatCreatedAt(createdAt:any) {
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Buy Tax</p><div className={goplusecure?.buy_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.buy_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure?.buy_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure?.buy_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Sell Tax</p><div className={goplusecure?.sell_tax === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.sell_tax === "0" ? <span className="flex items-center gap-x-1">{goplusecure?.sell_tax}% <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">{goplusecure?.sell_tax}% <PiWarningCircleFill size={16}/></span>}</div></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Cannot Buy</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.cannot_buy === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">External Call</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.external_call === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Hidden Owner</p><div className={goplusecure?.cannot_buy === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.hidden_owner === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">External Call</p><div className={goplusecure?.external_call === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.external_call === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Hidden Owner</p><div className={goplusecure?.hidden_owner === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.hidden_owner === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Open Source</p><div className={goplusecure?.is_open_source === "1" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_open_source  === "1" ? <span className="flex items-center gap-x-1">Yes <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">No <PiWarningCircleFill size={16}/></span>}</div></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Anti Whale</p><div className={goplusecure?.is_anti_whale === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_anti_whale  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Mintable</p><div className={goplusecure?.is_mintable === "0" ? "text-green-500" : "text-orange-500"}>{goplusecure?.is_mintable  === "0" ? <span className="flex items-center gap-x-1">No <FaCircleCheck/></span> : <span className="flex items-center gap-x-1">Yes <PiWarningCircleFill size={16}/></span>}</div></div>
@@ -555,18 +559,18 @@ function formatCreatedAt(createdAt:any) {
               <div className="flex justify-center items-center gap-x-4">
 
             <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs">
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.baseprice)}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.quoteprice)}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.cap)}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.fdv)}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve: <span className="font-bold ml-1 text-xl">{getAmount(pairdata.reserve)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.baseprice)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.quoteprice)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.fdv)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.reserve)}</span></div>
               <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h): <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start">
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Trust: {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg font-bold" : "text-orange-500 text-lg font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs">Created: <span className="text-lg font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust: {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg font-bold" : "text-orange-500 text-lg font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Created: <span className="text-[8px] font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
             </div>
 
             </div>
@@ -578,19 +582,19 @@ function formatCreatedAt(createdAt:any) {
                     <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
                     <div className="flex-col items-center gap-y-2 cursor-pointer">
                       <div className="text-xs">5 minute</div>
-                      <div className={pairdata?.price_change_percentage.m5.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.m5 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.m5}%</div>
+                      <div className={pairdata?.price_change_percentage?.m5.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.m5 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.m5}%</div>
                     </div>
                     <div className="flex-col items-center gap-y-2 cursor-pointer">
                       <div className="text-xs">1 hour</div>
-                      <div className={pairdata?.price_change_percentage.h1.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h1 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h1}%</div>
+                      <div className={pairdata?.price_change_percentage?.h1.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h1 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h1}%</div>
                     </div>
                     <div className="flex-col items-center gap-y-2 cursor-pointer">
                       <div className="text-xs">6 hour</div>
-                      <div className={pairdata?.price_change_percentage.h6.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h6 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h6}%</div>
+                      <div className={pairdata?.price_change_percentage?.h6.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h6 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h6}%</div>
                     </div>
                     <div className="flex-col items-center gap-y-2 cursor-pointer">
                       <div className="text-xs">24 hour</div>
-                      <div className={pairdata?.price_change_percentage.h24.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h24 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h24}%</div>
+                      <div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h24 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h24}%</div>
                     </div>
                     </div>
 
@@ -666,7 +670,7 @@ function formatCreatedAt(createdAt:any) {
 
       <div className="flex-col flex items-center w-full gap-y-2 mt-7">
       {details ? 
-      <div className="flex-col items-center w-full bg-[#131722] rounded-xl h-[720px] relative">
+      <div className="flex-col items-center w-full bg-[#131722] rounded-xl h-[720px] relative flex-shrink-0 box-border">
         <AuroBanner/>
         {/* <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} /> */}
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
@@ -682,11 +686,11 @@ function formatCreatedAt(createdAt:any) {
           <div className="flex-col items-center w-full">
           <h1 className="flex items-center w-full text-xl font-bold">{tokenInfo?.name}</h1>
           <div className="flex items-center gap-x-2 mt-2">
-          <p className="font-light text-white/50">{tokenInfo?.symbol}</p>
+          <p className="font-light text-white/50">{tokenInfo?.symbol.toUpperCase()}</p>
           <CopyToClipboard text={tokenInfo?.contract_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none text-xs flex items-center gap-x-1 bg-brandblack hover:bg-zinc-800 transition-all rounded-md p-1">{tokenInfo?.contract_address?.slice(0,5)+ "..." +tokenInfo?.contract_address?.slice(38)} <MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
           </div>
-          <div className="flex items-center w-full mt-5">
-          <p className="flex-wrap whitespace-pre-wrap w-full h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description?.en}</p>
+          <div className="flex items-center w-full mt-5 ">
+          <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description?.en}</p>
           </div>
           <h1 className="flex items-center w-full mt-3">Website Links</h1>
           <div className="grid grid-cols-3 gap-1 justify-center items-center mt-3">
@@ -702,6 +706,9 @@ function formatCreatedAt(createdAt:any) {
             {tokenInfo?.links?.telegram_channel_identifier && <Link href={`https://t.me/${tokenInfo?.links?.telegram_channel_identifier}`}><FaTelegram size={18} className="hover:opacity-15 transition-all"/></Link>}
             {tokenInfo?.links?.twitter_screen_name && <Link href={`https://twitter.com/${tokenInfo?.links?.twitter_screen_name}`}><FaTwitter size={18} className="hover:opacity-15 transition-all"/></Link>}
             {tokenInfo?.links?.subreddit_url && <Link href={tokenInfo?.links?.subreddit_url}><FaReddit size={18} className="hover:opacity-15 transition-all"/></Link>}
+          </div>
+          <div className="flex justify-center items-center w-full mt-3">
+            <button className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>
           </div>
           </div>
         </div>

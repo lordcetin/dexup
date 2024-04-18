@@ -193,7 +193,7 @@ export const TVChartContainer = (props:any) => {
 				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
 				const chaId = network[0]?.id
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${from}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${from}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});

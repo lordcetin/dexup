@@ -1,16 +1,6 @@
-import axios from "axios";
 import fs from 'fs';
 import { NextResponse , NextRequest} from "next/server"
 import { client } from "@/lib/db";
-export const dynamic = 'auto'
-export const dynamicParams = true
-export const revalidate = 3600
-export const fetchCache = 'auto'
-export const runtime = 'nodejs'
-export const preferredRegion = 'auto'
-export const maxDuration = 5
-// API anahtarınızı bir değişkende saklayın
-const apiKey = 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ';
 
 async function fetchCoinData(id: string) {
   const res = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${id}`,{

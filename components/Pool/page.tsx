@@ -43,13 +43,16 @@ const Pool = (props: Props) => {
   useEffect(() => {
     const getTrendingPoolData = async () => {
         setLoadingPool(true)
-        const data = await fetch(`/api/trendingpools`,{
-          method:'GET',
-          headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-          cache:'no-store',
-        })
-        const response = await data.json()
-        setTrendingPoolData(response)
+        // const data = await fetch(`/api/trendingpools`,{
+        //   method:'GET',
+        //   headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+        //   cache:'no-store',
+        // })
+        // const response = await data.json()
+        const res = await fetch(`/api/getter/trendingpools`)
+        let data = await res.json()
+        data = JSON.parse(data)
+        setTrendingPoolData(data)
         setLoadingPool(false)
     }
     const getNewPoolData = async () => {
@@ -60,12 +63,13 @@ const Pool = (props: Props) => {
           cache:'no-store',
         })
         const response = await data.json()
+        console.log("newpool",response)
         setNewPoolData(response)
         setLoadingNewPool(false)
     }
     getTrendingPoolData()
     getNewPoolData()
-  },[router])
+  },[])
 
   useEffect(() => {
     const getNetworkByPool = async () => {
