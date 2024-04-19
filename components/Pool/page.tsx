@@ -49,7 +49,11 @@ const Pool = (props: Props) => {
         //   cache:'no-store',
         // })
         // const response = await data.json()
-        const res = await fetch(`/api/getter/trendingpools`)
+        const res = await fetch(`/api/getter/trendingpools`,{
+          method:'GET',
+          cache:'no-store',
+          next:{revalidate:200}
+        })
         let data = await res.json()
         data = JSON.parse(data)
         setTrendingPoolData(data)
@@ -57,14 +61,15 @@ const Pool = (props: Props) => {
     }
     const getNewPoolData = async () => {
         setLoadingNewPool(true)
-        const data = await fetch(`/api/newpools/getter`,{
+        const res = await fetch(`/api/getter/newPool`,{
           method:'GET',
-          headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
           cache:'no-store',
+          next:{revalidate:200}
         })
-        const response = await data.json()
+        let data = await res.json()
+        data = JSON.parse(data)
 
-        setNewPoolData(response)
+        setNewPoolData(data)
         setLoadingNewPool(false)
     }
     getTrendingPoolData()
@@ -74,13 +79,20 @@ const Pool = (props: Props) => {
   useEffect(() => {
     const getNetworkByPool = async () => {
       if(networkname === 'all') return
-      const data = await fetch(`/api/trendingpools/bynetwork?networkname=${networkname}`,{
+      // const data = await fetch(`/api/trendingpools/bynetwork?networkname=${networkname}`,{
+      //   method:'GET',
+      //   headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+      //   cache:'no-store',
+      // })
+      // const response = await data.json()
+      const res = await fetch(`/api/getter/newpool/bynetwork?networkname=${networkname}`,{
         method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
         cache:'no-store',
+        next:{revalidate:200}
       })
-      const response = await data.json()
-      setNetworkPoolData(response)
+      let data = await res.json()
+      data = JSON.parse(data)
+      setNetworkPoolData(data)
 
     }
     getNetworkByPool()
@@ -89,13 +101,20 @@ const Pool = (props: Props) => {
   useEffect(() => {
     const getNetworkByPool = async () => {
       if(dexname === 'all') return
-      const data = await fetch(`/api/trendingpools/bydex?networkname=${dexname === 'uniswap_v3' ? 'eth' : dexname === 'uniswap_v2' ? 'eth' : dexname === 'pancakeswap_v2' ? 'bsc' : dexname === 'raydium' ? 'solana' : dexname === 'stonfi' ? 'ton' : dexname === 'aerodrome-base' ? 'base' : 'eth'}&dexname=${dexname}`,{
+      // const data = await fetch(`/api/trendingpools/bydex?networkname=${dexname === 'uniswap_v3' ? 'eth' : dexname === 'uniswap_v2' ? 'eth' : dexname === 'pancakeswap_v2' ? 'bsc' : dexname === 'raydium' ? 'solana' : dexname === 'stonfi' ? 'ton' : dexname === 'aerodrome-base' ? 'base' : 'eth'}&dexname=${dexname}`,{
+      //   method:'GET',
+      //   headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+      //   cache:'no-store',
+      // })
+      // const response = await data.json()
+      const res = await fetch(`/api/getter/newpool/bydex?dexname=${dexname}`,{
         method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
         cache:'no-store',
+        next:{revalidate:200}
       })
-      const response = await data.json()
-      setDexPoolData(response)
+      let data = await res.json()
+      data = JSON.parse(data)
+      setDexPoolData(data)
 
     }
     getNetworkByPool()
