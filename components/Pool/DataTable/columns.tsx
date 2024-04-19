@@ -25,6 +25,7 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useSwitchChain , useAccount} from 'wagmi';
 import ProgressBar from '@/components/ProgressBar/page';
+import DexImage from '@/components/DexImage/page';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -147,7 +148,7 @@ export const columns: ColumnDef<Token>[] = [
     },
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Price
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -165,7 +166,7 @@ export const columns: ColumnDef<Token>[] = [
     },
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           24h
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -176,7 +177,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "created",
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Created
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -192,7 +193,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "volume_usd",
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Volume
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -216,7 +217,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "transactions",
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Swaps
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -236,7 +237,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "reserve",
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Liquidity
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -260,7 +261,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "cap",
     header: ({column}) => {
       return (
-        <Button className='flex justify-center items-center' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Cap
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -284,7 +285,7 @@ export const columns: ColumnDef<Token>[] = [
     accessorKey: "dex",
     header: ({column}) => {
       return (
-        <Button variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+        <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
           Dex
           <ArrowUpDown className='ml-2 h-4 w-4'/>
         </Button>
@@ -294,26 +295,9 @@ export const columns: ColumnDef<Token>[] = [
       const market =  row.getValue("dex")
       const dex = market
 
-      return <div className="flex justify-center items-center text-xs">{dex}</div>
-    },
-  },
-  {
-    accessorKey: "pooladdress",
-    header: () => <div>Detail</div>,
-    cell: ({row}:any) => {
-
-      const market =  row.getValue("pooladdress")
-
-      return (
-        <div className='flex items-center gap-x-2 pr-3'>
-        {<Link target='_blank' href={''}><GoHomeFill size={16} /></Link>}
-        {<Link target='_blank' href={''}><Image src={''} alt='Etherscan' width={200} height={200} className='size-4 object-cover'/></Link>}
-        {/* @ts-ignore */}
-        {<Link target='_blank' href={`https://t.me/${''}`}><TbBrandTelegram size={16} /></Link>}
-        {<Link target='_blank' href={`https://twitter.com/${''}`}><BsTwitterX size={16} /></Link>}
-        {<Link target='_blank' href={''}><BsFileEarmarkPdfFill size={16} /></Link>}
+      return <div className="flex justify-center items-center text-xs">
+        <DexImage dex={dex} size={6}/>
       </div>
-      )
     },
-  },
+  }
 ]

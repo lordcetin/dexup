@@ -55,6 +55,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'files.readme.io'
       },
+      {
+        protocol: 'https',
+        hostname: 'tonstarter-cdn.ams3.digitaloceanspaces.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 's2.coinmarketcap.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'img.cryptorank.io'
+      },
+      {
+        protocol: 'https',
+        hostname: 'seekvectors.com'
+      },
     ]
   },
   webpack: config => {

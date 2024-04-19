@@ -11,7 +11,7 @@ export const maxDuration = 5
 export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const networkname = searchParams.get('networkname')
-  const data:any = await client.get(`newPool${networkname?.toLocaleUpperCase()}`)
+  const data:any = await client.get(`newPool${networkname?.toUpperCase()}`)
 
   return NextResponse.json(data,{status:200})
 

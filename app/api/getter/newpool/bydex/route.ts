@@ -12,7 +12,7 @@ export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   const dexname = searchParams.get('dexname')
 
-  const data:any = await client.get(`newPool${dexname?.toLocaleUpperCase()}`)
+  const data:any = await client.get(`newPool${dexname?.toUpperCase()}`)
 
   return NextResponse.json(data,{status:200})
 
