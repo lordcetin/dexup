@@ -11,6 +11,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { useRouter } from "next/navigation";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { MdOutlineNewReleases } from "react-icons/md";
+
 type Props = {};
 
 
@@ -72,8 +73,15 @@ const Pool = (props: Props) => {
         setNewPoolData(data)
         setLoadingNewPool(false)
     }
-    getTrendingPoolData()
-    getNewPoolData()
+
+    // Intervali kurma
+    const intervalId = setInterval(() => {
+      getTrendingPoolData();
+      getNewPoolData();
+    }, 3000); // her 3 saniyede bir çalıştır
+
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
   },[])
 
   useEffect(() => {
