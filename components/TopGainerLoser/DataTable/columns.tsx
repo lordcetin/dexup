@@ -23,6 +23,8 @@ import { BsFileEarmarkPdfFill } from "react-icons/bs";
 import Link from 'next/link';
 import { useSwitchChain,useAccount } from 'wagmi'
 import { isEmpty } from 'lodash';
+import RadialProgressBar from '@/components/RadialProgressBar/page';
+import CustomProgressBar from '@/components/CustomProgressBar/page';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -220,10 +222,10 @@ export const columns: ColumnDef<Token>[] = [
       const sells = market?.h24.sells
 
       return (
-      <div className="flex-col grid justify-center items-center -space-y-5 text-xs">
-        <span className='self-start text-green-500 block'>Buys: {buy}</span><br />
-        <span className='self-start text-red-500 block'>Sells: {sells}</span>
-      </div>)
+        <div className='overflow-hidden h-8 flex items-center'>
+        <RadialProgressBar buys={buy} sells={sells} title1='Buys' title2='Sells'/>
+        </div>
+    )
     },
   },
   {

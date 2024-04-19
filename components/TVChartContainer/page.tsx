@@ -80,7 +80,7 @@ export const TVChartContainer = (props:any) => {
 					name:sym.short,
 					type: 'crypto',
 					session: '24x7',//24x7
-					timezone: 'Etc/UTC',//Etc/UTC
+					timezone: 'exchange',//Etc/UTC
 					exchange: 'DEXUP',
 					minmov: 1,
 					pricescale: 1000000,
@@ -193,13 +193,16 @@ export const TVChartContainer = (props:any) => {
 				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
 				const chaId = network[0]?.id
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '3' ? 'minute?aggregate=3' : resolution === '5' ? 'minute?aggregate=5' : resolution === '30' ? 'minute?aggregate=30' : resolution === '45' ? 'minute?aggregate=45' : resolution === '1H' ? 'hour?aggregate=1' : resolution === '4H' ? 'hour?aggregate=4' : 'minute?aggregate=1' }&before_timestamp=${String(from) + "000"}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '3' ? 'minute?aggregate=3' : resolution === '5' ? 'minute?aggregate=5' : resolution === '30' ? 'minute?aggregate=30' : resolution === '45' ? 'minute?aggregate=45' : resolution === '1H' ? 'hour?aggregate=1' : resolution === '4H' ? 'hour?aggregate=4' : 'minute?aggregate=1' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});
 
 				const dataOHLC = await responseOHLC.json();
 				const datas = dataOHLC?.data?.attributes?.ohlcv_list
+
+				console.log("FROM: " , new Date(parseInt(String(to * 1000))))
+				console.log("TIME: " , new Date(datas[0][0] * 1000))
 
 		const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
 				return {
@@ -234,6 +237,7 @@ export const TVChartContainer = (props:any) => {
 			container: chartContainerRef.current,
 			library_path: props.library_path,
 			locale: props.locale as LanguageCode,
+			timezone: 'exchange',
 			// disabled_features: ["use_localstorage_for_settings"],
 			// enabled_features: ["study_templates"],
 			// charts_storage_url: props.charts_storage_url,

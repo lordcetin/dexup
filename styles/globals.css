@@ -28,6 +28,26 @@ input::-webkit-inner-spin-button {
    -webkit-appearance: none;
 }
 
+.donut {
+  display: block;
+  margin: auto;
+  max-width: 100%;
+}
+
+.donut-ring {
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.donut-segment {
+  transition: stroke-dasharray 0.3s, stroke-dashoffset 0.3s ease;
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.donut-hole {
+  transition: fill 0.3s ease;
+}
+
 .bgradient{
   background-color:rgb(11, 15, 19);
   background-image:

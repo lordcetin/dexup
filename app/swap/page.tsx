@@ -157,6 +157,7 @@ export default function Swap() {
     client_id: "tradingview.com",
     container: 'tv_chart_container',
     user_id: "public_user_id",
+    timezone: 'exchange',
     supports_group_request: false,
     supports_marks: false,
     supports_search: false,
