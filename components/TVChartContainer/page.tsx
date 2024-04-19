@@ -33,7 +33,7 @@ export const TVChartContainer = (props:any) => {
 	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1S','3S','5S'],
+			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1H','4H'],
 			intraday_multipliers: ['1','3','5','15','30','45'],
 			seconds_multipliers: ['1S','3S','5S'],
 
@@ -88,7 +88,7 @@ export const TVChartContainer = (props:any) => {
 					has_seconds:true,
 					intraday_multipliers: ['1','3','5','15','30','45'],
 					seconds_multipliers: ['1S','3S','5S'],
-					supported_resolution: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1S','3S','5S'],
+					supported_resolution: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1H','4H'],
 					volume_precision: 2,
 					data_status: 'streaming',
 					supports_group_request: false,
@@ -104,7 +104,7 @@ export const TVChartContainer = (props:any) => {
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
-			// console.log("resoulution",resolution)
+			console.log("resoulution",resolution)
 			const { from, to, firstDataRequest,countBack } = periodParams;
 
 			try {
@@ -193,7 +193,7 @@ export const TVChartContainer = (props:any) => {
 				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
 				const chaId = network[0]?.id
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/minute?aggregate=15&before_timestamp=${from}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '3' ? 'minute?aggregate=3' : resolution === '5' ? 'minute?aggregate=5' : resolution === '30' ? 'minute?aggregate=30' : resolution === '45' ? 'minute?aggregate=45' : resolution === '1H' ? 'hour?aggregate=1' : resolution === '4H' ? 'hour?aggregate=4' : 'minute?aggregate=1' }&before_timestamp=${String(from) + "000"}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});
