@@ -61,7 +61,7 @@ const Pool = (props: Props) => {
     }
     const getNewPoolData = async () => {
         setLoadingNewPool(true)
-        const res = await fetch(`/api/getter/newPool`,{
+        const res = await fetch(`/api/getter/newpool`,{
           method:'GET',
           cache:'no-store',
           next:{revalidate:200}
