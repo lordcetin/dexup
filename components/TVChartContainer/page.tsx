@@ -201,8 +201,6 @@ export const TVChartContainer = (props:any) => {
 				const dataOHLC = await responseOHLC.json();
 				const datas = dataOHLC?.data?.attributes?.ohlcv_list
 
-				console.log("FROM: " , new Date(parseInt(String(to * 1000))))
-				console.log("TIME: " , new Date(datas[0][0] * 1000))
 
 		const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
 				return {

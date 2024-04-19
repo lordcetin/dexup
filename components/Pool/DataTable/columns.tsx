@@ -24,6 +24,7 @@ import Link from 'next/link';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useSwitchChain , useAccount} from 'wagmi';
+import ProgressBar from '@/components/ProgressBar/page';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -227,10 +228,8 @@ export const columns: ColumnDef<Token>[] = [
       const sells = market?.h24.sells
 
       return (
-      <div className="flex-col grid justify-center items-center -space-y-5 text-xs">
-        <span className='self-start text-green-500 block'>Buys: {buy}</span><br />
-        <span className='self-start text-red-500 block'>Sells: {sells}</span>
-      </div>)
+        <ProgressBar buys={buy} sells={sells} title1='Buys' title2='Sells'/>
+      )
     },
   },
   {

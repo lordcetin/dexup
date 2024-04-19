@@ -25,6 +25,7 @@ import { useSwitchChain,useAccount } from 'wagmi'
 import { isEmpty } from 'lodash';
 import RadialProgressBar from '@/components/RadialProgressBar/page';
 import CustomProgressBar from '@/components/CustomProgressBar/page';
+import ProgressBar from '@/components/ProgressBar/page';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -223,7 +224,7 @@ export const columns: ColumnDef<Token>[] = [
 
       return (
         <div className='overflow-hidden h-8 flex items-center'>
-        <RadialProgressBar buys={buy} sells={sells} title1='Buys' title2='Sells'/>
+        <ProgressBar buys={buy} sells={sells} title1='Buys' title2='Sells'/>
         </div>
     )
     },
