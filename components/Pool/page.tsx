@@ -52,7 +52,7 @@ const Pool = (props: Props) => {
         // const response = await data.json()
         const res = await fetch(`/api/getter/trendingpools`,{
           method:'GET',
-          cache:'no-store',
+          cache:'no-cache',
           next:{revalidate:200}
         })
         let data = await res.json()
@@ -64,7 +64,7 @@ const Pool = (props: Props) => {
         setLoadingNewPool(true)
         const res = await fetch(`/api/getter/newpool`,{
           method:'GET',
-          cache:'no-store',
+          cache:'no-cache',
           next:{revalidate:200}
         })
         let data = await res.json()
