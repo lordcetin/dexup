@@ -811,7 +811,7 @@ const handleDeleteComment = async (id:any) => {
               return (
                 <>
                 <div key={index} className="flex-col w-full items-center border border-slate-500 bg-slate-800 rounded-lg px-3 py-2 relative">
-                <AiOutlineCloseCircle className="absolute right-3 hover:text-red-500 cursor-pointer" onClick={() => handleDeleteComment(item.id)}/>
+                {item.authorWallet === address ? <AiOutlineCloseCircle className="absolute right-3 hover:text-red-500 cursor-pointer" onClick={() => handleDeleteComment(item.id)}/> : null}
                 <CopyClipboard address={item.authorWallet}/>
                 <span className="text-sm whitespace-pre-wrap flex-wrap max-h-30">
                 {item.comment}
