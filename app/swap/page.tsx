@@ -196,7 +196,10 @@ export default function Swap() {
       if(tokenInfoData.error === 'coin not found'){
         setDetailError('It will take time for the data for this token to be generated')
       }
-      console.log("tokenInfoData",tokenInfoData)
+
+      const resasaf = await fetch(`/api/comments`)
+      const dataasfdag = await resasaf.json()
+      setCommentData(dataasfdag.filter((u:any) => u.pairAddress === pooladdress))
 
       let txhashs:any = []
       const ressa = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`,{
@@ -206,7 +209,7 @@ export default function Swap() {
       }).then((res:any) => res.json()).then((data:any) => {
   
         const tradedata = data.data.filter((u:any) => u.attributes.to_token_address !== pairData?.baseaddress).map((item:any) => {
-          console.log("item",item)
+
           return {
             block_number:item.attributes.block_number,
             block_timestamp:item.attributes.block_timestamp,
@@ -500,19 +503,7 @@ function formatCreatedAt(createdAt:any) {
   }
 }
 
-useEffect(() => {
 
-  const getComment = async () => {
-    const res = await fetch(`/api/comments`,{
-      method:'GET',
-      next:{revalidate:300}
-    })
-    const data = await res.json()
-    setCommentData(data.filter((u:any) => u.pairAddress === pooladdress))
-  }
-
-  getComment()
-},[])
 
 const handleComment = async () => {
   if(isConnected){
@@ -524,6 +515,7 @@ const handleComment = async () => {
     formData.append("comment",String(comment));
   const {data} = await axios.post(`/api/comments/add`,formData)
   setComment("")
+  router.refresh()
   setCommentLoading(false)
   }
 }
@@ -536,6 +528,7 @@ const handleDeleteComment = async (id:any) => {
 
   const {data} = await axios.post(`/api/comments/delete`,formData)
   toast.success(data)
+  router.refresh()
   setCommentLoading(false)
   }
 }
