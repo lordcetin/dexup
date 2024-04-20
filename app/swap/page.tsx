@@ -7,7 +7,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import React, { useEffect, useLayoutEffect, useRef, useState,memo} from "react";
 import {Contract, ethers, formatEther, formatUnits, parseUnits} from 'ethers'
 import axios from "axios";
-import { useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import {
   useAccount,
   useReadContract,
@@ -29,7 +29,7 @@ import Image from "next/image";
 //@ts-ignore
 import { createChart,CrosshairMode,LineStyle} from 'lightweight-charts';
 import Chart from '@/components/Chart/page'
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiOutlineCloseCircle, AiOutlineLoading3Quarters } from "react-icons/ai";
 import {isEmpty} from 'lodash';
 import {abi} from "@/lib/abi";
 import DexRouter from "@/lib/DexRouter.json";
@@ -61,6 +61,8 @@ import Input from "@/components/Input/page";
 import { IoSend } from "react-icons/io5";
 import {uid} from 'uid';
 import TimeAgo from '@/components/TimeAgo/page'
+import CopyClipboard from "@/components/CopyClipboard/page";
+import { toast } from "react-toastify";
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -141,6 +143,8 @@ export default function Swap() {
   const { open,close } = useWeb3Modal()
   const { writeContractAsync } = useWriteContract()
 
+  const router = useRouter()
+
   const { switchChain,isSuccess,isPending } = useSwitchChain()
   const [pubKey, setPubKey] = useState(null);
   // const web3 = useWeb3js({chainId:chainId})
@@ -172,7 +176,7 @@ export default function Swap() {
   };
 
   
-  useLayoutEffect(() => {
+  useEffect(() => {
 
     const getPair = async () => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
@@ -484,7 +488,7 @@ useEffect(() => {
   }
 
   getComment()
-},[])
+},[commentLoading])
 
 const handleComment = async () => {
   if(isConnected){
@@ -500,6 +504,18 @@ const handleComment = async () => {
   }
 }
 
+const handleDeleteComment = async (id:any) => {
+  if(isConnected){
+    setCommentLoading(true)
+    const formData = new FormData();
+    formData.append("id",id);
+
+  const {data} = await axios.post(`/api/comments/delete`,formData)
+  toast.success(data)
+  setCommentLoading(false)
+  }
+}
+
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
 
@@ -510,15 +526,14 @@ const handleComment = async () => {
         <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5 h-[720px] flex-shrink-0 box-border" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] rounded-xl p-5"}>
 
           <div className="flex justify-between items-center gap-x-6 w-full">
-          <div className={details ? "flex items-center gap-x-6 w-1/12 self-start" : "flex items-center gap-x-6 w-1/12"}>
+          <div className={details ? "flex items-center gap-x-6 w-1/12 self-start z-50" : "flex items-center gap-x-6 w-1/12 z-50"}>
           <div className="flex-col flex gap-2">
             <div className="flex gap-x-2 items-center">
               <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
               <h1>{pairdata?.baseTokenSymbol}</h1>
             </div>
             <div className="flex items-center gap-x-1">
-              <p className="text-xs">{pairdata && pairdata?.baseaddress?.slice(0,5) + '...' + pairdata?.baseaddress?.slice(38)}</p>
-              <CopyToClipboard text={pairdata?.baseaddress} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+              <CopyClipboard address={pairdata && pairdata?.baseaddress}/>
             </div>
           </div>
 
@@ -528,8 +543,7 @@ const handleComment = async () => {
               <h1>{pairdata?.quoteTokenSymbol}</h1>
             </div>
             <div className="flex items-center gap-x-1">
-            <p className="text-xs">{pairdata && pairdata?.quoteaddress?.slice(0,5) + '...' + pairdata?.quoteaddress?.slice(38)}</p>
-            <CopyToClipboard text={pairdata?.baseaddress} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+              <CopyClipboard address={pairdata && pairdata?.quoteaddress}/>
             </div>
           </div>
           </div>
@@ -582,9 +596,9 @@ const handleComment = async () => {
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Holder_count</p><p>{goplusecure?.lp_holder_count}</p></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Lp Total Supply</p><p>{goplusecure?.lp_total_supply}</p></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Total Supply</p><p>{goplusecure?.total_supply}</p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Address</p><p>{goplusecure?.owner_address?.slice(0,5) + '...' + goplusecure?.owner_address?.slice(38)}</p><CopyToClipboard text={goplusecure?.owner_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Address</p><CopyClipboard address={goplusecure?.owner_address}/></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Owner Balance</p><p>{goplusecure?.owner_balance} <span className="text-white/50">{parseFloat(goplusecure?.owner_percent).toFixed(2)}%</span></p></div>
-                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Address</p><p>{goplusecure?.creator_address?.slice(0,5) + '...' + goplusecure?.creator_address?.slice(38)}</p><CopyToClipboard text={goplusecure?.creator_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none"><MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard></div>
+                  <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Address</p><CopyClipboard address={goplusecure?.creator_address}/></div>
                   <div className="flex items-center gap-x-1 py-1"><p className="text-white/50">Creator Balance</p><p>{goplusecure?.creator_balance} <span className="text-white/50">{parseFloat(goplusecure?.creator_percent).toFixed(2)}%</span></p></div>
                 </div>
               </div>
@@ -722,7 +736,7 @@ const handleComment = async () => {
           <h1 className="flex items-center w-full text-xl font-bold">{tokenInfo?.name}</h1>
           <div className="flex items-center gap-x-2 mt-2">
           <p className="font-light text-white/50">{tokenInfo?.symbol.toUpperCase()}</p>
-          <CopyToClipboard text={tokenInfo?.contract_address} onCopy={() => setCopied(true)}><button type="button" className="outline-none text-xs flex items-center gap-x-1 bg-brandblack hover:bg-zinc-800 transition-all rounded-md p-1">{tokenInfo?.contract_address?.slice(0,5)+ "..." +tokenInfo?.contract_address?.slice(38)} <MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+          <CopyClipboard address={tokenInfo && tokenInfo?.contract_address}/>
           </div>
           <div className="flex items-center w-full mt-5 ">
           <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description?.en}</p>
@@ -779,7 +793,9 @@ const handleComment = async () => {
             {commentData.map((item:any,index:any) => {
               return (
                 <>
-                <div key={index} className="flex-col w-full items-center border border-slate-500 bg-slate-800 rounded-lg px-3 py-2">
+                <div key={index} className="flex-col w-full items-center border border-slate-500 bg-slate-800 rounded-lg px-3 py-2 relative">
+                <AiOutlineCloseCircle className="absolute right-3 hover:text-red-500 cursor-pointer" onClick={() => handleDeleteComment(item.id)}/>
+                <CopyClipboard address={item.authorWallet}/>
                 <span className="text-sm whitespace-pre-wrap flex-wrap max-h-30">
                 {item.comment}
                 </span>

@@ -16,7 +16,7 @@ datasource db {
 
 model Comments {
   id        Int      @id @default(autoincrement())
-  commentId String
+  commentId String @unique
   pairAddress String
   authorWallet String
   comment String
