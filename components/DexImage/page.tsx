@@ -52,6 +52,8 @@ const DexImage = ({dex,size}: Props) => {
     <img src="https://ton.app/media/0f34939b-44b1-4be6-9ac1-2f97d61655d4.png?w=640&q=50" alt="Ethereum Logo" className={`size-${size}`}/>
     : dex === 'aerodrome' ?
     <img src="https://aerodrome.finance/brand-kit/symbol.png" alt="Ethereum Logo" className={`size-${size}`}/>
+    : dex === 'thena' ?
+    <img src="https://dex-bin.bnbstatic.com/static/dapp-uploads/oadwdH7lGdGOP9NMT1jQR" alt="Ethereum Logo" className={`size-${size}`}/>
     : dex === 'aerodrome-base' ?
     <img src="https://aerodrome.finance/brand-kit/symbol.png" alt="Ethereum Logo" className={`size-${size}`}/>
     : <span>{dex}</span>

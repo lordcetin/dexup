@@ -71,6 +71,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'seekvectors.com'
       },
+      {
+        protocol: 'https',
+        hostname: 'dex-bin.bnbstatic.com'
+      },
     ]
   },
   webpack: config => {

@@ -14,7 +14,11 @@ datasource db {
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
-model GainerLoser {
+model Comments {
   id        Int      @id @default(autoincrement())
-  tokens    Json
+  commentId String
+  pairAddress String
+  authorWallet String
+  comment String
+  createdAt Int
 }

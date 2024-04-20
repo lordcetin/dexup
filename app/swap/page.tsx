@@ -57,6 +57,10 @@ import AuroBanner from "@/components/AuroBanner/page";
 import { BiWorld } from "react-icons/bi";
 import ImageColorPalette from "@/components/AuroBanner/page";
 import { NextPageContext } from "next";
+import Input from "@/components/Input/page";
+import { IoSend } from "react-icons/io5";
+import {uid} from 'uid';
+import TimeAgo from '@/components/TimeAgo/page'
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -92,6 +96,7 @@ export default function Swap() {
   const [received,setReceived] = useState<any>(0);
   const [CHAINID,setCHAINID] = useState<any>();
   const [switchtoken,setSwitch] = useState<boolean>(false);
+  const [commentLoading,setCommentLoading] = useState<boolean>(false);
   const [details,setOpenDetails] = useState<boolean>(false);
   const [copied,setCopied] = useState<boolean>(false);
   const [loadingtrader,setloadingtrader] = useState<boolean>(false);
@@ -111,8 +116,10 @@ export default function Swap() {
   const [realamount,setRealAmout] = useState<any>("");
   const [baseNetID,setBaseNetId] = useState<any>("");
   const [quoteNetID,setQuoteNetId] = useState<any>("");
+  const [comment,setComment] = useState<any>("");
   const [calldata,setCallData] = useState<any>([]);
   const [goplusecure,setGoPlus] = useState<any>([]);
+  const [commentData,setCommentData] = useState<any>([]);
   const [tokenInfo,setTokenInfo] = useState<any>([]);
   const [approveData,setApproveData] = useState<any>([]);
   const [traderData,setTraderData] = useState<any>([]);
@@ -465,6 +472,33 @@ function formatCreatedAt(createdAt:any) {
   }
 }
 
+useEffect(() => {
+
+  const getComment = async () => {
+    const res = await fetch(`/api/comments`,{
+      method:'GET',
+      next:{revalidate:300}
+    })
+    const data = await res.json()
+    setCommentData(data.filter((u:any) => u.pairAddress === pooladdress))
+  }
+
+  getComment()
+},[])
+
+const handleComment = async () => {
+  if(isConnected){
+    setCommentLoading(true)
+    const formData = new FormData();
+    formData.append("commentId",String(uid(7)+""+address?.slice(7)));
+    formData.append("pairAddress",pooladdress);
+    formData.append("authorWallet",String(address));
+    formData.append("comment",String(comment));
+  const {data} = await axios.post(`/api/comments/add`,formData)
+  setComment("")
+  setCommentLoading(false)
+  }
+}
 
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
@@ -737,8 +771,49 @@ function formatCreatedAt(createdAt:any) {
         <h1 className="flex items-center w-full text-white/50">Past 24 Hour Trades</h1>
         <div className="flex items-center w-full gap-x-2">
         <DataTable loadingtrader={loadingtrader} columns={columns} data={traderData} />
-        <div className="w-3/6 border border-white/10 rounded-xl p-5 h-[520px] flex-col justify-center items-center">
+        <div className="w-3/6 border border-white/10 rounded-xl px-3 py-5 h-[520px] flex-col justify-center items-center relative">
           <p className="flex justify-center items-center w-full text-white/50">Comments</p>
+          {isConnected ? 
+          <>
+          <div className="flex-col items-center rounded-lg h-[calc(100%-77px)] overflow-y-auto p-3 w-full space-y-2">
+            {commentData.map((item:any,index:any) => {
+              return (
+                <>
+                <div key={index} className="flex-col w-full items-center border border-slate-500 bg-slate-800 rounded-lg px-3 py-2">
+                <span className="text-sm whitespace-pre-wrap flex-wrap max-h-30">
+                {item.comment}
+                </span>
+                <div className="flex justify-end items-center w-full self-end text-xs"><TimeAgo timestamp={item.createdAt}/></div>
+                </div>
+                </>
+              )
+            })}
+          </div>
+          <div className="absolute bottom-2 w-full left-0 outline-none h-16 flex items-center gap-x-2 p-3">
+            <div className="flex justify-center items-center gap-x-2 border border-white/10 rounded-lg">
+            <Input
+            type="text"
+            id="name"
+            label="Comment"
+            value={comment}
+            onChange={(e: any) => setComment(e.target.value)}
+            onKeyDown={(e:any) => {
+              if (e.key === 'Enter') {
+                handleComment()
+              }
+            }}
+            />
+            {commentLoading ? <AiOutlineLoading3Quarters size={23} className="animate-spin mr-3"/> : <button type="button" onClick={() => handleComment()} className="mr-3 hover:scale-75 hover:opacity-50 transition-all"><IoSend size={23}/></button>}
+            </div>
+          </div>
+          </>  
+          :
+          <div className="flex-col flex justify-center items-center w-full h-full">
+            <h1 className="text-2xl font-semibold text-white/80">Wallet Not Connected</h1>
+            <span className="text-sm text-white/30">Please connect a wallet to comment.</span>
+            <button type="button" onClick={() => open()} className="my-3 border border-white/50 rounded-lg px-7 py-2 hover:text-white/20 hover:border-white/20">Connect Wallet</button>
+          </div>
+          }
         </div>
         </div>
       </div>
