@@ -63,6 +63,7 @@ import {uid} from 'uid';
 import TimeAgo from '@/components/TimeAgo/page'
 import CopyClipboard from "@/components/CopyClipboard/page";
 import { toast } from "react-toastify";
+import EditModal from "@/components/EditModal/page";
 
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "2XEYFwLBkLUxkQx5ZpFAAMzWhQxS4A9QzjhcPhUwhfwy",
@@ -138,6 +139,7 @@ export default function Swap() {
   const [alltoken,setDataALLTOKEN] = useState<any>([]);
   const [paidloading,setPaidLoading] = useState(false);
   const [settings,setSettings] = useState(false);
+  const [editModal,setEditDetailsModal] = useState(false);
   const [receiveloading,setReceiveLoading] = useState(false);
   const {address,isConnected,chainId} = useAccount();
   const { open,close } = useWeb3Modal()
@@ -535,6 +537,10 @@ const handleDeleteComment = async (id:any) => {
 
   return (
     <main className="flex-col items-center w-full mt-7 gap-x-6">
+      {editModal ? 
+      <EditModal setEditDetailsModal={setEditDetailsModal}/>
+      : null
+      }
 
       <div className="flex gap-x-2 items-center">
       <div className="flex-col items-center">
@@ -625,8 +631,8 @@ const handleDeleteComment = async (id:any) => {
               <div className="flex justify-center items-center gap-x-4">
 
             <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs">
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.baseprice)}</span></div>
-              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.quoteprice)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.baseprice).toFixed(4)}</span></div>
+              <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.quoteprice).toFixed(2)}</span></div>
               <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
               <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.fdv)}</span></div>
               <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.reserve)}</span></div>
@@ -774,7 +780,7 @@ const handleDeleteComment = async (id:any) => {
             {tokenInfo?.links?.subreddit_url && <Link href={tokenInfo?.links?.subreddit_url}><FaReddit size={18} className="hover:opacity-15 transition-all"/></Link>}
           </div>
           <div className="flex justify-center items-center w-full mt-3">
-            <button className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>
+            <button onClick={() => setEditDetailsModal(true)} className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>
           </div>
           </div>
         </div>

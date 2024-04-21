@@ -27,7 +27,21 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
    -webkit-appearance: none;
 }
-
+.Typewriter{
+  z-index: 99999;
+}
+.modalgradient{
+  background-color:hsla(215,27%,6%,1);
+  background-image:
+  radial-gradient(at 48% 41%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 99% 100%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 100% 1%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 99%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 52% 100%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 66%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 53% 0%, hsla(217,24%,10%,1) 0px, transparent 50%),
+  radial-gradient(at 0% 1%, hsla(189,74%,49%,0.57) 0px, transparent 50%);
+}
 .donut {
   display: block;
   margin: auto;

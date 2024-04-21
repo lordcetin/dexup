@@ -18,6 +18,8 @@ const DexImage = ({dex,size}: Props) => {
     <img src="./assets/uniswap_v3.svg" alt="Uniswap V3 Logo" className={`size-${size}`}/>
     : dex === 'uniswap-v3-base' ?
     <img src="./assets/uniswap_v3.svg" alt="Uniswap V3 Logo" className={`size-${size}`}/>
+    : dex === 'terraswap' ?
+    <img src="https://assets.coingecko.com/markets/images/835/large/Terraswap.png?1706864857" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'sushiswap' ?
     <img src="https://seekvectors.com/storage/images/SushiSwap-01.svg" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'balancer_ethereum' ?
