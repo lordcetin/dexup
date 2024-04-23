@@ -30,6 +30,10 @@ type AppContextType = {
   setQTokenSymbol:React.Dispatch<React.SetStateAction<string>>;
   netchain:string;
   setChain:React.Dispatch<React.SetStateAction<string>>;
+  details: boolean;
+  setOpenDetails: React.Dispatch<React.SetStateAction<boolean>>;
+  editModal: boolean;
+  setEditDetailsModal: React.Dispatch<React.SetStateAction<boolean>>;
   networkId:string;
   setNetworkId:React.Dispatch<React.SetStateAction<string>>;
   networkShort:string;
@@ -78,6 +82,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [tokenBSymbol, setBTokenSymbol] = useState('');
   const [tokenQSymbol, setQTokenSymbol] = useState('');
   const [netchain, setChain] = useState('');
+  const [details,setOpenDetails] = useState(false);
+  const [editModal,setEditDetailsModal] = useState(false);
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
   const [littleMovieDatas, setLittleMovieDatas] = useState<UserProfile | string[] | any>([]);
@@ -114,6 +120,8 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       baseCoinId, setBaseCoinId,
       quoteCoinId, setQuoteCoinId,
       netchain,setChain,
+      details,setOpenDetails,
+      editModal,setEditDetailsModal,
       }}>
       {children}
     </AppContext.Provider>

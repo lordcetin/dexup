@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
 import React from "react";
-import { BackgroundGradientAnimation } from "../ui/background-gradient-animation";
+import { BackgroundGradientAnimation } from "../ui/background-gradient-animation2";
 
 type Props = {
 

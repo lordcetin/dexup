@@ -83,7 +83,7 @@ export const TVChartContainer = (props:any) => {
 					timezone: 'exchange',//Etc/UTC
 					exchange: 'DEXUP',
 					minmov: 1,
-					pricescale: 1000000,
+					pricescale: 1000000,//100
 					has_intraday:true,
 					has_seconds:true,
 					intraday_multipliers: ['1','3','5','15','30','45'],
@@ -104,7 +104,7 @@ export const TVChartContainer = (props:any) => {
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
-			console.log("resoulution",resolution)
+
 			const { from, to, firstDataRequest,countBack } = periodParams;
 
 			try {
@@ -283,7 +283,7 @@ export const TVChartContainer = (props:any) => {
 
 	return (
 		<>
-		<div className="w-[980px] h-[600px] overflow-hidden rounded-xl">
+		<div className="w-[980px] h-[600px] overflow-hidden rounded-xl bg-[#131722] border border-white/10">
 		{/* <div id="tvchart" className={styles.TVChartContainer}></div> */}
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</div>

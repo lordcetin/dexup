@@ -12,7 +12,7 @@ interface InputProps{
 
 const Input: React.FC<InputProps> = ({id,onChange,value,label,type,onKeyDown}) => {
   return (
-  <div className="relative">
+  <div className="relative w-full">
     <input
     type={type}
     onChange={onChange}
@@ -20,7 +20,7 @@ const Input: React.FC<InputProps> = ({id,onChange,value,label,type,onKeyDown}) =
     id={id}
     autoComplete='off'
     onKeyDown={onKeyDown}
-    className={`px-6 pt-6 pb-1 w-[430px] text-md text-white bg-transparent rounded-lg focus:outline-none focus:ring-0 peer appearance-none outline-none border border-transparent`}
+    className={`px-6 pt-6 pb-1 w-full text-md text-white bg-transparent rounded-lg focus:outline-none focus:ring-0 peer appearance-none outline-none border border-transparent`}
     placeholder=" "
     required
     />
