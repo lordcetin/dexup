@@ -15,7 +15,7 @@ function CopyClipboard({address}: Props) {
     }
   },[copied])
   return (
-  <CopyToClipboard text={address} onCopy={() => setCopied(true)}><button type="button" className="outline-none flex items-center gap-x-1 text-xs bg-brandblack p-1 rounded-md hover:bg-brandblack/50">{address?.slice(0,5) + '...' + address?.slice(38)} <MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
+  <CopyToClipboard text={address} onCopy={() => setCopied(true)}><button type="button" className="slashed-zero outline-none flex items-center gap-x-1 text-xs bg-brandblack p-1 rounded-md hover:bg-brandblack/50">{address?.slice(0,5) + '...' + address?.slice(38)} <MdContentCopy className='transition-all hover:scale-75'/></button></CopyToClipboard>
   );
 }
 

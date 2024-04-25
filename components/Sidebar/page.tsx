@@ -13,7 +13,7 @@ const Sidebar = (props: Props) => {
 
   return (
     <div className="flex group">
-  <aside className="w-[56px] flex-col flex group-hover:w-[180px] flex-shrink-0 z-[9999] h-full border-r-[1px] border-r-white fixed border-opacity-5 transition-all duration-300 ease-in-out group-hover:bg-brandblack group-hover:bg-opacity-30 group-hover:backdrop-blur-sm">
+  <aside className="w-[56px] flex-col flex group-hover:w-[180px] flex-shrink-0 z-[999999999] h-full border-r-[1px] border-r-white fixed border-opacity-5 transition-all duration-300 ease-in-out group-hover:bg-brandblack group-hover:bg-opacity-30 group-hover:backdrop-blur-sm">
     <div className="flex justify-between items-center py-4">
       <div className="flex justify-center items-center w-full group-hover:hidden"><Link href={'/'}><Image src={'/logoicon.svg'} alt="Dexup Logo" width={800} height={800} className="size-6 object-cover"/></Link></div>
       <div className="hidden justify-center items-center w-full group-hover:flex"><Link href={'/'}><Image src={'/logo.svg'} alt="Dexup Logo" width={800} height={800} className="w-[120px] object-cover"/></Link></div>

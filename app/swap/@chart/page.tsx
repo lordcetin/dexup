@@ -38,7 +38,6 @@ const Chart = ({}: Props) => {
       const pairData = await response.json()
       setPairData(pairData)
       setBaseCoinId(pairData?.basecoinId)
-      console.log("pairData",pairData?.basecoinId)
     }
     getPairs()
   },[])
