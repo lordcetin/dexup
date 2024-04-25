@@ -22,7 +22,20 @@ export const TVChartContainer = (props:any) => {
 	const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
 	useEffect(() => {
-
+		function countLeadingZeros(number:any) {
+			// Sayıyı string'e dönüştür ve bilimsel gösterimde olup olmadığını kontrol et.
+			const numberStr = number.toString();
+			if (numberStr.includes('e-')) {
+				// Bilimsel gösterimdeki sayının üssünü döndür.
+				return parseInt(numberStr.split('e-')[1], 10);
+			} else {
+				// Ondalık kısmı al ve baştaki sıfır sayısını say.
+				const decimalPart = numberStr.split('.')[1];
+				if (!decimalPart) return 0; // Ondalık kısım yoksa sıfır döndür.
+				const match = decimalPart.match(/^0+/); // Başlangıçtaki sıfırları eşle.
+				return match ? match[0].length : 0; // Eşleşme varsa sıfır sayısını döndür.
+			}
+		}
 		const getAllSymbols = async () => {
 			const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId && baseCoinId.toLowerCase()}?tickers=true`,{
 					method:'GET',
@@ -73,6 +86,25 @@ export const TVChartContainer = (props:any) => {
 	
 			const sym = generateSymbol('Dexup',fromT,toT)
 
+			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/simple/price?ids=${baseCoinId}&vs_currencies=usd`,{
+				method:'GET',
+				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+			});
+			const priceData = await priceResponse.json();
+			const price = priceData[baseCoinId.toLowerCase()].usd;
+
+			// Önemli sıfır sayısını bulmak için price'ı string'e çevirip split ediyoruz.
+			const significantZeros = price.toString().includes('e') 
+					? parseInt(price.toString().split('e-')[1], 10) + 1 // Bilimsel gösterimde sıfır sayısını al.
+					: price.toString().split('.')[1]?.length || 0; // Ondalık kısmın uzunluğunu al.
+
+			// Ölçek faktörünü belirle. Eğer price bir tam sayı ise, faktör 100 olmalıdır.
+			const scale = significantZeros > 0 ? Math.pow(10, significantZeros) : 10000000;
+
+			// const decimalPlaces = countDecimals(price);
+			// const scale = decimalPlaces > 0 ? Math.pow(10, decimalPlaces) : 100;
+
+
 			const symbolInfo = {
 					symbol: sym.short,
 					ticker: sym.short,
@@ -83,7 +115,7 @@ export const TVChartContainer = (props:any) => {
 					timezone: 'exchange',//Etc/UTC
 					exchange: 'DEXUP',
 					minmov: 1,
-					pricescale: 1000000,//100
+					pricescale: scale,//100
 					has_intraday:true,
 					has_seconds:true,
 					intraday_multipliers: ['1','3','5','15','30','45'],
@@ -205,11 +237,11 @@ export const TVChartContainer = (props:any) => {
 		const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
 				return {
 						time: ohlcItem[0] * 1000,
-						open: parseFloat(ohlcItem[1].toFixed(4)),
-						high: parseFloat(ohlcItem[2].toFixed(4)),
-						low: parseFloat(ohlcItem[3].toFixed(4)),
-						close: parseFloat(ohlcItem[4].toFixed(4)),
-						volume: parseFloat(ohlcItem[5].toFixed(4))
+						open: parseFloat(ohlcItem[1]),
+						high: parseFloat(ohlcItem[2]),
+						low: parseFloat(ohlcItem[3]),
+						close: parseFloat(ohlcItem[4]),
+						volume: parseFloat(ohlcItem[5])
 				};
 		});
 				onHistoryCallback(bars, { noData: false, });

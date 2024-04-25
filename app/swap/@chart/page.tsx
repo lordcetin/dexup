@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
+import { useAppContext } from "@/context/AppContext";
 import { ResolutionString } from "@/public/static/charting_library/charting_library";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
@@ -29,12 +30,15 @@ const Chart = ({}: Props) => {
   const pooladdress = searchParams.get('pair')
   const [isScriptReady,setIsScriptReady] = useState(false)
   const [pairdata,setPairData] = useState<any>([]);
+  const {setBaseCoinId} = useAppContext()
 
   useEffect(() => {
     const getPairs:any = async () => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
       setPairData(pairData)
+      setBaseCoinId(pairData?.basecoinId)
+      console.log("pairData",pairData?.basecoinId)
     }
     getPairs()
   },[])
