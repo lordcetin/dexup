@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 let interval: any;
 
@@ -55,7 +56,13 @@ export const CardStack = ({
               zIndex: cards.length - index, //  decrease z-index for the cards that are behind
             }}
           >
-            <div className="flex-col items-center w-full font-normal text-neutral-200 backdropbackdrop-blur-2xl">
+            <div className="flex-col items-center w-full font-normal text-neutral-200 backdropbackdrop-blur-2xl relative overflow-hidden">
+            <div className={cn(
+            `absolute [background:radial-gradient(circle_at_center,_rgba(var(--third-color),_0.8)_0,_rgba(var(--third-color),_0)_50%)_no-repeat]`,
+            `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
+            `[transform-origin:calc(50%-200px)]`,
+            `animate-sixth`,
+            `opacity-15`)}></div>
               {card.content}
             </div>
             <div>
@@ -66,9 +73,11 @@ export const CardStack = ({
                 {card.designation}
               </p> */}
             </div>
+
           </motion.div>
         );
       })}
+
     </div>
   );
 };
