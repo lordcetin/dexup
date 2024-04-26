@@ -58,13 +58,13 @@ export function DataTable<TData, TValue>({
   })
  
   return (
-    <div className="flex-col flex items-center w-full mt-6">
+    <div className="flex-col flex items-center w-full mt-6 max-md:w-96">
 
-    <div className="flex justify-between items-center py-4 w-full px-5">
+    <div className="flex justify-between items-center py-4 w-full px-5 max-md:w-96">
       <div className="text-xl font-medium text-neutral-300 flex items-center gap-x-1"><h1>Top </h1><div onClick={() => setActive('gainers')}><DowngradientText title="Gainers"/></div> <h1>&</h1> <div onClick={() => setActive('losers')}><DowngradientText title="Losers"/></div></div>
 
     </div>
-    <div className="rounded-t-xl dark-glassmorphism overflow-hidden w-full h-[600px]">
+    <div className="rounded-t-xl dark-glassmorphism overflow-hidden w-full h-[600px] max-md:w-96 max-md:overflow-x-scroll">
 
       <Table>
         <TableHeader>

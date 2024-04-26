@@ -47,10 +47,10 @@ const TopGainerLoser = ({}: Props) => {
 
   return (
   <div className="flex-col flex justify-center items-center w-full">
-    <div className="flex items-center gap-x-4 relative">
+    <div className="flex max-md:flex-col items-center gap-x-4 relative">
 
     <DataTable gailosloading={gailosloading} columns={columns} data={isActive === 'gainers' ? topGainers : topLosers} />
-    <div className="w-[456px] h-[540px] border rounded-xl border-white/10 bg-gradient-to-tr from-black/15 via-slate-500/10 to-transparent flex justify-center items-center">
+    <div className="w-[456px] max-md:w-96 h-[540px] border rounded-xl border-white/10 bg-gradient-to-tr from-black/15 via-slate-500/10 to-transparent flex justify-center items-center">
     <div className="flex-col flex justify-center items-center w-full h-full text-neutral-500">AD PLACE</div>
     </div>
     </div>

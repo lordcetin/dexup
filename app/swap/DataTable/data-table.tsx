@@ -56,9 +56,9 @@ export function DataTable<TData, TValue>({
   })
  
   return (
-    <div className="flex-col flex items-center w-full mt-6">
+    <div className="flex-col flex items-center w-full mt-6 max-md:w-80">
 
-    <div className="rounded-t-xl dark-glassmorphism overflow-hidden w-[950px] h-[480px]">
+    <div className="rounded-t-xl dark-glassmorphism overflow-hidden w-[950px] max-md:w-80 h-[480px]">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

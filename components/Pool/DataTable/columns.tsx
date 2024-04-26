@@ -121,12 +121,12 @@ export const columns: ColumnDef<Token>[] = [
       }
 
       return (
-        <div onClick={() => goToSwap()} className='flex items-center gap-x-1 w-full pl-3 cursor-pointer'>
-          <div className='relative flex items-center mr-5'>
+        <div onClick={() => goToSwap()} className='flex items-center gap-x-1 w-full pl-3 cursor-pointer max-md:w-44'>
+          <div className='relative flex items-center mr-5 max-md:fixed z-[99999] max-md:bg-brandblack'>
             <img src={baseimage} width={800} height={800} className='size-8 object-cover rounded-full bg-white' alt=" "/>
             <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3 bg-white' alt=" "/>
           </div>
-        <div className='flex items-center gap-x-1'><h1 className='uppercase'>{name}</h1><h3 className='uppercase opacity-35'>{symbol}</h3></div>
+        <div className='flex items-center gap-x-1 max-md:fixed max-md:ml-12 z-[99999] max-md:bg-brandblack'><h1 className='uppercase'>{name}</h1><h3 className='uppercase opacity-35'>{symbol}</h3></div>
         </div>
       )
     }

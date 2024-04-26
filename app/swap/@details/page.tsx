@@ -93,11 +93,11 @@ const Details = ({}: Props) => {
 
   return (
     <div>
-    <div className={details ? "flex-col items-center gap-x-6 mt-5 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 h-[720px] flex-shrink-0 box-border" : "flex justify-between items-center gap-x-6 mt-5 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 w-full"}>
+    <div className={details ? "flex-col items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 h-[720px] max-md:h-full flex-shrink-0 box-border max-md:w-96" : "flex justify-between items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 w-full max-md:w-96"}>
 
     <div className="flex justify-between items-center gap-x-6 w-full">
-    <div className={details ? "flex items-center gap-x-6 w-1/12 self-start z-50" : "flex items-center gap-x-6 w-1/12 z-50"}>
-    <div className="flex-col flex gap-2">
+    <div className={details ? "flex items-center gap-x-6 w-1/12 max-md:w-96 self-start z-50" : "flex items-center gap-x-6 w-1/12 max-md:w-96 z-50"}>
+    <div className="flex-col flex gap-2 max-md:text-xs">
       <div className="flex gap-x-2 items-center">
         <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
         <h1>{pairdata?.baseTokenSymbol}</h1>
@@ -107,7 +107,7 @@ const Details = ({}: Props) => {
       </div>
     </div>
 
-    <div className="flex-col flex gap-2">
+    <div className="flex-col flex gap-2 max-md:text-xs">
       <div className="flex gap-x-2 items-center">
         <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
         <h1>{pairdata?.quoteTokenSymbol}</h1>
@@ -125,7 +125,7 @@ const Details = ({}: Props) => {
       </button>
     </div>
 
-    <div className={details ? "flex items-center gap-x-2" : "flex ju items-center gap-x-2"}>
+    <div className={details ? "flex items-center gap-x-2 max-md:hidden" : "flex ju items-center gap-x-2 max-md:hidden"}>
       <div className="flex items-center gap-x-1">
       <Link href={
         chain === 'ethereum' ? `https://etherscan.io/token/${pairdata?.baseaddress}` 
@@ -143,7 +143,7 @@ const Details = ({}: Props) => {
 
 
     {details ? 
-    <div className="flex items-center w-full mt-5 gap-x-6">
+    <div className="flex max-md:flex-col items-center w-full mt-5 gap-x-6 max-md:gap-y-6">
       <div className="flex-col items-center p-5 rounded-lg border border-white/10 self-start">
         <Image src='https://files.readme.io/3fb6486-small-image.png' alt="Go Plus Logo" width={800} height={800} className="object-cover w-20" />
         <div className="items-center mt-5 text-xs">
@@ -174,10 +174,10 @@ const Details = ({}: Props) => {
         </div>
       </div>
 
-      <div className="flex-col items-center self-start">
-        <div className="flex justify-center items-center gap-x-4">
+      <div className="flex-col items-center self-start max-md:w-96">
+        <div className="flex max-md:flex-col justify-center items-center gap-x-4 max-md:w-96">
 
-      <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs">
+      <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs max-md:w-80">
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.baseprice).toFixed(4)}</span></div>
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.quoteprice).toFixed(2)}</span></div>
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
@@ -186,34 +186,34 @@ const Details = ({}: Props) => {
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h): <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start">
+      <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start max-md:w-80">
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust: {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg font-bold" : "text-orange-500 text-lg font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
+        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg max-md:text-xs font-bold" : "text-orange-500 text-lg max-md:text-xs font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
         <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Created: <span className="text-[8px] font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
       </div>
 
       </div>
 
-      <div className="flex-col items-center p-5 border border-white/10 rounded-lg mt-4">
+      <div className="flex-col items-center p-5 border border-white/10 rounded-lg mt-4 max-md:w-80 max-md:text-xs">
         <div className="flex justify-between items-center w-full border p-3 rounded-lg">
           <div>Price Change</div>
           <div className="flex-col flex justify-center text-center items-center">
               <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">5 minute</div>
-                <div className={pairdata?.price_change_percentage?.m5.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.m5 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.m5}%</div>
+                <div className={pairdata?.price_change_percentage?.m5.includes('-') ? "text-lg max-md:text-xs font-bold text-red-600" : pairdata?.price_change_percentage.m5 === "0" ? "text-lg max-md:text-xs font-bold" : "text-lg max-md:text-xs font-bold text-green-500"}>{pairdata?.price_change_percentage.m5}%</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">1 hour</div>
-                <div className={pairdata?.price_change_percentage?.h1.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h1 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h1}%</div>
+                <div className={pairdata?.price_change_percentage?.h1.includes('-') ? "text-lg max-md:text-xs font-bold text-red-600" : pairdata?.price_change_percentage.h1 === "0" ? "text-lg max-md:text-xs font-bold" : "text-lg max-md:text-xs font-bold text-green-500"}>{pairdata?.price_change_percentage.h1}%</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">6 hour</div>
-                <div className={pairdata?.price_change_percentage?.h6.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h6 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h6}%</div>
+                <div className={pairdata?.price_change_percentage?.h6.includes('-') ? "text-lg max-md:text-xs font-bold text-red-600" : pairdata?.price_change_percentage.h6 === "0" ? "text-lg max-md:text-xs font-bold" : "text-lg max-md:text-xs font-bold text-green-500"}>{pairdata?.price_change_percentage.h6}%</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">24 hour</div>
-                <div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-lg font-bold text-red-600" : pairdata?.price_change_percentage.h24 === "0" ? "text-lg font-bold" : "text-lg font-bold text-green-500"}>{pairdata?.price_change_percentage.h24}%</div>
+                <div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-lg max-md:text-xs font-bold text-red-600" : pairdata?.price_change_percentage.h24 === "0" ? "text-lg max-md:text-xs font-bold" : "text-lg max-md:text-xs font-bold text-green-500"}>{pairdata?.price_change_percentage.h24}%</div>
               </div>
               </div>
 
@@ -225,34 +225,34 @@ const Details = ({}: Props) => {
               <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">5 minute</div>
-                <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.m5)}</div>
+                <div className="text-lg max-md:text-xs font-bold">{getAmount(pairdata?.volume_usd.m5)}</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">1 hour</div>
-                <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h1)}</div>
+                <div className="text-lg max-md:text-xs font-bold">{getAmount(pairdata?.volume_usd.h1)}</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">6 hour</div>
-                <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h6)}</div>
+                <div className="text-lg max-md:text-xs font-bold">{getAmount(pairdata?.volume_usd.h6)}</div>
               </div>
               <div className="flex-col items-center gap-y-2 cursor-pointer">
                 <div className="text-xs">24 hour</div>
-                <div className="text-lg font-bold">{getAmount(pairdata?.volume_usd.h24)}</div>
+                <div className="text-lg max-md:text-xs font-bold">{getAmount(pairdata?.volume_usd.h24)}</div>
               </div>
               </div>
           </div>
         </div>
         <div className="flex justify-between items-center w-full border p-3 rounded-lg mt-4">
           <div className="pr-7">Transaction</div>
-          <div className="flex-col flex justify-center text-center items-center">
-              <div className="flex items-center gap-x-1 justify-center text-center py-1 px-2 w-full text-xs">
+          <div className="flex-col flex justify-center text-center items-center relative">
+              <div className="flex items-center gap-x-1 justify-center text-center py-1 px-2 w-full max-md:text-[8px] absolute top-0 -left-14">
                 <button className={transtime === '30' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('30')}>30 minute</button>
                 <button className={transtime === '15' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('15')}>15 minute</button>
                 <button className={transtime === '5' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('5')}>5 minute</button>
                 <button className={transtime === '1' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('1')}>1 hour</button>
                 <button className={transtime === '24' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('24')}>24 hour</button>
               </div>
-              <div className="flex-col flex text-xs justify-center items-center w-full">
+              <div className="flex-col flex text-xs justify-center items-center w-full mt-12">
                 <CustomProgressBar title1="Buys" title2="Sells"
                 buys={transtime === '30' ? pairdata?.transactions.m30.buys : transtime === '15' ? pairdata?.transactions.m15.buys : transtime === '5' ? pairdata?.transactions.m5.buys : transtime === '1' ? pairdata?.transactions.h1.buys : transtime === '24' ? pairdata?.transactions.h24.buys : 0}
                 sells={transtime === '30' ? pairdata?.transactions.m30.sells : transtime === '15' ? pairdata?.transactions.m15.sells : transtime === '5' ? pairdata?.transactions.m5.sells : transtime === '1' ? pairdata?.transactions.h1.sells : transtime === '24' ? pairdata?.transactions.h24.sells : 0} />

@@ -16,14 +16,14 @@ export default function SwapLayout({
   return (
     <div>
       <div>{children}</div>
-      <div style={{ display: "flex" }} className="gap-x-2">
+      <div style={{ display: "flex" }} className="gap-x-2 max-md:flex-col">
         <div style={{ display:"flex", flexDirection: "column" }}>
           <div>{details}</div>
           <div>{chart}</div>
         </div>
         <div style={{display: "flex",flex:1}}>{iframes}</div>
       </div>
-      <div style={{ display: "flex" }} className="gap-x-2">
+      <div style={{ display: "flex" }} className="gap-x-2 max-md:flex-col">
         <div style={{ display:"flex", flexDirection: "column" }}>
           <div>{traders}</div>
         </div>

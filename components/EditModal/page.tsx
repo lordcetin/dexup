@@ -103,7 +103,7 @@ function EditModal({setEditDetailsModal}: Props) {
 
   return (
   <div className="fixed top-0 left-0 w-screen h-screen bg-black/80 flex justify-center items-center z-[999999]">
-    <div className="flex-col fixed items-center w-3/6 bottom-0 translate-y-1 h-[800px] rounded-t-xl modalgradient border border-gray-700 p-7 overflow-y-auto overflow-x-hidden">
+    <div className="flex-col fixed items-center w-3/6 bottom-0 translate-y-1 h-[800px] rounded-t-xl modalgradient border border-gray-700 p-7 overflow-y-auto overflow-x-hidden max-md:w-96 animate-drawer">
       <AiFillCloseCircle onClick={() => setEditDetailsModal(false)} size={26} className="fixed right-3 top-3 text-white hover:text-white/50 cursor-pointer transition-all z-[9999]"/>
       <div className="flex items-center">
         <Image src='/logo.svg' alt="Dexup Logo" width={800} height={800} className="w-44 object-cover select-none pointer-events-none"/>
@@ -121,18 +121,18 @@ function EditModal({setEditDetailsModal}: Props) {
           .start();
         }}
         />
-        <p className="w-[520px] h-16 text-xs font-light text-white/50 mt-2 z-50">Update your token information as quickly as possible. Update your social media and website links. You can upload your logo and banner design for your token page on Dexup.</p>
+        <p className="w-[520px] max-md:w-80 h-16 text-xs font-light text-white/50 mt-2 z-50">Update your token information as quickly as possible. Update your social media and website links. You can upload your logo and banner design for your token page on Dexup.</p>
       </div>
 
       <div className="flex justify-center items-center w-full mt-28 border-t border-white/10"></div>
 
         <div className="flex-col flex justify-center items-center w-full mt-10">
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Chain</h1>
-            <span className="w-96 text-sm text-white/50">Select the network on which chain you deployed your token from the list below.</span>
-            <div className="flex-col items-center w-96 z-20">
+            <h1 className="w-80 text-xl font-semibold">Chain</h1>
+            <span className="w-80 text-sm text-white/50">Select the network on which chain you deployed your token from the list below.</span>
+            <div className="flex-col items-center w-80 z-20">
             {!selectOpen ?
-            <div onClick={() => setSelectOpen(!selectOpen)} className="border border-white/20 w-96 rounded-lg p-5 flex justify-between items-center text-white/80 hover:text-white hover:border-white transition-all cursor-pointer">
+            <div onClick={() => setSelectOpen(!selectOpen)} className="border border-white/20 w-80 rounded-lg p-5 flex justify-between items-center text-white/80 hover:text-white hover:border-white transition-all cursor-pointer">
             <p className="first-letter:uppercase">{selected ? frameworks[selected]?.label : "Select to Chain..."}</p>
             {selectOpen ? 
             <IoChevronUp />
@@ -140,7 +140,7 @@ function EditModal({setEditDetailsModal}: Props) {
             }
             </div>
             :
-            <div className="border border-white/20 p-2 w-96 rounded-lg flex-col items-center text-white/80 hover:text-white hover:border-white transition-all cursor-pointer">
+            <div className="border border-white/20 p-2 w-80 rounded-lg flex-col items-center text-white/80 hover:text-white hover:border-white transition-all cursor-pointer">
               {frameworks.map((item:any,index:any) => {
                 return(
                   <div key={index} onClick={() => {setSelected(index),setSelectOpen(false)}} className="p-3 border-b-[1px] border-b-white/10 hover:border-white/10 hover:rounded-lg hover:bg-black/20 active:border-white outline-none">
@@ -153,8 +153,8 @@ function EditModal({setEditDetailsModal}: Props) {
             </div>
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Token Address</h1>
-            <span className="w-96 text-sm text-white/50">Enter your token's address</span>
+            <h1 className="w-80 text-xl font-semibold">Token Address</h1>
+            <span className="w-80 text-sm text-white/50">Enter your token's address</span>
             <InputSecond
             type="text"
             id="name"
@@ -164,15 +164,15 @@ function EditModal({setEditDetailsModal}: Props) {
             />
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Description</h1>
-            <span className="w-96 text-sm text-white/50">You can edit your token page by stating the most striking aspects of the project in your description.</span>
-            <textarea className="border border-white/20 w-96 max-h-96 min-h-24 rounded-lg p-5 flex justify-between items-center text-white/80 hover:text-white hover:border-white transition-all bg-transparent" placeholder="Description"></textarea>
+            <h1 className="w-80 text-xl font-semibold">Description</h1>
+            <span className="w-80 text-sm text-white/50">You can edit your token page by stating the most striking aspects of the project in your description.</span>
+            <textarea className="border border-white/20 w-80 max-h-96 min-h-24 rounded-lg p-5 flex justify-between items-center text-white/80 hover:text-white hover:border-white transition-all bg-transparent" placeholder="Description"></textarea>
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Token Logo</h1>
-            <span className="w-96 text-sm text-white/50">You can update your token's logo for your token page in Dexup.</span>
-            <span className="w-96 text-xs text-white/50">• Requirements: 500 x 500 px | 1:1 aspect ratio</span>
-            <label className="w-96 cursor-pointer p-5 flex justify-center items-center border border-white/20 rounded-lg hover:border-white text-sm gap-x-2 text-white/50 hover:text-white">
+            <h1 className="w-80 text-xl font-semibold">Token Logo</h1>
+            <span className="w-80 text-sm text-white/50">You can update your token's logo for your token page in Dexup.</span>
+            <span className="w-80 text-xs text-white/50">• Requirements: 500 x 500 px | 1:1 aspect ratio</span>
+            <label className="w-80 cursor-pointer p-5 flex justify-center items-center border border-white/20 rounded-lg hover:border-white text-sm gap-x-2 text-white/50 hover:text-white">
               <FaImage /> Upload Logo
               <input
                 className="hidden absolute h-52 -left-96"
@@ -183,10 +183,10 @@ function EditModal({setEditDetailsModal}: Props) {
               </label>
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Banner Image</h1>
-            <span className="w-96 text-sm text-white/50">You can add your banner image to the banner area above your logo for your token page on dexup.</span>
-            <span className="w-96 text-xs text-white/50">• Minimum: 548 x 224 px </span>
-            <label className="w-96 cursor-pointer p-5 flex justify-center items-center border border-white/20 rounded-lg hover:border-white text-sm gap-x-2 text-white/50 hover:text-white">
+            <h1 className="w-80 text-xl font-semibold">Banner Image</h1>
+            <span className="w-80 text-sm text-white/50">You can add your banner image to the banner area above your logo for your token page on dexup.</span>
+            <span className="w-80 text-xs text-white/50">• Minimum: 548 x 224 px </span>
+            <label className="w-80 cursor-pointer p-5 flex justify-center items-center border border-white/20 rounded-lg hover:border-white text-sm gap-x-2 text-white/50 hover:text-white">
               <FaImage /> Upload Banner
               <input
                 className="hidden absolute h-52 -left-96"
@@ -197,8 +197,8 @@ function EditModal({setEditDetailsModal}: Props) {
               </label>
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Project Links</h1>
-            <span className="w-96 text-sm text-white/50">Enter your project links</span>
+            <h1 className="w-80 text-xl font-semibold">Project Links</h1>
+            <span className="w-80 text-sm text-white/50">Enter your project links</span>
             <InputSecond
             type="text"
             id="name"
@@ -229,8 +229,8 @@ function EditModal({setEditDetailsModal}: Props) {
             />
           </div>
           <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Social Media Links</h1>
-            <span className="w-96 text-sm text-white/50">Enter your social media links</span>
+            <h1 className="w-80 text-xl font-semibold">Social Media Links</h1>
+            <span className="w-80 text-sm text-white/50">Enter your social media links</span>
             <InputSecond
             type="text"
             id="name"
@@ -273,9 +273,9 @@ function EditModal({setEditDetailsModal}: Props) {
 
         <div className="flex-col flex justify-center items-center w-full mt-10">
         <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Your or Token Owner Contacts</h1>
-            <span className="w-96 text-sm text-white/50">Enter your or token owner contact address</span>
-            <span className="w-96 text-xs text-white/50">• Before entering your Telegram or Discord username, check whether you have hidden your profile on Telegram or Discord.</span>
+            <h1 className="w-80 text-xl font-semibold">Your or Token Owner Contacts</h1>
+            <span className="w-80 text-sm text-white/50">Enter your or token owner contact address</span>
+            <span className="w-80 text-xs text-white/50">• Before entering your Telegram or Discord username, check whether you have hidden your profile on Telegram or Discord.</span>
             <InputSecond
             type="text"
             id="name"
@@ -304,13 +304,13 @@ function EditModal({setEditDetailsModal}: Props) {
 
         <div className="flex-col flex justify-center items-center w-full mt-10 mb-20">
         <div className="flex-col flex justify-center items-center w-full mt-10 gap-y-2">
-            <h1 className="w-96 text-xl font-semibold">Order Summary</h1>
-            <span className="w-96 text-sm text-white/50">The details of your token page on Dexup will be updated within approximately 15 minutes after you make the payment.</span>
-            <div className="flex justify-between items-center w-96 mt-3">
+            <h1 className="w-80 text-xl font-semibold">Order Summary</h1>
+            <span className="w-80 text-sm text-white/50">The details of your token page on Dexup will be updated within approximately 15 minutes after you make the payment.</span>
+            <div className="flex justify-between items-center w-80 mt-3">
               <div>Price:</div>
               <div className="flex items-center gap-x-1 text-xl font-bold"><p className="line-through text-white/50">$499</p>$299</div>
             </div>
-            <button type="button" className="p-5 border border-white/20 modalgradient w-96 rounded-lg hover:bg-slate-800 transition-all mt-3">Order Now</button>
+            <button type="button" className="p-5 border border-white/20 modalgradient w-80 rounded-lg hover:bg-slate-800 transition-all mt-3">Order Now</button>
         </div>
         </div>
 

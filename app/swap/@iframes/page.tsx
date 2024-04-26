@@ -4,7 +4,7 @@
 import AuroBanner from "@/components/AuroBanner/page";
 import CopyClipboard from "@/components/CopyClipboard/page";
 import { useAppContext } from "@/context/AppContext";
-import { Link } from "lucide-react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BiWorld } from "react-icons/bi";
@@ -77,9 +77,9 @@ const Iframes = ({}: Props) => {
 
   
   return (
-  <div className="flex-col items-center w-[600px]">
+  <div className="flex-col items-center w-[600px] max-md:w-96">
         {details ? 
-      <div className="flex-col items-center w-[600px] bg-[#131722] rounded-xl h-[720px] relative flex-shrink-0 box-border mt-5 mb-2 border border-white/10">
+      <div className="flex-col items-center w-[600px] max-md:w-96 bg-[#131722] rounded-xl h-[720px] relative flex-shrink-0 box-border mt-5 mb-2 border border-white/10">
         <AuroBanner/>
         {/* <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} /> */}
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
@@ -122,7 +122,7 @@ const Iframes = ({}: Props) => {
           </div>
         </div>
       </div> : null}
-    <div className={details ? "w-[600px] h-[600px] overflow-hidden rounded-xl" : ""}>
+    <div className={details ? "w-[600px] h-[600px] overflow-hidden rounded-xl max-md:w-96" : ""}>
     {chain === 'solana' ?
     <>
     <div id="integrated-terminal" className={details ? "border border-white/10 m-[0 auto] block rounded-xl max-w-[600px] min-w-[300px]" : "border border-white/10 mt-5 block rounded-xl max-w-[600px] min-w-[300px]"}></div>

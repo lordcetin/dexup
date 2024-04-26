@@ -14,7 +14,7 @@ const TVChartContainer = dynamic(
   () =>
     import('@/components/TVChartContainer/page').then((mod:any) => mod.TVChartContainer),
   { 
-    loading: () => <div className="w-[980px] h-[600px] rounded-lg bg-[#131722] border border-white/10 flex justify-center items-center"><AiOutlineLoading3Quarters className="text-blue-700/50 animate-spin" size={23}/></div>,
+    loading: () => <div className="w-[980px] max-md:w-96 h-[600px] rounded-lg bg-[#131722] border border-white/10 flex justify-center items-center"><AiOutlineLoading3Quarters className="text-blue-700/50 animate-spin" size={23}/></div>,
     ssr: false 
   }
 );
@@ -24,7 +24,31 @@ declare global {
     TradingView: any; // Değişkenin tipini uygun bir şekilde tanımlayın
   }
 }
+
+const useViewport = () => {
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    // Initial width on component mount
+    setWidth(window.innerWidth);
+
+    // Event listener for window resize
+    window.addEventListener('resize', handleWindowResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []); // Run effect only on component mount
+
+  return width;
+};
+
 const Chart = ({}: Props) => {
+  const viewportWidth:any = useViewport();
   const searchParams = useSearchParams() as any
   const chain = searchParams.get('chain')
   const pooladdress = searchParams.get('pair')
@@ -44,8 +68,8 @@ const Chart = ({}: Props) => {
 
   const defaultWidgetProps:any= {
     symbol: `${pairdata?.baseTokenSymbol && pairdata?.baseTokenSymbol.toUpperCase()}/${pairdata?.quoteTokenSymbol && pairdata?.quoteTokenSymbol.toUpperCase()}`,
-    width:980,
-    height:600,
+    width:viewportWidth < 768 ? 380 : 980,
+    height:viewportWidth < 768 ? 380 : 600,
     interval: '15' as ResolutionString,
     library_path: "/static/charting_library/charting_library",
     locale: "en",

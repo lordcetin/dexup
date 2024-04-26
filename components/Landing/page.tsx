@@ -211,15 +211,15 @@ useEffect(() => {
 
 
   return (
-    <div className="flex justify-center items-center w-full gap-x-6">
-    <div className="w-[800px] h-[430px] overflow-hidden rounded-xl relative">
+    <div className="flex max-md:flex-col justify-center items-center w-full gap-x-6">
+    <div className="w-[800px] h-[430px] max-md:w-96 max-md:h-[800px] overflow-hidden rounded-xl relative max-md:px-3">
     <div className="absolute z-[999] flex-col items-center p-7 pointer-events-none">
       <h5 className="text-xs font-semibold mb-3">ETHEREUM 2.0</h5>
       <h1 className="text-4xl font-bold mb-3">Your Gateway<br/>into Blockchain</h1>
       <p className="">Dexup is a blockchain platform.<br/>We make blockchain accessible.</p>
       <button type="button" className="py-4 rounded-xl bg-black bg-opacity-40 block justify-center items-center text-xs mt-16 w-64 pointer-events-auto hover:bg-opacity-60 transition-all duration-300 ease-in-out">What is blockchain?</button>
     </div>
-    <div className="absolute -right-24 animate-fifth z-50 top-36 pointer-events-none select-none">
+    <div className="absolute -right-24 animate-fifth z-50 top-36 max-md:top-auto max-md:bottom-0 pointer-events-none select-none">
       <Image src={meshobject} alt="Objects" width={500} height={500} className="w-full object-cover "/>
     </div>
     <BackgroundGradientAnimation/>

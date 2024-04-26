@@ -22,6 +22,7 @@ const Navbar = ({}: Props) => {
   const [searchPoolData, setSearchPoolData] = useState([]);
   const [gailosloading, setLoadingGainLos] = useState<boolean>(false);
   const [loadingsearch, setLoadingSearch] = useState<boolean>(false);
+  const [mobilesearch, setMobileSearch] = useState<boolean>(false);
   // const {isWallet,setIsWallet} = useAppContext();
   // const { open, close } = useWeb3Modal()
   // const { connection } = useConnection();
@@ -67,10 +68,26 @@ const Navbar = ({}: Props) => {
   },[])
 
   return (
-  <nav className="h-16 w-full flex fixed left-0 top-0 justify-between items-center z-[9999] px-12">
-    <div className="w-3/6 "></div>
-    <div className="flex items-center relative w-full">
-    <div className="flex items-center rounded-full bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white transition-all px-1 group">
+  <nav className="h-16 w-full flex fixed left-0 top-0 justify-between items-center z-[9999] px-12 max-md:px-3">
+    <div className="w-3/6 max-md:hidden"></div>
+    <div className="flex items-center relative w-full max-md:justify-end">
+    <IoIosSearch size={32} onClick={() => setMobileSearch(!mobilesearch)} className="text-white/50 group-focus:text-white group-hover:text-white max-md:block hidden max-md:mr-4 max-md:border max-md:border-white/10 max-md:rounded-lg z-[9999999]"/>
+    {mobilesearch ? 
+      <div className="hidden max-md:flex items-center rounded-full bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white transition-all px-1 group absolute top-12 left-5 z-[9999999]">
+      <IoIosSearch size={23} className="text-white/50 group-focus:text-white group-hover:text-white"/>
+      <input 
+      type="text"
+      value={searchVal}
+      onFocus={() => setSearchModal(true)}
+      onChange={(e:any) => handleSearch(e.target.value)}
+      autoComplete='off'
+      placeholder="Quick search..."
+      className="bg-transparent outline-none border-none px-3 py-1 selection:bg-white/50 selection:text-black placeholder:text-sm placeholder:text-white/50 group-hover:placeholder:text-white"
+      />
+      <small className="text-xs px-2 p-1 border border-white/10 rounded-full text-white/50 group-focus:text-white group-hover:text-white cursor-pointer group-hover:border-white">Ctrl+K</small>
+    </div>
+    : null}
+    <div className="flex max-md:hidden items-center rounded-full bg-black/30 hover:bg-black/50 border border-white/10 hover:border-white transition-all px-1 group">
       <IoIosSearch size={23} className="text-white/50 group-focus:text-white group-hover:text-white"/>
       <input 
       type="text"
@@ -84,7 +101,7 @@ const Navbar = ({}: Props) => {
       <small className="text-xs px-2 p-1 border border-white/10 rounded-full text-white/50 group-focus:text-white group-hover:text-white cursor-pointer group-hover:border-white">Ctrl+K</small>
     </div>
     {searchModal ? 
-    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="absolute top-10 border border-white/10 hover:border-white/30 rounded-xl transition-all w-80 z-[9999] duration-500 ease-in-out translate-y-2 animate-opener">
+    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="absolute top-10 border border-white/10 hover:border-white/30 rounded-xl transition-all w-80 z-[9999] duration-500 ease-in-out translate-y-2 animate-opener max-md:absolute max-md:top-20 max-md:left-5">
     {searchVal !== '' ?
     <>
     {loadingsearch ? 
@@ -193,7 +210,7 @@ const Navbar = ({}: Props) => {
     null
     }
     </div>
-    <div className="flex justify-end items-center gap-x-6 relative">
+    <div className="flex justify-end items-center gap-x-4 relative">
       {/* {isWallet ? <WalletMultiButton className='!bg-orange-500 hover:!bg-black transition-all duration-200 !rounded-full' /> : <ConnectButton/>} */}
       
       <ConnectButton />

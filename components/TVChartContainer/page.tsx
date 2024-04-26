@@ -2,7 +2,7 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./styles.module.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
 import DataFeed from "@/app/swap/datafeed/datafeed";
 import { useSearchParams } from "next/navigation";
@@ -15,7 +15,6 @@ export const TVChartContainer = (props:any) => {
 	const searchParams:any = useSearchParams()
 	const chain = searchParams.get('chain')
 	const pooladdress = searchParams.get('pair')
-
 
 	const {baseCoinId} = useAppContext()
 
@@ -315,7 +314,7 @@ export const TVChartContainer = (props:any) => {
 
 	return (
 		<>
-		<div className="w-[980px] h-[600px] overflow-hidden rounded-xl bg-[#131722] border border-white/10">
+		<div className="w-[980px] max-md:w-96 h-[600px] max-md:h-96 overflow-hidden rounded-xl bg-[#131722] border border-white/10">
 		{/* <div id="tvchart" className={styles.TVChartContainer}></div> */}
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</div>

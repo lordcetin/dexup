@@ -27,7 +27,7 @@ const ConnectButton = ({}: Props) => {
     {isConnected ? 
     <div className="flex items-center gap-x-2 cursor-pointer border border-white/10 hover:border-white transition-all group px-2 py-1 rounded-lg" onClick={() => open()}>
     <CiWallet size={23}/>
-    <div className="flex gap-x-1">
+    <div className="flex gap-x-1 max-md:hidden">
       {balanceLoading ?
       <AiOutlineLoading3Quarters className="animate-spin"/>
       :
@@ -43,7 +43,7 @@ const ConnectButton = ({}: Props) => {
     <div className="border border-white/10 rounded-lg px-2 py-1 text-sm group-hover:border-white transition-all">
     <span>{address?.slice(0,5) + '...' + address?.slice(38)}</span>
     </div>
-    <span className="border-[1px] border-cyan-300 px-3 py-1 rounded-lg text-xs bg-gradient-to-tl to-cyan-500 via-cyan-400 from-cyan-700 text-cyan-950 font-bold">Beginer</span>
+    <span className="border-[1px] border-cyan-300 px-3 py-1 rounded-lg text-xs bg-gradient-to-tl to-cyan-500 via-cyan-400 from-cyan-700 text-cyan-950 font-bold max-md:hidden">Beginer</span>
     </div>
     :  
     <div className="flex items-center justify-center border border-white/10 text-white/50 hover:text-white hover:border-white transition-all w-36 py-1 rounded-lg cursor-pointer" onClick={() => open()}>Connect Wallet {isConnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : isReconnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : null}</div>

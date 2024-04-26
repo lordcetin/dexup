@@ -18,7 +18,7 @@ const InputSecond: React.FC<InputProps> = ({id,onChange,value,label,type}) => {
     value={value}
     id={id}
     autoComplete='off'
-    className={`px-5 pt-6 pb-1 w-96 text-md text-white bg-transparent rounded-lg focus:outline-none focus:border-white peer appearance-none outline-none border border-white/20 hover:border-white transition-all `}
+    className={`px-5 pt-6 pb-1 w-96 max-md:w-80 text-md text-white bg-transparent rounded-lg focus:outline-none focus:border-white peer appearance-none outline-none border border-white/20 hover:border-white transition-all `}
     placeholder=" "
     required
     />
