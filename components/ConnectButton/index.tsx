@@ -46,7 +46,7 @@ const ConnectButton = ({}: Props) => {
     <span className="border-[1px] border-cyan-300 px-3 py-1 rounded-lg text-xs bg-gradient-to-tl to-cyan-500 via-cyan-400 from-cyan-700 text-cyan-950 font-bold">Beginer</span>
     </div>
     :  
-    <div onClick={() => open()}>Connect Wallet {isConnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : isReconnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : null}</div>
+    <div className="flex items-center justify-center border border-white/10 text-white/50 hover:text-white hover:border-white transition-all w-36 py-1 rounded-lg cursor-pointer" onClick={() => open()}>Connect Wallet {isConnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : isReconnecting ? <AiOutlineLoading3Quarters className="animate-spin"/> : null}</div>
     }
   </div>
   );

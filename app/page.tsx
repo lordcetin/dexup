@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import TopGainerLoser from "@/components/TopGainerLoser/page";
 import Landing from "@/components/Landing/page";
 import Pool from "@/components/Pool/page";
@@ -18,7 +18,7 @@ export default async function Home() {
 
   return (
     <main>
-    <div
+    {/* <div
       style={{
         display: 'flex',
         position:'absolute',
@@ -29,10 +29,16 @@ export default async function Home() {
         zIndex:99999
       }}
     >
-    </div>
+    </div> */}
+    <Suspense fallback={<div>Loading...</div>}>
     <Landing/>
+    </Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
     <TopGainerLoser/>
+    </Suspense>
+    <Suspense fallback={<div>Loading...</div>}>
     <Pool/>
+    </Suspense>
     {/* <h1>GET BOOKS</h1>
     {books.map((book:any) => (
       <div key={book.title}>

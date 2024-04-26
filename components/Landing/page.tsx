@@ -8,6 +8,7 @@ import Image from "next/image";
 import {AreaChart,Area,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer} from "recharts";
 import axios from "axios";
 import { IoIosArrowDown } from "react-icons/io";
+import ItemContent from "../ItemContent/page";
 
 const Landing = () => {
 
@@ -17,6 +18,7 @@ const Landing = () => {
   const [tokens,setTokens] = useState<any[]>([]);
   const [days,setDays] = useState('7');
   const [chartdata,setChartData] = useState([]);
+  const [items,setItems] = useState([]);
   useEffect(() => {
     getPriceHistory()
   },[tokenid,days])
@@ -134,97 +136,79 @@ const Landing = () => {
       amt: 2100
     }
   ];
-
-  const items = [
-    {
-    id:1,
-    name:"BTC",
-    designation:'bitcoin',
-    content:  (
-    <div className="flex-col flex items-center w-full">
-      <div className="flex justify-between items-center w-full p-3">
-        <div>BTC/USD</div>
-        <div>$100</div>
-      </div>
-      <div className="flex justify-center items-center overflow-hidden w-full h-60">
-        <div className="flex w-[300px] h-[180px] items-center border">
-      <ResponsiveContainer>
-      <AreaChart width={300} height={180} data={data}
-          margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-          <defs>
-            <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.5}/>
-              <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
-            </linearGradient>
-          </defs>
-
-          <Area type="monotone" dataKey="Price" stroke="#82ca9d" fillOpacity={1} fill="url(#colorUv)" />
-        </AreaChart>
-        </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-    )
-    },
-    {
-    id:2,
-    name:"ETH",
-    designation:'ethereum',
-    content:  (
-      <div className="flex-col flex items-center w-full">
-        <div className="flex justify-between items-center w-full p-3">
-          <div>BTC/USD</div>
-          <div>$100</div>
-        </div>
-        <div className="flex justify-center items-center overflow-hidden w-full h-60">
-        <div className="flex w-[300px] h-[180px] items-center border">
-        <ResponsiveContainer>
-        <AreaChart width={300} height={180} data={data}
-            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.5}/>
-                <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <Area type="monotone" dataKey="Price" stroke="#82ca9d" fillOpacity={1} fill="url(#colorUv)" />
-          </AreaChart>
-          </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
+useEffect(() => {
+  const getNews = async () => {
+    const res = await fetch(`/api/news`)
+    const data = await res.json()
+    const newsItems = data.results.slice(0,4).map((news:any, index:any) => ({
+      id: index,
+      name: news.domain, // API'den gelen veri yapısına göre ayarlayın
+      designation: news.title, // API'den gelen veri yapısına göre ayarlayın
+      content: (
+        <ItemContent news={news}/>
       )
-    },
-    {
-    id:3,
-    name:"BNB",
-    designation:'binance',
-    content:  (
-      <div className="flex-col flex items-center w-full">
-        <div className="flex justify-between items-center w-full p-3">
-          <div>BTC/USD</div>
-          <div>$100</div>
-        </div>
-        <div className="flex justify-center items-center overflow-hidden w-full h-60">
-        <div className="flex w-[300px] h-[180px] items-center border">
-        <ResponsiveContainer>
-        <AreaChart width={300} height={180} data={data}
-            margin={{ top: 10, right: 0, left: 0, bottom: 0 }}>
-            <defs>
-              <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.5}/>
-                <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
-              </linearGradient>
-            </defs>
-            <Area type="monotone" dataKey="Price" stroke="#82ca9d" fillOpacity={1} fill="url(#colorUv)" />
-          </AreaChart>
-          </ResponsiveContainer>
-          </div>
-        </div>
-      </div>
-      )
-    },
-  ]
+    }));
+    setItems(newsItems);
+  }
+  getNews()
+},[])
+  // const items = [
+  //   {
+  //   id:1,
+  //   name:"BTC",
+  //   designation:'bitcoin',
+  //   content:  (
+  //   <div className="flex-col flex items-center w-full">
+  //     <div className="flex justify-between items-center w-full p-3">
+  //       <div>BTC/USD</div>
+  //       <div>$100</div>
+  //     </div>
+  //     <div className="flex justify-center items-center overflow-hidden w-full h-60">
+  //       <div className="flex w-full h-[180px] items-center border">
+
+  //       </div>
+  //     </div>
+  //   </div>
+  //   )
+  //   },
+  //   {
+  //   id:2,
+  //   name:"ETH",
+  //   designation:'ethereum',
+  //   content:  (
+  //     <div className="flex-col flex items-center w-full">
+  //       <div className="flex justify-between items-center w-full p-3">
+  //         <div>BTC/USD</div>
+  //         <div>$100</div>
+  //       </div>
+  //       <div className="flex justify-center items-center overflow-hidden w-full h-60">
+  //       <div className="flex w-full h-[180px] items-center border">
+
+  //         </div>
+  //       </div>
+  //     </div>
+  //     )
+  //   },
+  //   {
+  //   id:3,
+  //   name:"BNB",
+  //   designation:'binance',
+  //   content:  (
+  //     <div className="flex-col flex items-center w-full">
+  //       <div className="flex justify-between items-center w-full p-3">
+  //         <div>BTC/USD</div>
+  //         <div>$100</div>
+  //       </div>
+  //       <div className="flex justify-center items-center overflow-hidden w-full h-60">
+  //       <div className="flex w-full h-[180px] items-center border">
+
+  //         </div>
+  //       </div>
+  //     </div>
+  //     )
+  //   },
+  // ]
+
 
   return (
     <div className="flex justify-center items-center w-full gap-x-6">
@@ -240,8 +224,10 @@ const Landing = () => {
     </div>
     <BackgroundGradientAnimation/>
     </div>
-    <div className="w-[465px] h-[430px] rounded-xl flex-col flex items-center white-glassmorphism py-7 px-5">
-    {/* <CardStack items={items} offset={10} scaleFactor={0.1}/> */}
+
+    {items.length > 0 && <CardStack items={items} offset={12} scaleFactor={0.1}/>}
+
+    {/* <div className="w-[465px] h-[430px] rounded-xl flex-col flex items-center white-glassmorphism py-7 px-5">
 
 
     <div className="flex justify-between self-start items-center w-full">
@@ -294,7 +280,7 @@ const Landing = () => {
     
     </div>
 
-    </div>
+    </div> */}
 
     </div>
   );

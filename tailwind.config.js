@@ -13,6 +13,7 @@ module.exports = {
   theme: {
     extend: {
       animation: {
+        opener: "moveOpener 0.5s ease",
         first: "moveVertical 30s ease infinite",
         second: "moveInCircle 20s reverse infinite",
         third: "moveInCircle 40s linear infinite",
@@ -51,6 +52,17 @@ module.exports = {
           },
           "100%": {
             transform: "translateY(-50%)",
+          },
+        },
+        moveOpener: {
+          "0%": {
+            transform: "translateY(0rem)",
+          },
+          "50%": {
+            transform: "translateY(0.5rem)",
+          },
+          "100%": {
+            transform: "translateY(0.5rem)",
           },
         },
       },

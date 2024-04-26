@@ -8,7 +8,7 @@ type Card = {
   id: number;
   name: string;
   designation: string;
-  content: React.ReactNode;
+  content: any;
 };
 
 export const CardStack = ({
@@ -40,12 +40,12 @@ export const CardStack = ({
   };
 
   return (
-    <div className="relative  w-[465px] h-96 md:h-96 md:w-96">
+    <div className="relative w-[435px] h-96 mt-12">
       {cards.map((card, index) => {
         return (
           <motion.div
             key={card.id}
-            className="absolute dark:white-glassmorphism white-glassmorphism h-96 w-60 md:h-96 md:w-96 rounded-3xl p-4 shadow-xl border border-neutral-200 dark:border-white/[0.1]  shadow-black/[0.1] dark:shadow-black/[0.05] flex flex-col justify-between"
+            className="absolute bg-brandblack h-96 w-[435px] rounded-3xl p-4 shadow-xl border border-white/[0.1] shadow-black/[0.05] flex flex-col justify-between"
             style={{
               transformOrigin: "top center",
             }}
@@ -55,16 +55,16 @@ export const CardStack = ({
               zIndex: cards.length - index, //  decrease z-index for the cards that are behind
             }}
           >
-            <div className="font-normal text-neutral-700 dark:text-neutral-200 backdropbackdrop-blur-2xl">
+            <div className="flex-col items-center w-full font-normal text-neutral-200 backdropbackdrop-blur-2xl">
               {card.content}
             </div>
             <div>
-              <p className="text-neutral-500 font-medium dark:text-white">
+              {/* <p className=" font-medium text-white ">
                 {card.name}
               </p>
-              <p className="text-neutral-400 font-normal dark:text-neutral-200">
+              <p className="font-normal text-neutral-200">
                 {card.designation}
-              </p>
+              </p> */}
             </div>
           </motion.div>
         );

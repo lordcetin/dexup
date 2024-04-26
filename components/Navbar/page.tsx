@@ -84,7 +84,7 @@ const Navbar = ({}: Props) => {
       <small className="text-xs px-2 p-1 border border-white/10 rounded-full text-white/50 group-focus:text-white group-hover:text-white cursor-pointer group-hover:border-white">Ctrl+K</small>
     </div>
     {searchModal ? 
-    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="absolute top-10 border border-white/10 hover:border-white/30 rounded-xl transition-all w-80 z-[9999]">
+    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="absolute top-10 border border-white/10 hover:border-white/30 rounded-xl transition-all w-80 z-[9999] duration-500 ease-in-out translate-y-2 animate-opener">
     {searchVal !== '' ?
     <>
     {loadingsearch ? 
@@ -167,7 +167,7 @@ const Navbar = ({}: Props) => {
 
       </div>
     :
-    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="flex-col items-center w-full bg-brandblack rounded-xl overflow-hidden z-[9999]">
+    <div onBlur={() => setSearchModal(false)} onMouseLeave={() => setSearchModal(false)} className="flex-col items-center w-full bg-brandblack rounded-xl overflow-hidden z-[9999] ">
       {topGainers.map((token:any,index:any) => {
       let baseimage = token?.baseImg.includes('missing') ? '/assets/missing.png' : token?.baseImg;
       let quoteimage = token?.quoteImg.includes('missing') ? '/assets/missing.png' : token?.quoteImg;
@@ -200,7 +200,7 @@ const Navbar = ({}: Props) => {
       <div onClick={() => setAccountModal(!accountModal)} className="border border-white/10 rounded-lg p-2 hover:border-white cursor-pointer flex items-center gap-x-1 peer"><FaUser/><IoChevronDown className={accountModal ? 'rotate-180 transition-all' : 'rotate-0 transition-all'}/></div>
       <div className="fixed top-0 right-2"><SocketIndicator/></div>
       {accountModal ? 
-      <div className="flex-col items-center border border-white/10 rounded-xl w-72 h-80 absolute top-14 backdrop-blur-sm bg-brandblack transition-all duration-500 ease-in-out translate-y-2">
+      <div className="flex-col items-center border border-white/10 rounded-xl w-72 h-80 absolute top-14 backdrop-blur-sm bg-brandblack transition-all duration-500 ease-in-out translate-y-2 animate-opener">
         <FaCircleChevronUp onClick={() => setAccountModal(false)} className="absolute right-3 top-3 text-xl cursor-pointer hover:scale-90 transition-all"/>
         <h1 className="flex items-center w-full pt-3 pl-5">Profile</h1>
         <div className="h-[1px] bg-white/10 mt-3 rounded-full"></div>
