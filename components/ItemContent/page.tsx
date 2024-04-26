@@ -40,7 +40,7 @@ function ItemContent({news}: Props) {
       <small className="absolute -top-3 right-3">{formatCreatedAt(news.created_at)} ago</small>
       <Link href={`https://${news.domain}`} className="flex items-center w-full text-xs">{news.domain}</Link>
       <h1 className="flex items-center w-full text-2xl font-bold selection:bg-teal-500">{news.title}</h1>
-      <div className="absolute bottom-0 left-0 flex items-center gap-x-4 py-1 px-2 border border-white/10 rounded-lg hover:scale-110 hover:shadow-md hover:shadow-black/50 cursor-pointer">
+      <div className="absolute bottom-0 left-0 flex items-center gap-x-4 py-1 px-2 border border-white/10 rounded-lg hover:shadow-md hover:shadow-black/50 cursor-pointer">
         <div className="flex items-center gap-x-1"><BiSolidLike title="Liked"/>{news.votes.liked + news.votes.positive + news.votes.important + news.votes.saved + news.votes.lol}</div>
         <div className="flex items-center gap-x-1"><BiSolidDislike title="Disliked" />{news.votes.disliked + news.votes.negative + news.votes.toxic}</div>
         <div className="flex items-center gap-x-1"><BiSolidComment title="Comments" />{news.votes.comments}</div>
