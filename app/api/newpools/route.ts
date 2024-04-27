@@ -57,7 +57,7 @@ export async function GET(req:NextRequest) {
     })
     const tokenInfoData = await responseTokenInfo.json()
     
-    if(tokenInfoData.error === 'coin not found') return
+    if(tokenInfoData.error === 'coin not found') continue
 
     const paircoin: any = {
       name: item.attributes.name,
