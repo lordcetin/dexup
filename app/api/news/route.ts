@@ -11,7 +11,6 @@ export async function GET(req:NextRequest){
   //Filter by kind using kind=news. Default: all. Available values: news or media
 
   const res = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=f2e868c37796a538dabbe9c3815bd267c55faf6d&filter=rising`,{
-    cache:'no-store',
     next:{revalidate:300}
   })
   const data = await res.json()
