@@ -1,11 +1,5 @@
 import {NextRequest, NextResponse} from 'next/server'
-export const dynamic = 'auto'
-export const dynamicParams = true
-export const revalidate = 25
-export const fetchCache = 'auto'
-export const runtime = 'nodejs'
-export const preferredRegion = 'auto'
-export const maxDuration = 25
+
 export async function GET(req:NextRequest){
   // const searchParams = req.nextUrl.searchParams;
   // const value = searchParams.get('value');
@@ -17,7 +11,8 @@ export async function GET(req:NextRequest){
   //Filter by kind using kind=news. Default: all. Available values: news or media
 
   const res = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=f2e868c37796a538dabbe9c3815bd267c55faf6d&filter=rising`,{
-    cache:'no-store'
+    cache:'no-store',
+    next:{revalidate:300}
   })
   const data = await res.json()
 
