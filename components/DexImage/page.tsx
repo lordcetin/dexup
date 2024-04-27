@@ -24,6 +24,10 @@ const DexImage = ({dex,size}: Props) => {
     <img src="https://assets.coingecko.com/coins/images/13422/standard/FRAX_icon.png?1696513182" alt="Fraxswap Logo" className={`size-${size}`}/>
     : dex === 'vvs' ?
     <img src="https://pbs.twimg.com/profile_images/1436269338290364423/8glAYOTM_400x400.jpg" alt="VVS Logo" className={`size-${size} rounded-full`}/>
+    : dex === 'mm_finance' ?
+    <img src="https://s1.coincarp.com/logo/1/mm-finance.png?style=72" alt="VVS Logo" className={`size-${size} rounded-full`}/>
+    : dex === 'fluxbeam' ?
+    <img src="https://docs.fluxbot.xyz/~gitbook/image?url=https%3A%2F%2F3344056715-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FEbCVS53ugYXBSvboYJSn%252Ficon%252F9W2qWJHbbqhQ2CtySnbM%252Flogo%2520%281%29.png%3Falt%3Dmedia%26token%3De437081e-5079-4922-8e24-d34b64689661&width=32&dpr=1&quality=100&sign=00e9665be681aaee4c70ee733efab570daea3925412a6acbc30463924ff6b059" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'sushiswap' ?
     <img src="https://seekvectors.com/storage/images/SushiSwap-01.svg" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'balancer_ethereum' ?

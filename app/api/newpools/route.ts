@@ -51,7 +51,7 @@ export async function GET(req:NextRequest) {
     if(networkId === null || networkId.id === null) continue; // null olduğunda veya id'si null olduğunda döngüyü devam ettir
     const { id: networkname, native_coin_id, chain_identifier, shortname } = networkId;
 
-    const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${network === 'arbitrum' ? 'arbitrum' : network === 'the-open-network' ? 'ton' : network  === 'ethereum' ? 'ethereum' : network === 'binance-smart-chain' ? 'binance-smart-chain' : network === 'solana' ? 'solana' : network}/contract/${baseaddress}`,{
+    const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${shortname === 'arbitrum' ? 'arbitrum' : shortname === 'the-open-network' ? 'ton' : shortname  === 'ethereum' ? 'ethereum' : shortname === 'binance-smart-chain' ? 'binance-smart-chain' : shortname === 'solana' ? 'solana' : shortname}/contract/${baseaddress}`,{
       method:'GET',
       headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
     })
