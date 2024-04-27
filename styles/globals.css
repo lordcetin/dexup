@@ -30,6 +30,10 @@ input::-webkit-inner-spin-button {
 .Typewriter{
   z-index: 99999;
 }
+
+w3m-modal{
+  z-index: 9999999999;
+}
 .modalgradient{
   background-color:hsla(215,27%,6%,1);
   background-image:

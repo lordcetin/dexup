@@ -21,7 +21,7 @@ const Pool = (props: Props) => {
   const [loadingtrendingpool,setLoadingPool] = useState<boolean>(false);
   const [loadingnewpool,setLoadingNewPool] = useState<boolean>(false);
   const [trendingpools,setTrendingPool] = useState<boolean>(true);
-  const [netdexModal,setNetdexModal] = useState<boolean>(true);
+  const [netdexModal,setNetdexModal] = useState<boolean>(false);
   const [newpools,setNewPools] = useState<boolean>(false);
   const [trendingpoolData,setTrendingPoolData] = useState<any[]>([]);
   const [newpoolData,setNewPoolData] = useState<any[]>([]);
