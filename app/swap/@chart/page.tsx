@@ -68,7 +68,7 @@ const Chart = ({}: Props) => {
 
   const defaultWidgetProps:any= {
     symbol: `${pairdata?.baseTokenSymbol && pairdata?.baseTokenSymbol.toUpperCase()}/${pairdata?.quoteTokenSymbol && pairdata?.quoteTokenSymbol.toUpperCase()}`,
-    width:viewportWidth < 768 ? 380 : 980,
+    width:viewportWidth < 768 ? 380 : 780,
     height:viewportWidth < 768 ? 380 : 600,
     interval: '15' as ResolutionString,
     library_path: "/static/charting_library/charting_library",

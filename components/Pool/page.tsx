@@ -78,14 +78,17 @@ const Pool = (props: Props) => {
         setLoadingNewPool(false)
     }
 
-    // Intervali kurma
-    const intervalId = setInterval(() => {
-      getTrendingPoolData();
-      getNewPoolData();
-    }, 3000); // her 3 saniyede bir çalıştır
+    // // Intervali kurma
+    // const intervalId = setInterval(() => {
+    //   getTrendingPoolData();
+    //   getNewPoolData();
+    // }, 3000); // her 3 saniyede bir çalıştır
 
-    // Clear interval on component unmount
-    return () => clearInterval(intervalId);
+    // // Clear interval on component unmount
+    // return () => clearInterval(intervalId);
+    
+    getTrendingPoolData();
+    getNewPoolData();
   },[])
 
   useEffect(() => {

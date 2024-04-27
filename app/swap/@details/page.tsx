@@ -8,7 +8,7 @@ import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { BiWorld } from "react-icons/bi";
 import { FaCircleCheck, FaFacebook, FaReddit, FaTelegram, FaTwitter } from "react-icons/fa6";
@@ -92,8 +92,9 @@ const Details = ({}: Props) => {
   },[])
 
   return (
+
     <div>
-    <div className={details ? "flex-col items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 h-[720px] max-md:h-full flex-shrink-0 box-border max-md:w-96" : "flex justify-between items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 w-full max-md:w-96"}>
+    <div className={details ? "flex-col items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 w-[780px] h-full max-md:h-full flex-shrink-0 box-border max-md:w-96" : "flex justify-between items-center gap-x-6 mb-2 bg-[#131722] border border-white/10 rounded-xl p-5 w-full max-md:w-96"}>
 
     <div className="flex justify-between items-center gap-x-6 w-full">
     <div className={details ? "flex items-center gap-x-6 w-1/12 max-md:w-96 self-start z-50" : "flex items-center gap-x-6 w-1/12 max-md:w-96 z-50"}>
@@ -178,24 +179,24 @@ const Details = ({}: Props) => {
         <div className="flex max-md:flex-col justify-center items-center gap-x-4 max-md:w-96">
 
       <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs max-md:w-80">
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.baseprice).toFixed(4)}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol}: <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.quoteprice).toFixed(2)}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.fdv)}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve: <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.reserve)}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h): <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol} <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.baseprice).toFixed(4)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol} <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.quoteprice).toFixed(2)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.fdv)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.reserve)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h) <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start max-md:w-80">
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust: {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank: <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg max-md:text-xs font-bold" : "text-orange-500 text-lg max-md:text-xs font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
-        <div className="flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Created: <span className="text-[8px] font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg max-md:text-xs font-bold" : "text-orange-500 text-lg max-md:text-xs font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Created <span className="text-sm font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
       </div>
 
       </div>
 
       <div className="flex-col items-center p-5 border border-white/10 rounded-lg mt-4 max-md:w-80 max-md:text-xs">
-        <div className="flex justify-between items-center w-full border p-3 rounded-lg">
+        <div className="flex justify-between items-center w-full border border-white/50 p-3 rounded-lg">
           <div>Price Change</div>
           <div className="flex-col flex justify-center text-center items-center">
               <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
@@ -219,7 +220,7 @@ const Details = ({}: Props) => {
 
           </div>
         </div>
-        <div className="flex justify-between items-center w-full border p-3 rounded-lg mt-4">
+        <div className="flex justify-between items-center w-full border border-white/50 p-3 rounded-lg mt-4">
           <div>Volume</div>
           <div className="flex-col flex justify-center text-center items-center">
               <div className="flex items-center gap-x-4 justify-center text-center py-1 px-2 w-full">
@@ -242,10 +243,10 @@ const Details = ({}: Props) => {
               </div>
           </div>
         </div>
-        <div className="flex justify-between items-center w-full border p-3 rounded-lg mt-4">
+        <div className="flex justify-between items-center w-full border border-white/50 p-3 rounded-lg mt-4">
           <div className="pr-7">Transaction</div>
           <div className="flex-col flex justify-center text-center items-center relative">
-              <div className="flex items-center gap-x-1 justify-center text-center py-1 px-2 w-full max-md:text-[8px] absolute top-0 -left-14">
+              <div className="flex items-center gap-x-1 justify-center text-center py-1 px-2 w-full text-[10px] max-md:text-[8px] absolute top-0 max-md:-left-14 -left-0">
                 <button className={transtime === '30' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('30')}>30 minute</button>
                 <button className={transtime === '15' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('15')}>15 minute</button>
                 <button className={transtime === '5' ? "border bg-zinc-900 rounded-md px-3" : "px-3 hover:border hover:bg-zinc-900 rounded-md"} type="button" onClick={() => setTransacitonTime('5')}>5 minute</button>

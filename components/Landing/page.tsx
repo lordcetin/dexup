@@ -150,7 +150,7 @@ useEffect(() => {
     }));
     setItems(newsItems);
   }
-  getNews()
+    getNews()
 },[])
   // const items = [
   //   {

@@ -1,5 +1,11 @@
 import {NextRequest, NextResponse} from 'next/server'
-
+export const dynamic = 'auto'
+export const dynamicParams = true
+export const revalidate = 25
+export const fetchCache = 'auto'
+export const runtime = 'nodejs'
+export const preferredRegion = 'auto'
+export const maxDuration = 25
 export async function GET(req:NextRequest){
   // const searchParams = req.nextUrl.searchParams;
   // const value = searchParams.get('value');
@@ -10,7 +16,9 @@ export async function GET(req:NextRequest){
     Available regions: en (English), de (Deutsch), nl (Dutch), es (Español), fr (Français), it (Italiano), pt (Português), ru (Русский), tr (Türkçe), ar (عربي), cn (中國人), jp (日本), ko (한국인):*/
   //Filter by kind using kind=news. Default: all. Available values: news or media
 
-  const res = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=f2e868c37796a538dabbe9c3815bd267c55faf6d&filter=rising`)
+  const res = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=f2e868c37796a538dabbe9c3815bd267c55faf6d&filter=rising`,{
+    cache:'no-store'
+  })
   const data = await res.json()
 
   return NextResponse.json(data,{status:200})

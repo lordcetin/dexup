@@ -12,7 +12,7 @@ const CustomProgressBar: React.FC<CustomProgressBarProps> = ({ buys, sells,title
   const sellsWidth = (sells / total) * 100;
 
   return (
-    <div style={{ borderRadius: '5px',marginTop:'5px',marginBottom:'5px' }} className="w-full block max-md:inline-block max-md:w-36">
+    <div style={{ borderRadius: '5px',marginTop:'5px',marginBottom:'5px' }} className="w-72 block max-md:inline-block max-md:w-36">
       <div className="flex max-md:w-36">
       <div title={`${title1+ " " +String(buysWidth)}`} style={{ width: `${buysWidth}%`, backgroundColor: '#22c55e', height: '8px', borderRadius: '5px 0 0 5px' }}></div>
       <div title={`${title2+ " " +String(sellsWidth)}`} style={{ width: `${sellsWidth}%`, backgroundColor: '#dc2626', height: '8px', borderRadius: '0 5px 5px 0' }}></div>

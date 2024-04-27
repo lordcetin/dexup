@@ -314,7 +314,7 @@ export const TVChartContainer = (props:any) => {
 
 	return (
 		<>
-		<div className="w-[980px] max-md:w-96 h-[600px] max-md:h-96 overflow-hidden rounded-xl bg-[#131722] border border-white/10">
+		<div className="w-[780px] max-md:w-96 h-[600px] max-md:h-96 overflow-hidden rounded-xl bg-[#131722] border border-white/10">
 		{/* <div id="tvchart" className={styles.TVChartContainer}></div> */}
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</div>

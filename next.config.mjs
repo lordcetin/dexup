@@ -75,6 +75,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dex-bin.bnbstatic.com'
       },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com'
+      },
     ]
   },
   webpack: config => {

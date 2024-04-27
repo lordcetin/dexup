@@ -4,7 +4,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown,MoreHorizontal } from "lucide-react"
-
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
+import { FaQuestion } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -141,10 +143,16 @@ export const columns: ColumnDef<Token>[] = [
         style:"currency",
         currency: "USD",
         notation: 'compact',
-        compactDisplay: 'short'
+        compactDisplay: 'short',
       }).format(amount)
 
-      return <div className="flex justify-center items-center">{formatted}</div>
+      			
+			const significantZeros = price.toString().includes('e') 
+      ? parseInt(price.toString().split('e-')[1], 10) 
+      : price.toString().split('.')[1]?.length || 0;
+
+
+      return <div className="flex justify-center items-center">{significantZeros < 18 ? formatted : <Tippy content={`Price: ${formatted}`}><span className='cursor-pointer'>{amount.toFixed(2)+"/..."}</span></Tippy>}</div>
     },
     header: ({column}) => {
       return (
@@ -278,7 +286,7 @@ export const columns: ColumnDef<Token>[] = [
         compactDisplay: 'short'
       }).format(amount)
 
-      return <div className="flex items-center justify-center">{formatted}</div>
+      return <div className="flex items-center justify-center">{formatted.includes('0') ? '<$1' : formatted}</div>
     },
   },
   {

@@ -22,6 +22,8 @@ const DexImage = ({dex,size}: Props) => {
     <img src="https://assets.coingecko.com/markets/images/835/large/Terraswap.png?1706864857" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'fraxswap_ethereum' ?
     <img src="https://assets.coingecko.com/coins/images/13422/standard/FRAX_icon.png?1696513182" alt="Fraxswap Logo" className={`size-${size}`}/>
+    : dex === 'vvs' ?
+    <img src="https://pbs.twimg.com/profile_images/1436269338290364423/8glAYOTM_400x400.jpg" alt="VVS Logo" className={`size-${size} rounded-full`}/>
     : dex === 'sushiswap' ?
     <img src="https://seekvectors.com/storage/images/SushiSwap-01.svg" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'balancer_ethereum' ?
