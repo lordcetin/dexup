@@ -40,7 +40,7 @@ export type Token = {
   price_to_in_currency_token:string
   price_to_in_usd:string
   to_token_address:string
-  to_token_amount:string
+  tokenAmount:string
   tx_from_address:string
   tx_hash:string
   volume_in_usd:string
@@ -117,9 +117,9 @@ export const columns: ColumnDef<Token>[] = [
     },
   },
   {
-    accessorKey: "price_from_in_usd",
+    accessorKey: "price",
     cell: ({row}:any) => {
-      const price = row.getValue("price_from_in_usd");
+      const price = row.getValue("price");
       const amount = parseFloat(price)
       const formatted = new Intl.NumberFormat("en-US",{
         style:"currency",
@@ -140,9 +140,9 @@ export const columns: ColumnDef<Token>[] = [
     }
   },
   {
-    accessorKey: "to_token_amount",
+    accessorKey: "tokenAmount",
     cell: ({row}:any) => {
-      const price = row.getValue("to_token_amount");
+      const price = row.getValue("tokenAmount");
       const amount = parseFloat(price)
       const formatted = new Intl.NumberFormat("en-US",{
         style:"currency",

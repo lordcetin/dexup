@@ -28,15 +28,19 @@ const Traders = ({}: Props) => {
       const ressa = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-        cache:'no-store',
+        cache:'no-cache'
       }).then((res:any) => res.json()).then((data:any) => {
-  
-        const tradedata = data.data.filter((u:any) => u.attributes.to_token_address !== pairData?.baseaddress).map((item:any) => {
 
+        const tradedata = data.data.map((item:any) => { //filter((u:any) => u.attributes.to_token_address !== pairData?.baseaddress)
+          const attributes = item.attributes;
+          // İşlem türüne göre fiyatı seç
+          const priceInUsd = attributes.kind === 'sell' ? attributes.price_from_in_usd : attributes.price_to_in_usd;
+          const tokenAmount = attributes.kind === 'sell' ? attributes.to_token_amount : attributes.from_token_amount;
           return {
+            id:item.id,
             block_number:item.attributes.block_number,
             block_timestamp:item.attributes.block_timestamp,
-            price:Number(item.attributes.from_token_amount) * Number(item.attributes.price_to_in_usd),
+            price:priceInUsd,
             from_token_address:item.attributes.from_token_address,
             from_token_amount:item.attributes.from_token_amount,
             kind:item.attributes.kind,
@@ -45,16 +49,22 @@ const Traders = ({}: Props) => {
             price_to_in_currency_token:item.attributes.price_to_in_currency_token,
             price_to_in_usd:item.attributes.price_to_in_usd,
             to_token_address:item.attributes.to_token_address,
-            to_token_amount:item.attributes.to_token_amount,
+            tokenAmount:tokenAmount,
             tx_from_address:item.attributes.tx_from_address,
             tx_hash:item.attributes.tx_hash,
             volume_in_usd:item.attributes.volume_in_usd,
           }
+
         })
          setTraderData(tradedata)
       }).catch((err)=>console.log('error in fetching traders',err))
     }
+    
     getTraders()
+    const intervalId = setInterval(() => {
+      getTraders()
+    },3000)
+    return () => clearInterval(intervalId)
   },[])
 
   return (
