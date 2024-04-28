@@ -66,8 +66,23 @@ import { toast } from "react-toastify";
 import EditModal from "@/components/EditModal/page";
 
 export default function Swap() {
+  // const searchParams = useSearchParams() as any
+  // const chain = searchParams.get('chain')
+
+  // useEffect(() => {
+  //   const getNetworkId = async () => {
+  //     const res = await axios.get(`/api/network?chainname=${chain}`)
+  //     const data = res.data
+  //     let filter = data.filter((item:any) => item.attributes.name === chain || item.attributes.coingecko_asset_platform_id === chain)
+  //     let chaId = filter[0]?.id
+  //     console.log("chaId",chaId)
+  //     return data
+  //   }
+  //   getNetworkId()
+  // },[])
 
   const {isWallet,setIsWallet,editModal,setEditDetailsModal} = useAppContext();
+
 
   return (
 

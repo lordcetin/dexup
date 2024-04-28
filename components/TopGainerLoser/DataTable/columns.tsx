@@ -120,10 +120,10 @@ export const columns: ColumnDef<Token>[] = [
         const native_coin_id:any = data?.native_coin_id
         const shortname:any = data?.shortname
         const chain_identifier:any = data?.chain_identifier
-
+        console.log("data",data)
 
       if(shortname !== null){
-        router.push(`/swap?chain=${isEmpty(id) ? shortname : isEmpty(shortname) ? native_coin_id : id}&pair=${pooladdress}`)
+        router.push(`/swap?chain=${isEmpty(id) ? shortname : isEmpty(shortname) ? platform : id}&pair=${pooladdress}`)
       }else{
         switchChain({chainId:chain_identifier},{
           onSuccess:(data)=>{

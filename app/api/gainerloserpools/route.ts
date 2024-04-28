@@ -67,6 +67,7 @@ export async function GET(req:NextRequest) {
                 const quoteaddress = response.included.find((i:any)=> i.id  == quoteId).attributes.address;
 
                 const paircoin = {
+                  id: item.id,
                   name:item.attributes.name,
                   platform:py,
                   baseImg,

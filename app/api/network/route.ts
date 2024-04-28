@@ -5,18 +5,30 @@ export async function GET(req:NextRequest) {
   const searchParams = req.nextUrl.searchParams
   let chainname = searchParams.get('chainname')
 
-  const response = await axios.get(`https://pro-api.coingecko.com/api/v3/asset_platforms/`,{
-    headers:{
-      'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'
-    }
-  });
+  // const response = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks?page=1`,{
+  //   method:'GET',
+  //   headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+  // });
+
+  // const data = await response.json()
 
 
-  let platform:any = response.data.filter((item:any) => item.shortname.toLowerCase() === chainname?.toLowerCase())
-  let py = platform[0]
+    // Coingecko API'den alınacak sayfa numaraları
+  const pages = [1, 2];
+  
+    // Her sayfa için paralel istekler yap
+    const responses = await Promise.all(
+      pages.map(page =>
+        fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks?page=${page}`, {
+          method: 'GET',
+          headers: {'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'}
+        }).then(res => res.json()) // Burada doğrudan JSON'a çeviriyoruz
+      )
+    );
 
+    // Her bir yanıttan gelen veriyi birleştir
+    const allData = responses.flatMap(data => data.data); // flatMap kullanarak tüm sayfa verilerini tek bir diziye düzleştirebiliriz.
 
-  const data = py
-  return NextResponse.json(data,{status:200})
+  return NextResponse.json(allData,{status:200})
 
 }

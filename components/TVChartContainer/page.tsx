@@ -86,7 +86,7 @@ export const TVChartContainer = (props:any) => {
 			const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'the-open-network' ? 'ton' : chain === 'ethereum' ? 'eth' : chain}/token_price/${pairData?.baseaddress}`,{
+			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain === 'solana' ? 'solana' : chain === 'cronos' ? 'cro' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'the-open-network' ? 'ton' : chain === 'ethereum' ? 'eth' : chain}/token_price/${pairData?.baseaddress}`,{
 				method:'GET',
 				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 			});
@@ -123,12 +123,13 @@ export const TVChartContainer = (props:any) => {
 	
 			onSymbolResolvedCallback(symbolInfo);
 			} catch (error) {
-					onResolveErrorCallback("RESOLVERROR",error)
+					onResolveErrorCallback("SYMBOLERROR",error)
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
 
 			const { from, to, firstDataRequest,countBack } = periodParams;
+
 			try {
 
 			// 	if(baseCoinId !== null){
@@ -207,16 +208,16 @@ export const TVChartContainer = (props:any) => {
 			// 		onHistoryCallback(bars, { noData: false });
 			// 	}
 
-				const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
-					method:'GET',
-					headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-				})
-				const net = await resda.json()
-				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-				const chaId = network[0]?.id
+				// const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
+				// 	method:'GET',
+				// 	headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
+				// })
+				// const net = await resda.json()
+				// const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
+				// const chaId = network[0]?.id
 
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'cronos' ? 'cro' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});

@@ -2,6 +2,7 @@
 'use client'
 import { useAppContext } from "@/context/AppContext";
 import { ResolutionString } from "@/public/static/charting_library/charting_library";
+import axios from "axios";
 import dynamic from "next/dynamic";
 import { useSearchParams } from "next/navigation";
 import Script from "next/script";

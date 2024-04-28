@@ -51,6 +51,7 @@ export async function GET(req:NextRequest) {
 
 
     const paircoin: any = {
+      id: item.id,
       name: item.attributes.name,
       baseImg,
       quoteImg,

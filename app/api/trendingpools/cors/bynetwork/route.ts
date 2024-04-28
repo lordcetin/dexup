@@ -33,6 +33,7 @@ export async function GET(req:NextRequest) {
     const quoteaddress = pooldata.included.find((i: any) => i.id == quoteId).attributes.address;
     
     const paircoin: any = {
+      id: item.id,
       name: item.attributes.name,
       baseImg,
       quoteImg,

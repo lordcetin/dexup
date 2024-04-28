@@ -10,6 +10,7 @@ import { FaCircleChevronUp } from "react-icons/fa6";
 import Link from "next/link";
 import Image from 'next/image'
 import { IoIosSearch } from "react-icons/io";
+import { useRouter } from "next/navigation";
 type Props = {
 };
 
@@ -17,6 +18,8 @@ const Navbar = ({}: Props) => {
   const [accountModal,setAccountModal] = useState<boolean>(false)
   const [searchModal,setSearchModal] = useState<boolean>(false)
   const [searchVal,setSearchVal] = useState<any>('')
+
+  const router = useRouter()
 
   const [topGainers, setTopGainers] = useState([]);
   const [searchPoolData, setSearchPoolData] = useState([]);
@@ -40,7 +43,6 @@ const Navbar = ({}: Props) => {
   const handleSearch = async (e:any) => {
     let value = e
     setSearchVal(e)
-    console.log("value",value)
     setLoadingSearch(true)
     const response = await fetch(`/api/searchpools?value=${value}`)
     const data = await response.json()
@@ -137,9 +139,14 @@ const Navbar = ({}: Props) => {
       {searchPoolData.map((token:any,index:any) => {
       let baseimage = token?.baseImg.includes('missing') ? '/assets/missing.png' : token?.baseImg;
       let quoteimage = token?.quoteImg.includes('missing') ? '/assets/missing.png' : token?.quoteImg;
+      // 0xdefdac77a9a767a2c4eed826e1aead2dace53e1c
+      console.log("tokenData",token)
+      let chain = token?.id.split('_')
+      chain = chain[0]
+      console.log("network",chain)
         return (
           <>
-          <div key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
+          <div onClick={() => router.push(`/swap?chain=${chain === 'arbitrum' ? 'arbitrum' : chain === 'cro' ? 'cronos' : chain === 'ton' ? 'the-open-network' : chain  === 'eth' ? 'ethereum' : chain === 'bsc' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}&pair=${token?.pooladdress}`)} key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
           <div className='flex items-center relative'>
             <img src={baseimage} width={800} height={800} className='size-6 object-cover rounded-full' alt=" "/>
             <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3' alt=" "/>
@@ -188,9 +195,13 @@ const Navbar = ({}: Props) => {
       {topGainers.map((token:any,index:any) => {
       let baseimage = token?.baseImg.includes('missing') ? '/assets/missing.png' : token?.baseImg;
       let quoteimage = token?.quoteImg.includes('missing') ? '/assets/missing.png' : token?.quoteImg;
+      console.log("tokenData",token)
+      let chain = token?.id.split('_')
+      chain = chain[0]
+      console.log("network",chain)
         return (
           <>
-          <div key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
+          <div onClick={() => router.push(`/swap?chain=${chain}&pair=${token?.pooladdress}`)} key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
           <div className='flex items-center relative'>
             <img src={baseimage} width={800} height={800} className='size-6 object-cover rounded-full' alt=" "/>
             <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3' alt=" "/>

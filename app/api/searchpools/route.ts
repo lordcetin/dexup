@@ -55,6 +55,7 @@ export async function GET(req:NextRequest) {
     // const { id: networkname, native_coin_id, chain_identifier, shortname } = networkId;
 
     const paircoin: any = {
+      id: item.id,
       name: item.attributes.name,
       baseImg,
       quoteImg,

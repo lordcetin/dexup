@@ -62,6 +62,7 @@ async function processToken(token: any, assetPlatforms: any[]) {
       const quoteaddress = onchainData.included.find((i:any)=> i.id  == quoteId);
 
       const paircoin = {
+        id:item.id,
         name:item.attributes.name,
         platform: platform ? platform.name.toLowerCase() : 'Unknown',
         platformId: platform ? platform.id.toLowerCase() : 'Unknown',

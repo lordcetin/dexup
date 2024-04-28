@@ -30,7 +30,16 @@ export default async function Home() {
       }}
     >
     </div> */}
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={
+      <div className="flex max-md:flex-col justify-center items-center w-full gap-x-6">
+      <div className="w-[800px] h-[430px] max-md:w-96 max-md:h-[800px] bg-brandblack animate-pulse overflow-hidden rounded-xl relative max-md:px-3">
+  
+      </div>
+  
+      <div className="relative w-[435px] max-md:w-96 h-96 rounded-lg bg-brandblack animate-pulse"></div>
+  
+      </div>
+    }>
     <Landing/>
     </Suspense>
     <Suspense fallback={<div>Loading...</div>}>
