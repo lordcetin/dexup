@@ -4,6 +4,7 @@ import AuroBanner from "@/components/AuroBanner/page";
 /* eslint-disable @next/next/no-img-element */
 import CopyClipboard from "@/components/CopyClipboard/page";
 import CustomProgressBar from "@/components/CustomProgressBar/page";
+import TokenScan from "@/components/TokenScan/page";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
@@ -79,11 +80,11 @@ const Details = ({}: Props) => {
       const pairData = await response.json()
       setPairData(pairData)
 
-      const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chain === 'arbitrum' ? '42161' : chain  === 'ethereum' ? '1' : chain === 'binance-smart-chain' ? '56' : chain === 'solana' ? 'solana' : chain === 'base' ? '8453' : "1"}?contract_addresses=${pairData?.baseaddress}`)
+      const res = await fetch(`https://api.gopluslabs.io/api/v1/token_security/${chain === 'arbitrum' ? '42161' : chain  === 'eth' ? '1' : chain === 'bsc' ? '56' : chain === 'solana' ? 'solana' : chain === 'base' ? '8453' : "1"}?contract_addresses=${pairData?.baseaddress}`)
       const data = await res.json();
       setGoPlus(data.result[`${pairData?.baseaddress}`])
 
-      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'cronos' ? 'cro' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/tokens/${pairData?.baseaddress}?include=top_pools`,{
+      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/tokens/${pairData?.baseaddress}?include=top_pools`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
       })
@@ -135,16 +136,7 @@ const Details = ({}: Props) => {
 
     <div className={details ? "flex items-center gap-x-2 max-md:hidden" : "flex ju items-center gap-x-2 max-md:hidden"}>
       <div className="flex items-center gap-x-1">
-      <Link href={
-        chain === 'ethereum' ? `https://etherscan.io/token/${pairdata?.baseaddress}` 
-        : chain === 'binance-smart-chain' ? `https://bscscan.com/token/${pairdata?.baseaddress}` 
-        : chain === 'the-open-network' ? `https://tonviewer.com/${pairdata?.baseaddress}` 
-        : chain === 'solana' ? `https://solscan.io/token/${pairdata?.baseaddress}` 
-        : chain === 'arbitrum' ? `https://arbiscan.io/token/${pairdata?.baseaddress}` 
-        : chain === 'base' ? `https://basescan.org/token/${pairdata?.baseaddress}` 
-        : ''
-        } 
-        target="_blank" title="Scan"><GoCodescan size={23} className="transition-all hover:scale-75"/></Link>
+        <TokenScan chain={chain} address={pairdata?.baseaddress}/>
       </div> 
     </div>
     </div>

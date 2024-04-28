@@ -86,7 +86,7 @@ export const TVChartContainer = (props:any) => {
 			const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain === 'solana' ? 'solana' : chain === 'cronos' ? 'cro' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'the-open-network' ? 'ton' : chain === 'ethereum' ? 'eth' : chain}/token_price/${pairData?.baseaddress}`,{
+			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain}/token_price/${pairData?.baseaddress}`,{
 				method:'GET',
 				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 			});
@@ -132,92 +132,7 @@ export const TVChartContainer = (props:any) => {
 
 			try {
 
-			// 	if(baseCoinId !== null){
-			// 		const resp = await fetch(`/api/chartdata?basecoinId=${baseCoinId}&from=${from}&to=${to}`)
-			// 		const datas = await resp.json();
-
-			// 		if (!datas || !Array.isArray(datas[0]) || !datas[0].length) {
-			// 			onHistoryCallback([], { noData: true });
-			// 			return;
-			// 		}
-
-			// 		// Sonuç olarak, bars dizisini onHistoryCallback ile döndürebilirsiniz
-	
-			// 		const ohlcData = datas[0]; // OHLC verileri, doğrulandı
-			
-			// 		// Her bir OHLC verisini kontrol et
-			// 		const bars = ohlcData.reduce((acc, ohlcItem) => {
-			// 			// Zaman damgasını kontrol et
-			// 			if (typeof ohlcItem[0] !== 'number') {
-			// 				console.error('Invalid time value', ohlcItem);
-			// 				return acc; // Geçersiz zaman damgası olan veriyi atla
-			// 			}
-			
-			// 			// Hacim verisini bul
-			// 			const volume = datas[1].find((v:any) => v[0] === ohlcItem[0])?.[1] || 0;
-			
-			// 			// Bar objesi oluştur
-			// 			const bar = {
-			// 				time: ohlcItem[0],
-			// 				open: parseFloat(ohlcItem[1].toFixed(4)),
-			// 				high: parseFloat(ohlcItem[2].toFixed(4)),
-			// 				low: parseFloat(ohlcItem[3].toFixed(4)),
-			// 				close: parseFloat(ohlcItem[4].toFixed(4)),
-			// 				volume: parseFloat(volume.toFixed(4))
-			// 			};
-						
-			// 			acc.push(bar);
-			// 			return acc;
-			// 		}, []);
-			
-			// 		if (!bars.length) {
-			// 			onHistoryCallback([], { noData: true });
-			// 			return;
-			// 		}
-
-			// 		onHistoryCallback(bars, { noData: false });
-			// 	}else{
-
-			// 		const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
-			// 			method:'GET',
-			// 			headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-			// 		})
-			// 		const net = await resda.json()
-			// 		const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-			// 		const chaId = network[0]?.id
-
-			// 		const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress && pooladdress}/ohlcv/minute?aggregate=15&limit=1000&currency=usd`,{
-			// 				method:'GET',
-			// 				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-			// 				cache:'no-cache',
-			// 		});
-
-			// 		const dataOHLC = await responseOHLC.json();
-			// 		const datas = dataOHLC?.data?.attributes?.ohlcv_list
-	
-			// const bars = datas.sort((a:any, b:any) => a[0] * 1000 - b[0] * 1000).map((ohlcItem:any) => {
-			// 		return {
-			// 				time: ohlcItem[0] * 1000,
-			// 				open: parseFloat(ohlcItem[1].toFixed(4)),
-			// 				high: parseFloat(ohlcItem[2].toFixed(4)),
-			// 				low: parseFloat(ohlcItem[3].toFixed(4)),
-			// 				close: parseFloat(ohlcItem[4].toFixed(4)),
-			// 				volume: parseFloat(ohlcItem[5].toFixed(4))
-			// 		};
-			// });
-			// 		onHistoryCallback(bars, { noData: false });
-			// 	}
-
-				// const resda = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks`,{
-				// 	method:'GET',
-				// 	headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-				// })
-				// const net = await resda.json()
-				// const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
-				// const chaId = network[0]?.id
-
-
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'cronos' ? 'cro' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});

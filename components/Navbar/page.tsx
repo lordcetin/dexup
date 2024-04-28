@@ -139,14 +139,13 @@ const Navbar = ({}: Props) => {
       {searchPoolData.map((token:any,index:any) => {
       let baseimage = token?.baseImg.includes('missing') ? '/assets/missing.png' : token?.baseImg;
       let quoteimage = token?.quoteImg.includes('missing') ? '/assets/missing.png' : token?.quoteImg;
-      // 0xdefdac77a9a767a2c4eed826e1aead2dace53e1c
-      console.log("tokenData",token)
+
       let chain = token?.id.split('_')
       chain = chain[0]
-      console.log("network",chain)
+
         return (
           <>
-          <div onClick={() => router.push(`/swap?chain=${chain === 'arbitrum' ? 'arbitrum' : chain === 'cro' ? 'cronos' : chain === 'ton' ? 'the-open-network' : chain  === 'eth' ? 'ethereum' : chain === 'bsc' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}&pair=${token?.pooladdress}`)} key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
+          <div onClick={() => router.push(`/swap?chain=${chain}&pair=${token?.pooladdress}`)} key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">
           <div className='flex items-center relative'>
             <img src={baseimage} width={800} height={800} className='size-6 object-cover rounded-full' alt=" "/>
             <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3' alt=" "/>
@@ -195,10 +194,10 @@ const Navbar = ({}: Props) => {
       {topGainers.map((token:any,index:any) => {
       let baseimage = token?.baseImg.includes('missing') ? '/assets/missing.png' : token?.baseImg;
       let quoteimage = token?.quoteImg.includes('missing') ? '/assets/missing.png' : token?.quoteImg;
-      console.log("tokenData",token)
+
       let chain = token?.id.split('_')
       chain = chain[0]
-      console.log("network",chain)
+
         return (
           <>
           <div onClick={() => router.push(`/swap?chain=${chain}&pair=${token?.pooladdress}`)} key={index} className="flex items-center w-full gap-x-5 px-3 py-4 hover:bg-black/50 group cursor-pointer">

@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     // const chaId = network[0]?.id
     // const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
 
-    const poolResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'cronos' ? 'cro' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`, {
+    const poolResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`, {
       method: 'GET',
       headers: { 'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ' },
     });
