@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { BiWorld } from "react-icons/bi";
+import { FaDiscord } from "react-icons/fa";
 import { FaFacebook, FaReddit, FaTelegram, FaTwitter } from "react-icons/fa6";
 const TEST_PLATFORM_FEE_AND_ACCOUNTS = {
   referralAccount: "23fJ9Kc32yhgAeUtZPcKQ9J9ozKZ7z1QZUnPWmdb29tJ",
@@ -63,14 +64,13 @@ const Iframes = ({}: Props) => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'ethereum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}/contract/${pairData?.baseaddress}`,{
+      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/tokens/${pairData?.baseaddress}/info`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-        cache:'no-store',
       })
       const tokenInfoData = await responseTokenInfo.json()
 
-      setTokenInfo(tokenInfoData)
+      setTokenInfo(tokenInfoData?.data?.attributes)
     }
     tokenInf()
   },[])
@@ -79,12 +79,12 @@ const Iframes = ({}: Props) => {
   return (
   <div className="flex-col items-center w-[400px] max-md:w-96">
         {details ? 
-      <div className="flex-col items-center w-[400px] max-md:w-96 bg-[#131722] rounded-xl h-fit relative flex-shrink-0 box-border mt-5 mb-2 border border-white/10">
+      <div className="flex-col items-center w-[400px] max-md:w-96 bg-[#131722] rounded-xl h-fit relative flex-shrink-0 box-border mb-2 border border-white/10 self-start">
         <AuroBanner/>
         {/* <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} /> */}
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">
           <img
-          src={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large}
+          src={tokenInfo?.image_url === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image_url}
           alt="Token Logo"
           width={800}
           height={800}
@@ -95,26 +95,27 @@ const Iframes = ({}: Props) => {
           <div className="flex-col items-center w-full">
           <h1 className="flex items-center w-full text-xl font-bold">{tokenInfo?.name}</h1>
           <div className="flex items-center gap-x-2 mt-2">
-          <p className="font-light text-white/50">{tokenInfo?.symbol.toUpperCase()}</p>
-          <CopyClipboard address={tokenInfo && tokenInfo?.contract_address}/>
+          <p className="font-light text-white/50">{tokenInfo?.symbol?.toUpperCase()}</p>
+          <CopyClipboard address={tokenInfo && tokenInfo?.address}/>
           </div>
           <div className="flex items-center w-full mt-5 ">
-          <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description?.en}</p>
+          <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description}</p>
           </div>
-          <h1 className="flex items-center w-full mt-3">Website Links</h1>
-          <div className="grid grid-cols-3 gap-1 justify-center items-center mt-3">
-            {tokenInfo?.links?.homepage[0] && <Link href={tokenInfo?.links?.homepage[0]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.homepage[0]?.slice(0,20)}</Link>}
-            {tokenInfo?.links?.blockchain_site[0] && <Link href={tokenInfo?.links?.blockchain_site[0]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[0]?.slice(0,20)}</Link>}
-            {tokenInfo?.links?.blockchain_site[1] && <Link href={tokenInfo?.links?.blockchain_site[1]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[1]?.slice(0,20)}</Link>}
-            {tokenInfo?.links?.blockchain_site[2] && <Link href={tokenInfo?.links?.blockchain_site[2]} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.blockchain_site[2]?.slice(0,20)}</Link>}
-            {tokenInfo?.links?.whitepaper && <Link href={tokenInfo?.links?.whitepaper} className="truncate rounded-md bg-brandblack hover:bg-zinc-800 p-1 text-sm flex mx-1 items-center gap-x-1"><BiWorld />{tokenInfo?.links?.whitepaper?.slice(0,20)}</Link>}
+          {tokenInfo?.websites?.length ? <h1 className="flex items-center w-full mt-3">Website Links</h1> : null}
+          <div className="flex-wrap justify-center items-center mt-3">
+            {tokenInfo?.websites?.map((links:any,index:any) => {
+            return (
+            <div key={index} className="flex gap-x-1">
+            <Link href={links} className="rounded-md bg-brandblack hover:bg-zinc-800 text-xs mx-1 items-center gap-x-1 flex p-2"><BiWorld />{links}</Link>
+            </div>
+            )}
+            )}
           </div>
-          <h1 className="flex items-center w-full mt-3">Social Media</h1>
+          {tokenInfo?.discord_url || tokenInfo?.telegram_handle || tokenInfo?.twitter_handle ? <h1 className="flex items-center w-full mt-3">Social Media</h1> : null}
           <div className="flex items-center w-full mt-3 gap-x-2">
-            {tokenInfo?.links?.facebook_username && <Link href={`https://facebook.com/${tokenInfo?.links?.facebook_username}`}><FaFacebook size={18} className="hover:opacity-15 transition-all"/></Link>}
-            {tokenInfo?.links?.telegram_channel_identifier && <Link href={`https://t.me/${tokenInfo?.links?.telegram_channel_identifier}`}><FaTelegram size={18} className="hover:opacity-15 transition-all"/></Link>}
-            {tokenInfo?.links?.twitter_screen_name && <Link href={`https://twitter.com/${tokenInfo?.links?.twitter_screen_name}`}><FaTwitter size={18} className="hover:opacity-15 transition-all"/></Link>}
-            {tokenInfo?.links?.subreddit_url && <Link href={tokenInfo?.links?.subreddit_url}><FaReddit size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.discord_url && <Link href={`${tokenInfo?.discord_url}`}><FaDiscord size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.telegram_handle && <Link href={`https://t.me/${tokenInfo?.telegram_handle}`}><FaTelegram size={18} className="hover:opacity-15 transition-all"/></Link>}
+            {tokenInfo?.twitter_handle && <Link href={`https://twitter.com/${tokenInfo?.twitter_handle}`}><FaTwitter size={18} className="hover:opacity-15 transition-all"/></Link>}
           </div>
           <div className="flex justify-center items-center w-full mt-3">
             <button onClick={() => setEditDetailsModal(true)} className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>

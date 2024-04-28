@@ -65,6 +65,14 @@ const Details = ({}: Props) => {
     }
   }
 
+  const zeroCount = (price:any) => {
+    const significantZeros = price.toString().includes('e') 
+    ? parseInt(price.toString().split('e-')[1], 10) 
+    : price.toString().split('.')[1]?.length || 0;
+
+    return significantZeros
+  }
+
   useEffect(() => {
     const getDetails = async () => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
@@ -75,18 +83,17 @@ const Details = ({}: Props) => {
       const data = await res.json();
       setGoPlus(data.result[`${pairData?.baseaddress}`])
 
-      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'ethereum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'solana' ? 'solana' : chain}/contract/${pairData?.baseaddress}`,{
+      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'arbitrum' ? 'arbitrum' : chain === 'the-open-network' ? 'ton' : chain  === 'ethereum' ? 'eth' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'solana' ? 'solana' : chain}/tokens/${pairData?.baseaddress}?include=top_pools`,{
         method:'GET',
         headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-        cache:'no-store',
       })
-      const tokenInfoData = await responseTokenInfo.json()
+      const tokenData = await responseTokenInfo.json()
       
-      if(tokenInfoData.error === 'coin not found'){
+      if(tokenData.error === 'coin not found'){
         setDetailError('It will take time for the data for this token to be generated')
       }
 
-      setTokenInfo(tokenInfoData)
+      setTokenInfo(tokenData)
     }
     getDetails()
   },[])
@@ -179,17 +186,17 @@ const Details = ({}: Props) => {
         <div className="flex max-md:flex-col justify-center items-center gap-x-4 max-md:w-96">
 
       <div className="grid grid-cols-2 gap-4 items-center p-5 rounded-lg border border-white/10 self-start text-xs max-md:w-80">
-        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol} <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.baseprice).toFixed(4)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.baseTokenSymbol} <span className="font-bold ml-1 text-xl">{zeroCount(pairdata?.baseprice) > 10 ? getAmount(pairdata?.baseprice) : "$"+parseFloat(pairdata?.baseprice).toFixed(6)}</span></div>
         <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">{pairdata?.quoteTokenSymbol} <span className="font-bold ml-1 text-xl">${parseFloat(pairdata?.quoteprice).toFixed(2)}</span></div>
-        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.cap)}</span></div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">M. Cap <span className="font-bold ml-1 text-xl">{pairdata?.cap !== null ? getAmount(pairdata?.cap) : '<$1'}</span></div>
         <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">FDV <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.fdv)}</span></div>
         <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">Reserve <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.reserve)}</span></div>
         <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg">Volume (24h) <span className="font-bold ml-1 text-xl">{getAmount(pairdata?.volume_usd?.h24)}</span></div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 items-center p-5 rounded-lg border border-white/10 self-start max-md:w-80">
-        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
-        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg max-md:text-xs font-bold" : "text-orange-500 text-lg max-md:text-xs font-bold"}>{tokenInfo?.market_cap_rank}</span></div>
+        {/* <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Trust {tokenInfo?.tickers[0]?.trust_score === "green" ? <AiFillSafetyCertificate size={32} className="text-green-500"/> : <MdDangerous size={32} className="text-red-600"/>}</div>
+        <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Rank <span className={tokenInfo?.market_cap_rank <= 300 ? "text-purple-500 text-lg max-md:text-xs font-bold" : "text-orange-500 text-lg max-md:text-xs font-bold"}>{tokenInfo?.market_cap_rank}</span></div> */}
         <div className="flex-col flex justify-center items-center p-3 border border-white/50 rounded-lg gap-x-1 text-xs box-border flex-shrink-0">Created <span className="text-sm font-bold">{formatCreatedAt(pairdata?.created)}</span></div>
       </div>
 

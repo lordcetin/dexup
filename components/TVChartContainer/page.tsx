@@ -2,7 +2,7 @@
 'use client'
 /* eslint-disable react-hooks/exhaustive-deps */
 import styles from "./styles.module.css";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ChartingLibraryWidgetOptions, LanguageCode, ResolutionString, widget } from "@/public/static/charting_library";
 import DataFeed from "@/app/swap/datafeed/datafeed";
 import { useSearchParams } from "next/navigation";
@@ -45,9 +45,7 @@ export const TVChartContainer = (props:any) => {
 	}
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1H','4H'],
-			intraday_multipliers: ['1','3','5','15','30','45'],
-			seconds_multipliers: ['1S','3S','5S'],
+			supported_resolutions: ['1', '5', '15', '1H', '4H', 'D', '2D', '3D', 'W', '3W', 'M', '6M'],
 
 			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
 			exchanges: [
@@ -85,24 +83,21 @@ export const TVChartContainer = (props:any) => {
 	
 			const sym = generateSymbol('Dexup',fromT,toT)
 
-			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/simple/price?ids=${baseCoinId}&vs_currencies=usd`,{
+			const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
+      const pairData = await response.json()
+
+			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'bsc' : chain === 'the-open-network' ? 'ton' : chain === 'ethereum' ? 'eth' : chain}/token_price/${pairData?.baseaddress}`,{
 				method:'GET',
 				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 			});
 			const priceData = await priceResponse.json();
-			const price = priceData[baseCoinId.toLowerCase()].usd;
+			const price = priceData?.data?.attributes?.token_prices[pairData?.baseaddress];
 
-			// Önemli sıfır sayısını bulmak için price'ı string'e çevirip split ediyoruz.
 			const significantZeros = price.toString().includes('e') 
-					? parseInt(price.toString().split('e-')[1], 10) + 1 // Bilimsel gösterimde sıfır sayısını al.
-					: price.toString().split('.')[1]?.length || 0; // Ondalık kısmın uzunluğunu al.
+					? parseInt(price.toString().split('e-')[1], 10) + 1 
+					: price.toString().split('.')[1]?.length || 0; 
 
-			// Ölçek faktörünü belirle. Eğer price bir tam sayı ise, faktör 100 olmalıdır.
-			const scale = significantZeros > 0 ? Math.pow(10, significantZeros) : 10000000;
-
-			// const decimalPlaces = countDecimals(price);
-			// const scale = decimalPlaces > 0 ? Math.pow(10, decimalPlaces) : 100;
-
+			const scale = significantZeros >= 24 ? 1000000000000000 : 1000000;
 
 			const symbolInfo = {
 					symbol: sym.short,
@@ -116,10 +111,7 @@ export const TVChartContainer = (props:any) => {
 					minmov: 1,
 					pricescale: scale,//100
 					has_intraday:true,
-					has_seconds:true,
-					intraday_multipliers: ['1','3','5','15','30','45'],
-					seconds_multipliers: ['1S','3S','5S'],
-					supported_resolution: ["D", "2D", "3D", "W", "3W", "M", "6M",'1','3','5','15','30','45','1H','4H'],
+					supported_resolutions: ['1', '5', '15', '1H', '4H', 'D', '2D', '3D', 'W', '3W', 'M', '6M'],
 					volume_precision: 2,
 					data_status: 'streaming',
 					supports_group_request: false,
@@ -137,7 +129,6 @@ export const TVChartContainer = (props:any) => {
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
 
 			const { from, to, firstDataRequest,countBack } = periodParams;
-
 			try {
 
 			// 	if(baseCoinId !== null){
@@ -224,7 +215,8 @@ export const TVChartContainer = (props:any) => {
 				const network = net.data.filter((item:any) => item.attributes.coingecko_asset_platform_id === chain)
 				const chaId = network[0]?.id
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '3' ? 'minute?aggregate=3' : resolution === '5' ? 'minute?aggregate=5' : resolution === '30' ? 'minute?aggregate=30' : resolution === '45' ? 'minute?aggregate=45' : resolution === '1H' ? 'hour?aggregate=1' : resolution === '4H' ? 'hour?aggregate=4' : 'minute?aggregate=1' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
+
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain === 'solana' ? 'solana' : chain === 'arbitrum' ? 'arbitrum' : chain === 'binance-smart-chain' ? 'binance-smart-chain' : chain === 'the-open-network' ? 'ton' : chaId}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});
@@ -244,6 +236,7 @@ export const TVChartContainer = (props:any) => {
 				};
 		});
 				onHistoryCallback(bars, { noData: false, });
+			
 			} catch (error) {
 				console.log("ERROR",error)
 				onErrorCallback(error);

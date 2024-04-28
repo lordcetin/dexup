@@ -70,7 +70,7 @@ export default function Swap() {
   const {isWallet,setIsWallet,editModal,setEditDetailsModal} = useAppContext();
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+
     <main className="flex-col items-center w-full mt-7 gap-x-6">
       {editModal ? 
       <EditModal setEditDetailsModal={setEditDetailsModal}/>
@@ -78,6 +78,6 @@ export default function Swap() {
       }
 
     </main>
-    </Suspense>
+
   );
 }
