@@ -30,6 +30,7 @@ import RadialProgressBar from '@/components/RadialProgressBar/page';
 import CustomProgressBar from '@/components/CustomProgressBar/page';
 import ProgressBar from '@/components/ProgressBar/page';
 import DexImage from '@/components/DexImage/page';
+import PairImage from '@/components/PairImage/page';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -121,9 +122,8 @@ export const columns: ColumnDef<Token>[] = [
         const shortname:any = data?.shortname
         const chain_identifier:any = data?.chain_identifier
 
-        let cov = data?.id.split('_')
+        let cov = data?.id?.split('_')
         let chain = cov[0]
-        let pairaddress = cov[1]
 
         router.push(`/swap?chain=${chain}&pair=${pooladdress}`)
       // if(shortname !== null){
@@ -141,10 +141,7 @@ export const columns: ColumnDef<Token>[] = [
 
       return (
         <div onClick={() => goToSwap()} className='flex items-center gap-x-1 w-full pl-3 cursor-pointer max-md:w-44'>
-          <div className='relative flex items-center mr-5 max-md:fixed z-[99999] max-md:bg-brandblack'>
-            <img src={baseimage} width={800} height={800} className='size-8 object-cover rounded-full' alt=" "/>
-            <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3' alt=" "/>
-          </div>
+          <PairImage baseimage={baseimage} quoteimage={quoteimage} size1={8} size2={6} classes={'mr-5 max-md:fixed z-[99999] max-md:bg-brandblack'}/>
           <div className='flex items-center gap-x-1 max-md:fixed max-md:ml-12 z-[99999] max-md:bg-brandblack'><h1 className='uppercase'>{name}</h1><h3 className='uppercase opacity-35'>{symbol}</h3></div>
         </div>
       )

@@ -30,6 +30,8 @@ const DexImage = ({dex,size}: Props) => {
     <img src="https://docs.fluxbot.xyz/~gitbook/image?url=https%3A%2F%2F3344056715-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FEbCVS53ugYXBSvboYJSn%252Ficon%252F9W2qWJHbbqhQ2CtySnbM%252Flogo%2520%281%29.png%3Falt%3Dmedia%26token%3De437081e-5079-4922-8e24-d34b64689661&width=32&dpr=1&quality=100&sign=00e9665be681aaee4c70ee733efab570daea3925412a6acbc30463924ff6b059" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'sushiswap_arbitrum' ?
     <img src="https://seekvectors.com/storage/images/SushiSwap-01.svg" alt="Pancakeswap Logo" className={`size-${size}`}/>
+    : dex === 'blasterswap' ?
+    <img src="https://creatorspace.imgix.net/users/clspfxvjk041jqo011f0ezzdl/RI6s7ASWoyoeQbS9-Twitter%2520Logo.png?w=300&h=300" alt="Pancakeswap Logo" className={`size-${size} rounded-full`}/>
     : dex === 'sushiswap-v2-base' ?
     <img src="https://seekvectors.com/storage/images/SushiSwap-01.svg" alt="Pancakeswap Logo" className={`size-${size}`}/>
     : dex === 'thruster-v3' ?

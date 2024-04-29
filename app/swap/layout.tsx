@@ -5,7 +5,8 @@ export default function SwapLayout({
   comments,
   details,
   iframes,
-  traders
+  traders,
+  shortdetail,
 }:{
   children:React.ReactNode,
   chart:React.ReactNode,
@@ -13,10 +14,12 @@ export default function SwapLayout({
   details:React.ReactNode,
   iframes:React.ReactNode
   traders:React.ReactNode
+  shortdetail:React.ReactNode
 }) {
   return (
     <div>
       <div>{children}</div>
+      <div style={{display:'flex', flex:1}}>{shortdetail}</div>
       <div style={{ display: "flex" }} className="gap-x-2 max-md:flex-col">
         <div style={{ display:"flex", flexDirection: "column" }}>
           <div>{details}</div>

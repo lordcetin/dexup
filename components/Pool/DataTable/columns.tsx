@@ -111,9 +111,10 @@ export const columns: ColumnDef<Token>[] = [
       const router = useRouter()
 
       const goToSwap = async () => {
-        let cov = data?.id.split('_')
+        let cov = data?.id?.split('_')
         let chain = cov[0]
-
+        console.log("chain",chain)
+        console.log("pooladdress",pooladdress)
         router.push(`/swap?chain=${chain}&pair=${pooladdress}`)
         // if(chain !== null){
         //   console.log("data",data)
