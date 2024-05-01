@@ -34,7 +34,67 @@ input::-webkit-inner-spin-button {
 w3m-modal{
   z-index: 9999999999;
 }
-
+.bordergradient{
+	background: linear-gradient(#182029, #151921) padding-box,	linear-gradient(180deg, #B776C8 0%, #5E9DD6 50.31%, #5ECD6B 100%) border-box;
+	border:1px solid transparent;
+}
+.boxgradient{
+	background: linear-gradient(259.73deg, rgba(45, 66, 82, 0.75) 0%, rgba(24, 32, 41, 0.749) 45.2%, rgba(21, 25, 33, 0.75) 100%);
+}
+.boxgradient2{
+  background: linear-gradient(97.11deg, #283B49 0%, #151A22 100%);
+}
+.contactgradient{
+	background: linear-gradient(90deg, #405C3D 0%, #082C55 100%);
+}
+.lightgradient{
+  background: linear-gradient(259.73deg, rgba(251, 251, 251, 0.75) 0%, rgba(239, 212, 255, 0.75) 45.2%, rgba(199, 248, 255, 0.75) 100%);
+}
+.rainboxgradient{
+  background: linear-gradient(180deg, #B776C8 0%, #5E9DD6 50.31%, #5ECD6B 100%);
+}
+.exchangegradient{
+  background: linear-gradient(92.01deg, #7D7D7D 0%, #455252 100%);
+}
+.radialgradient{
+  background: radial-gradient(50% 50% at 50% 50%, #FFFFFF 0%, rgba(255, 255, 255, 0.15) 100%)
+}
+.greengradient{
+  background: linear-gradient(279.02deg, #578D00 0%, #4CB93A 100%);
+}
+.bluegradient{
+  background: linear-gradient(279.02deg, #008D7C 0%, #3A7CB9 100%);
+}
+.profilegradient1{
+  width: 423.89px;
+  height: 731.21px;
+  left: 89.13px;
+  top: 512.64px;
+  background: linear-gradient(180deg, rgba(29, 58, 115, 0.75) 1.32%, rgba(39, 177, 255, 0.75) 51.36%, rgba(192, 215, 53, 0.75) 72.29%);
+  filter: blur(75px);
+  transform: rotate(-125deg);
+}
+.profilegradient2{
+  width: 609.89px;
+  height: 775.65px;
+  left: 21.56px;
+  top: 1091.48px;
+  background: linear-gradient(180deg, rgba(203, 131, 78, 0.75) 0.15%, rgba(146, 31, 187, 0.75) 88.81%);
+  filter: blur(100px);
+  transform: rotate(-30.99deg);
+}
+.profilegradient3{
+  width: 583.83px;
+  height: 486.06px;
+  left: -137.18px;
+  top: 465.41px;
+  background: linear-gradient(180deg, rgba(0, 218, 4, 0.75) 2.14%, rgba(102, 133, 51, 0.75) 33.18%);
+  filter: blur(100px);
+  transform: rotate(-104.83deg);
+}
+.sprdgradient{
+  background: linear-gradient(140.67deg, #1E2C34 12%, #2C223D 100%);
+}
 .modalgradient{
   background-color:hsla(215,27%,6%,1);
   background-image:

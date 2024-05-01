@@ -11,6 +11,7 @@ import Link from "next/link";
 import Image from 'next/image'
 import { IoIosSearch } from "react-icons/io";
 import { useRouter } from "next/navigation";
+import { useAccount } from "wagmi";
 type Props = {
 };
 
@@ -18,7 +19,7 @@ const Navbar = ({}: Props) => {
   const [accountModal,setAccountModal] = useState<boolean>(false)
   const [searchModal,setSearchModal] = useState<boolean>(false)
   const [searchVal,setSearchVal] = useState<any>('')
-
+  const { address,isConnected } = useAccount()
   const router = useRouter()
 
   const [topGainers, setTopGainers] = useState([]);
@@ -39,6 +40,12 @@ const Navbar = ({}: Props) => {
   //     setIsWallet(false)
   //   }
   // },[query])
+
+  useEffect(() => {
+    if(isConnected){
+      localStorage?.setItem('walletAddress',address as any)
+    }
+  },[])
 
   const handleSearch = async (e:any) => {
     let value = e
