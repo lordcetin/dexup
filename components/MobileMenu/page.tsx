@@ -57,7 +57,7 @@ const MobileMenu = ({setMobileMenu}: Props) => {
     <div className="h-[1px] bg-gradient-to-l to-transparent via-white/10 from-transparent rounded-full w-full"></div>
       <div className="grid grid-cols-4 gap-x-4 gap-y-6 p-5">
     <div>
-      <div onClick={() => router.push(`/comingsoon`)} className="flex-col flex items-center">
+      <div onClick={() => router.push(`/multichart`)} className="flex-col flex items-center">
       <div className="text-2xl border border-white/20 rounded-xl size-16 mb-1 flex items-center justify-center bg-gradient-to-tr to-neutral-700 via-neutral-500 from-neutral-800"><GrMultiple /></div>
       <div className="items-center gap-x-3 text-sm hover:scale-110 transition-all cursor-pointer"><span className="text-sm">Multichart</span></div>
       </div>

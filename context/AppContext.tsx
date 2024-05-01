@@ -40,10 +40,10 @@ type AppContextType = {
   setNetworkShort:React.Dispatch<React.SetStateAction<string>>;
   networkSymbol:string;
   setNetworkSymbol:React.Dispatch<React.SetStateAction<string>>;
+  isChart: string[] | any;
+  setIsChart:React.Dispatch<React.SetStateAction<string[] | any>>;
   selectedProfileID:string;
   setSelectedProfileID:React.Dispatch<React.SetStateAction<string>>;
-  selectedProfileDetails: UserProfile | string[] | any;
-  setSelectedProfileDetails:React.Dispatch<React.SetStateAction<UserProfile | string[] | any>>;
   littleMovieDatas: UserProfile | string[] | any;
   setLittleMovieDatas:React.Dispatch<React.SetStateAction<UserProfile | string[] | any>>;
   globalPlayedSeconds: any;
@@ -84,6 +84,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [netchain, setChain] = useState('');
   const [details,setOpenDetails] = useState(false);
   const [editModal,setEditDetailsModal] = useState(false);
+  const [isChart, setIsChart] = useState<string[] | any>([]);
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
   const [littleMovieDatas, setLittleMovieDatas] = useState<UserProfile | string[] | any>([]);
@@ -122,6 +123,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       netchain,setChain,
       details,setOpenDetails,
       editModal,setEditDetailsModal,
+      isChart,setIsChart,
       }}>
       {children}
     </AppContext.Provider>

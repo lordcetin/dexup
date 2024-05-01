@@ -78,7 +78,7 @@ const Sidebar = (props: Props) => {
     </div>
     <div className="h-[1px] bg-gradient-to-l to-transparent via-white/10 from-transparent rounded-full w-full"></div>
     <div>
-      <div onClick={() => router.push(`/comingsoon`)}>
+      <div onClick={() => router.push(`/multichart`)}>
       <div className="group-hover:hidden text-2xl"><GrMultiple /></div>
       <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><GrMultiple /> <span className="text-sm">Multichart</span></div>
       </div>

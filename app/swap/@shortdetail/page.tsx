@@ -117,7 +117,7 @@ const ShortDetail = ({}: Props) => {
         <img src={tokenInfo?.data?.attributes?.image_url === 'missing.png' ? '/assets/missing.png' : tokenInfo?.data?.attributes?.image_url} alt={tokenInfo?.data?.attributes?.name} className="w-12 object-cover border border-white/10 rounded-full"/>
         <div className="absolute bottom-3 left-6"><DexImage dex={pairdata?.dex} size={8}/></div>
         <div className="flex-col items-center mt-3">
-        <h1 className="text-xl flex gap-x-2">{tokenInfo?.data?.attributes?.name} <small className="text-white/50">{tokenInfo?.data?.attributes?.symbol}</small></h1>
+        <h1 className="text-xl flex gap-x-2 truncate">{tokenInfo?.data?.attributes?.name} <small className="text-white/50 truncate">{tokenInfo?.data?.attributes?.symbol}</small></h1>
         <div className="flex items-center gap-x-2 bg-white text-brandblack font-bold text-xl p-2 rounded-lg mt-2"><h1 className="">{getAmount(pairdata?.baseprice)}</h1><div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-xl max-md:text-sm font-bold text-red-600" : pairdata?.price_change_percentage?.h24 === "0" ? "text-xl max-md:text-sm font-bold text-brandblack" : "text-xl max-md:text-sm font-bold text-green-500"}>{pairdata?.price_change_percentage?.h24}%</div></div>
         </div>
       </div>
@@ -156,7 +156,7 @@ const ShortDetail = ({}: Props) => {
       <div className="flex items-center gap-x-3">
         <div className="flex-col items-center mt-3 relative">
         <h1 className="text-xl flex gap-x-2">Top Pools</h1>
-        <div className="flex items-center gap-x-2 font-bold p-2 border border-white/10 rounded-lg mt-2 hover:border-white transition-all text-sm"><div onClick={() => setOpenModal(!openModal)} className="flex items-center gap-x-2 cursor-pointer">{tokenInfo?.included?.map((item:any) => item?.attributes?.name)[0]} <ChevronDown className={openModal ? "rotate-180 transition-all" : "rotate-0 transition-all"}/></div></div>
+        <div className="flex items-center gap-x-2 font-bold p-2 border border-white/10 rounded-lg mt-2 hover:border-white transition-all text-sm truncate"><div onClick={() => setOpenModal(!openModal)} className="flex items-center gap-x-2 cursor-pointer">{tokenInfo?.included?.map((item:any) => item?.attributes?.name)[0]} <ChevronDown className={openModal ? "rotate-180 transition-all" : "rotate-0 transition-all"}/></div></div>
         {openModal ? <div className="absolute top-20 border border-white/10 rounded-lg bg-[#131722] flex-col items-center w-[12vw] max-md:w-full max-md:top-24 overflow-hidden z-[99999] text-sm">
         {tokenInfo?.included?.map((item:any) => {
           let id = item?.id

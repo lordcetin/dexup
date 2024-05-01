@@ -1,7 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unescaped-entities */
 import { Link } from "lucide-react";
 import Image from "next/image";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { AiFillCloseCircle } from "react-icons/ai";
 import TypewriterComponent from "typewriter-effect";
 import ss1 from '@/public/ss1.png'
@@ -13,6 +14,9 @@ import { InputIcon } from "@radix-ui/react-icons";
 import InputSecond from "../InputSecond/page";
 import { toast } from "react-toastify";
 import { FaImage } from "react-icons/fa";
+import { useAccount, usePrepareTransactionRequest, useReadContract, useSendTransaction, useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { Address, erc20Abi, parseEther } from "viem";
+import { parseUnits } from "ethers";
 
 
 type Props = {
@@ -21,7 +25,10 @@ type Props = {
 
 
 function EditModal({setEditDetailsModal}: Props) {
+  const { address,chain,chainId } = useAccount();
   const [selectOpen, setSelectOpen] = useState(false);
+  const [transferAmountETH, setTransferAmountETH] = useState<any>("");
+  const [transferAmountBNB, setTransferAmountBNB] = useState<any>("");
   const [selected, setSelected] = useState<any>("");
   const [tokenAddress, setTokenAddress] = useState<any>("");
   
@@ -46,6 +53,53 @@ function EditModal({setEditDetailsModal}: Props) {
   const [email, setEmail] = useState<any>("");
   const [mytelegram, setMyTelegram] = useState<any>("");
   const [mydiscord, setMyDiscord] = useState<any>("");
+
+  useEffect(() => {
+    const getPrice = async () => {
+      if(chainId === 1){
+      const response = await fetch(`/api/getPri?amount=${'299'}&chainId=${'1'}&toTokenAddress=${'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}&fromTokenAddress=${'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}&slippage=${'0.014'}`)
+      const data = await response.json()
+
+      const datas = data.data
+      const paidAmount = datas.singleChainSwapInfo.receiveAmount
+      const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: 6 })
+      setTransferAmountETH(formattedNumber)
+    }else if(chainId === 56 ){
+      const response = await fetch(`/api/getPri?amount=${'299'}&chainId=${'56'}&toTokenAddress=${'0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'}&fromTokenAddress=${'0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}&slippage=${'0.01'}`)
+      const data = await response.json()
+
+      const datas = data.data
+      const paidAmount = datas.singleChainSwapInfo.receiveAmount
+      const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: 6 })
+      setTransferAmountBNB(formattedNumber)
+    }
+    }
+    getPrice()
+  },[])
+
+  useEffect(() => {
+    const getPrice = async () => {
+      if(chainId === 1){
+      const response = await fetch(`/api/getPri?amount=${'299'}&chainId=${'1'}&toTokenAddress=${'0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'}&fromTokenAddress=${'0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48'}&slippage=${'0.014'}`)
+      const data = await response.json()
+
+      const datas = data.data
+      const paidAmount = datas.singleChainSwapInfo.receiveAmount
+      const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: 6 })
+      setTransferAmountETH(formattedNumber)
+    }else if(chainId === 56 ){
+      const response = await fetch(`/api/getPri?amount=${'299'}&chainId=${'56'}&toTokenAddress=${'0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'}&fromTokenAddress=${'0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d'}&slippage=${'0.01'}`)
+      const data = await response.json()
+
+      const datas = data.data
+      const paidAmount = datas.singleChainSwapInfo.receiveAmount
+      const formattedNumber = Number(paidAmount).toLocaleString('en-US', { maximumFractionDigits: 6 })
+      setTransferAmountBNB(formattedNumber)
+    }
+    }
+    getPrice()
+  },[chainId])
+
 
 
   async function onChangeLogo(e:any) {
@@ -308,9 +362,11 @@ function EditModal({setEditDetailsModal}: Props) {
             <span className="w-80 text-sm text-white/50">The details of your token page on Dexup will be updated within approximately 15 minutes after you make the payment.</span>
             <div className="flex justify-between items-center w-80 mt-3">
               <div>Price:</div>
-              <div className="flex items-center gap-x-1 text-xl font-bold"><p className="line-through text-white/50">$499</p>$299</div>
+              <div className="flex items-center gap-x-1 text-xl font-bold"><p className="line-through text-white/50">$499</p><p>$299</p></div>
             </div>
-            <button type="button" className="p-5 border border-white/20 modalgradient w-80 rounded-lg hover:bg-slate-800 transition-all mt-3">Order Now</button>
+              <div className="flex items-center w-80 justify-end text-xs text-white/20"><p>{chainId === 1 ? transferAmountETH : chainId === 56 ? transferAmountBNB : null} {chainId === 1 ? 'ETH' : chainId === 56 ? 'BNB' : null}</p></div>
+            <TransferButton transferAmount={chainId === 1 ? transferAmountETH : chainId === 56 ? transferAmountBNB : ''} takerAddress={address} sellTokenAddress={'0xdAC17F958D2ee523a2206206994597C13D831ec7'} chainId={chainId} contractAddress={chainId === 1 ? '0x24999A8188a103a742828a933212F03e349e18C5' : chainId === 56 ? '0x24999A8188a103a742828a933212F03e349e18C5' : '0x24999A8188a103a742828a933212F03e349e18C5'} />
+            {/* <button type="button" className="p-5 border border-white/20 modalgradient w-80 rounded-lg hover:bg-slate-800 transition-all mt-3">Order Now</button> */}
         </div>
         </div>
 
@@ -329,3 +385,124 @@ function EditModal({setEditDetailsModal}: Props) {
 }
 
 export default EditModal;
+function TransferButton({
+  takerAddress,
+  sellTokenAddress,
+  contractAddress,
+  chainId,
+  transferAmount
+}: {
+  takerAddress: any;
+  sellTokenAddress: any;
+  contractAddress:any;
+  chainId:any
+  transferAmount:any
+}) {
+
+
+  // const { data: allowance }:any = useReadContract({
+  //   address: sellTokenAddress, // usdt or dexup token address
+  //   abi: erc20Abi,
+  //   functionName: "allowance",
+  //   args: [takerAddress, contractAddress],
+  // });
+
+  // // Approve işlemi simüle et
+  // const { data: approveSimulate, error: apprvErr } = useSimulateContract({
+  //   address: sellTokenAddress, // usdt or dexup token address
+  //   abi: erc20Abi,
+  //   functionName: 'approve',
+  //   args: [contractAddress, parseUnits('299', 6)]
+  // });
+
+  // const {
+  //   data:writeContractResult,
+  //   writeContractAsync:approveAsync,
+  //   error,
+  // }:any = useWriteContract();
+
+  // const { isLoading: isApproving , error:approveError }:any = useWaitForTransactionReceipt({
+  //   hash: writeContractResult ? writeContractResult : undefined,
+  //   onSuccess(data:any) {
+  //     console.log("SUCCESS",data)
+  //     // handleSwapR();
+  //   },
+  // }as any);
+
+  // console.log("writeContractResult",writeContractResult)
+
+  const { writeContractAsync } = useWriteContract()
+  const { sendTransaction,error } = useSendTransaction();
+  const handleTransfer = async () => {
+    try {
+      // const result = await writeContractAsync({ 
+      //   abi: erc20Abi,
+      //   address: sellTokenAddress, // Emin olun bu adres doğru
+      //   functionName: 'transferFrom',
+      //   args: [
+      //     takerAddress,
+      //     contractAddress, // Alıcı adresi
+      //     parseUnits('299', 6), // Miktarı doğru ondalık basamağa çevirin
+      //   ],
+      // });
+      const result = sendTransaction({
+        to: takerAddress, // Buraya kendi adresinizi girin
+        value: parseEther(transferAmount),
+      });
+      if(result !== undefined){
+        toast.success("Transfer successful")
+      }
+    } catch (error) {
+      toast.error("Insufficient Balance")
+      console.error('Transaction failed:', error);
+    }
+  };
+
+  const handleSwapR = async () => {
+
+    // const approved = await approveAsync({
+    //   abi:erc20Abi,
+    //   address: contractAddress,
+    //   functionName:"approve",
+    //   args: [contractAddress, parseUnits('300', 6)]
+    // })
+    // console.log("apprv",approved)
+
+  }
+
+  // if (error || approveError) {
+  //   return <div className="whitespace-pre-wrap h-32 w-96 overflow-y-auto overflow-x-hidden mt-10">Something went wrong: {error.message}</div>;
+  // }
+  //@ts-ignore
+  // if (allowance === 0n ) {
+  //   return (
+  //     <>
+
+  //       <button
+  //         type="button"
+  //         className="border border-transparent hover:border-white hover:border-opacity-10 w-full rounded-xl flex justify-center items-center bg-fuchsia-800 bg-opacity-30 hover:bg-opacity-100 p-3 transition-all text-neutral-400 hover:text-neutral-200"
+  //         onClick={async () => {
+  //           // const writtenValue = await approveAsync();
+  //           await handleSwapR()
+  //         }}
+  //       >
+  //         {isApproving ? "Approving…" : "Approve"}
+  //       </button>
+        
+  //     </>
+  //   );
+  // }
+
+  return (
+    <>
+    {/* {error && <div className="whitespace-pre-wrap h-32 w-96 overflow-y-auto overflow-x-hidden mt-10">Something went wrong: {error?.message}</div>} */}
+    <button
+      type="button"
+      onClick={() => handleTransfer()}
+      className={error ? "p-5 border border-white/20 modalgradient hue-rotate-90 w-80 rounded-lg hover:bg-slate-800 transition-all mt-3" : "p-5 border border-white/20 modalgradient w-80 rounded-lg hover:bg-slate-800 transition-all mt-3"}
+    >
+      {error ? "Insufficient Balance" : "Order Now"}
+    </button>
+    </>
+  );
+}

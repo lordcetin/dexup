@@ -164,7 +164,7 @@ export const columns: ColumnDef<Token>[] = [
       ? parseInt(price.toString().split('e-')[1], 10) 
       : price.toString().split('.')[1]?.length || 0;
 
-      return <div className="flex justify-center items-center">{significantZeros < 18 ? formatted : <Tippy content={`Price: ${formatted}`}><span className='cursor-pointer'>{amount.toFixed(2)+"/..."}</span></Tippy>}</div>
+      return <div className="flex justify-center items-center">{significantZeros < 20 ? formatted : <Tippy content={`Price: ${formatted}`}><span className='cursor-pointer'>{amount.toFixed(2)+"/..."}</span></Tippy>}</div>
     },
     header: ({column}) => {
       return (

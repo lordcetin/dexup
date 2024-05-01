@@ -109,7 +109,7 @@ const Details = ({}: Props) => {
     <div className="flex-col flex gap-2 max-md:text-xs">
       <div className="flex gap-x-2 items-center">
         <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata?.basename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-        <h1>{pairdata?.baseTokenSymbol}</h1>
+        <h1 className="truncate">{pairdata?.baseTokenSymbol}</h1>
       </div>
       <div className="flex items-center gap-x-1">
         <CopyClipboard address={pairdata && pairdata?.baseaddress}/>
@@ -119,7 +119,7 @@ const Details = ({}: Props) => {
     <div className="flex-col flex gap-2 max-md:text-xs">
       <div className="flex gap-x-2 items-center">
         <img src={pairdata?.quoteImg === 'missing.png' ? '/assets/missing.png' : pairdata?.quoteImg} alt={pairdata?.quotename} width={800} height={800} className="size-5 rounded-full object-cover"/>
-        <h1>{pairdata?.quoteTokenSymbol}</h1>
+        <h1 className="truncate">{pairdata?.quoteTokenSymbol}</h1>
       </div>
       <div className="flex items-center gap-x-1">
         <CopyClipboard address={pairdata && pairdata?.quoteaddress}/>
