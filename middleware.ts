@@ -17,6 +17,10 @@ export function middleware(request: NextRequest){
     return NextResponse.redirect(new URL('/', request?.url))
   }
 
+  if(request.nextUrl.pathname === '/api'){
+    return NextResponse.redirect(new URL('/', request?.url))
+  }
+
 
   // const response = NextResponse.next()
   // const themePreference = request.cookies.get('theme')

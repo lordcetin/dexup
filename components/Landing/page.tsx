@@ -140,7 +140,7 @@ useEffect(() => {
   const getNews = async () => {
     const res = await fetch(`/api/news`)
     const data = await res.json()
-    const newsItems = data.results.slice(0,4).map((news:any, index:any) => ({
+    const newsItems = data.results.slice(0,8).map((news:any, index:any) => ({
       id: index,
       name: news.domain, // API'den gelen veri yapısına göre ayarlayın
       designation: news.title, // API'den gelen veri yapısına göre ayarlayın
@@ -225,7 +225,7 @@ useEffect(() => {
     <BackgroundGradientAnimation/>
     </div>
 
-    {items.length > 0 && <CardStack items={items} offset={12} scaleFactor={0.1}/>}
+    {items.length > 0 && <CardStack items={items} offset={4} scaleFactor={0.1}/>}
 
     {/* <div className="w-[465px] h-[430px] rounded-xl flex-col flex items-center white-glassmorphism py-7 px-5">
 
