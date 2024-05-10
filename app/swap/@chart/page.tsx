@@ -84,6 +84,7 @@ const Chart = ({}: Props) => {
     supports_marks: false,
     supports_search: false,
     supports_timescale_marks: false,
+    debug:true
   };
 
   return (

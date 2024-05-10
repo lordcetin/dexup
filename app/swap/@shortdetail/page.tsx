@@ -21,6 +21,7 @@ import 'tippy.js/dist/tippy.css';
 import DexImage from "@/components/DexImage/page";
 import PairImage from "@/components/PairImage/page";
 import { ChevronDown } from "lucide-react";
+import PriceConvert from "@/lib/PriceConvert";
 type Props = {};
 
 const ShortDetail = ({}: Props) => {
@@ -118,7 +119,7 @@ const ShortDetail = ({}: Props) => {
         <div className="absolute bottom-3 left-6"><DexImage dex={pairdata?.dex} size={8}/></div>
         <div className="flex-col items-center mt-3">
         <h1 className="text-xl flex gap-x-2 truncate">{tokenInfo?.data?.attributes?.name} <small className="text-white/50 truncate">{tokenInfo?.data?.attributes?.symbol}</small></h1>
-        <div className="flex items-center gap-x-2 bg-white text-brandblack font-bold text-xl p-2 rounded-lg mt-2"><h1 className="">{getAmount(pairdata?.baseprice)}</h1><div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-xl max-md:text-sm font-bold text-red-600" : pairdata?.price_change_percentage?.h24 === "0" ? "text-xl max-md:text-sm font-bold text-brandblack" : "text-xl max-md:text-sm font-bold text-green-500"}>{pairdata?.price_change_percentage?.h24}%</div></div>
+        <div className="flex items-center gap-x-2 bg-white text-brandblack font-bold text-xl p-2 rounded-lg mt-2"><PriceConvert amount={pairdata?.baseprice}/><div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-xl max-md:text-sm font-bold text-red-600" : pairdata?.price_change_percentage?.h24 === "0" ? "text-xl max-md:text-sm font-bold text-brandblack" : "text-xl max-md:text-sm font-bold text-green-500"}>{pairdata?.price_change_percentage?.h24}%</div></div>
         </div>
       </div>
       <div className="hidden max-md:flex"></div>
@@ -127,13 +128,6 @@ const ShortDetail = ({}: Props) => {
         <div className="flex-col items-center mt-3">
         <h1 className="text-xl flex gap-x-2">Liquidity</h1>
         <div className="flex items-center gap-x-2 font-bold text-xl p-2 border border-white/10 rounded-lg mt-2"><h1 className="">{getAmount(pairdata?.reserve)}</h1></div>
-        </div>
-      </div>
-      <div className="h-20 w-[2px] bg-gradient-to-b to-translate via-slate-600 from-transparent rounded-full max-md:hidden"></div>
-      <div className="flex items-center gap-x-3">
-        <div className="flex-col items-center mt-3">
-        <h1 className="text-xl flex gap-x-2">FDV</h1>
-        <div className="flex items-center gap-x-2 font-bold text-xl p-2 border border-white/10 rounded-lg mt-2"><h1 className="">{getAmount(pairdata?.fdv)}</h1></div>
         </div>
       </div>
       <div className="h-20 w-[2px] bg-gradient-to-b to-translate via-slate-600 from-transparent rounded-full max-md:hidden"></div>
@@ -149,7 +143,7 @@ const ShortDetail = ({}: Props) => {
       <div className="flex items-center gap-x-3">
         <div className="flex-col items-center mt-3">
         <h1 className="text-xl flex gap-x-2">M. Cap</h1>
-        <div className="flex items-center gap-x-2 font-bold text-xl p-2 border border-white/10 rounded-lg mt-2"><h1 className="">{pairdata?.cap === null ? '<$1' : pairdata?.cap === 0 ? '<$1' : getAmount(pairdata?.cap)}</h1></div>
+        <div className="flex items-center gap-x-2 font-bold text-xl p-2 border border-white/10 rounded-lg mt-2"><h1 className="">{pairdata?.fdv === null ? '<$1' : pairdata?.fdv === 0 ? '<$1' : getAmount(pairdata?.fdv)}</h1></div>
         </div>
       </div>
       <div className="h-20 w-[2px] bg-gradient-to-b to-translate via-slate-600 from-transparent rounded-full max-md:hidden"></div>

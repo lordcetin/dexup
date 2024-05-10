@@ -6,7 +6,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ArrowUpDown,MoreHorizontal } from "lucide-react"
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { FaQuestion } from "react-icons/fa";
+import { FaQuestion, FaRegHeart } from "react-icons/fa";
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ import { useRouter } from 'next/navigation';
 import { useSwitchChain , useAccount} from 'wagmi';
 import ProgressBar from '@/components/ProgressBar/page';
 import DexImage from '@/components/DexImage/page';
+import PriceConvert from '@/lib/PriceConvert';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -92,6 +93,19 @@ function formatCreatedAt(createdAt:any) {
   }
 }
 
+const formatNumber = (price: number): string => {
+  const [integerPart, decimalPart] = price.toString().split('.');
+  if (!decimalPart) return price.toString(); // If no decimal part, return the integer part
+
+  const firstNonZeroMatch = decimalPart.match(/0*([1-9]\d*)$/);
+  if (!firstNonZeroMatch) return `${integerPart}.0`; // If all zeros or no match, format as zero after decimal
+
+  const leadingZeros = firstNonZeroMatch[0].length - firstNonZeroMatch[1].length;
+  const significantFigures = decimalPart.substr(leadingZeros, 8); // Adjust 8 to display more or less digits
+
+  return `${integerPart}.${significantFigures}`;
+};
+
 export const columns: ColumnDef<Token>[] = [
   {
     accessorKey:'paircoin',
@@ -113,8 +127,7 @@ export const columns: ColumnDef<Token>[] = [
       const goToSwap = async () => {
         let cov = data?.id?.split('_')
         let chain = cov[0]
-        console.log("chain",chain)
-        console.log("pooladdress",pooladdress)
+
         router.push(`/swap?chain=${chain}&pair=${pooladdress}`)
         // if(chain !== null){
         //   console.log("data",data)
@@ -135,6 +148,8 @@ export const columns: ColumnDef<Token>[] = [
             <img src={quoteimage} width={800} height={800} className='size-6 object-cover rounded-full absolute -top-2 -right-3 bg-white' alt=" "/>
           </div>
         <div className='flex items-center gap-x-1 max-md:fixed max-md:ml-12 z-[99999] max-md:bg-brandblack'><h1 className='uppercase'>{name}</h1><h3 className='uppercase opacity-35'>{symbol}</h3></div>
+        <FaRegHeart className="flex justify-end items-center text-white/30 hover:text-white transition-all"/>
+        {/* <FaHeart className="absolute right-3 text-white/30 hover:text-white transition-all" /> */}
         </div>
       )
     }
@@ -157,8 +172,15 @@ export const columns: ColumnDef<Token>[] = [
       ? parseInt(price.toString().split('e-')[1], 10) 
       : price.toString().split('.')[1]?.length || 0;
 
+      const expNotation = amount.toExponential().split('e-');
+      const significantDigits = expNotation[0];
+      const zeros = expNotation.length > 1 ? parseInt(expNotation[1], 10) - 1 : 0; // -1 çünkü baştaki 0. şeklini hesaba katıyoruz
+    
+      // Son iki önemli rakamı al
+      let lastTwoDigits = significantDigits.replace('.', '').padEnd(3, '0').slice(0, 2); // '.' kaldır, 3 karaktere tamamla, ilk iki karakteri al
+      
+      return <div className="flex justify-center items-center">{significantZeros < 18 ? formatted : <span className='cursor-pointer relative'>${`0.00`}<small className='relative top-1'>{zeros}</small>{lastTwoDigits}</span>}</div>
 
-      return <div className="flex justify-center items-center">{significantZeros < 18 ? formatted : <Tippy content={`Price: ${formatted}`}><span className='cursor-pointer'>{amount.toFixed(2)+"/..."}</span></Tippy>}</div>
     },
     header: ({column}) => {
       return (
@@ -272,7 +294,7 @@ export const columns: ColumnDef<Token>[] = [
     },
   },
   {
-    accessorKey: "cap",
+    accessorKey: "fdv",
     header: ({column}) => {
       return (
         <Button className='flex justify-center items-center w-full' variant="ghost" onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
@@ -282,7 +304,7 @@ export const columns: ColumnDef<Token>[] = [
       )
     },
     cell: ({row}:any) => {
-      const market =  row.getValue("cap")
+      const market =  row.getValue("fdv")
       const market_cap = market === null ? 0 : market
       const amount = parseFloat(market_cap)
       const formatted = new Intl.NumberFormat("en-US",{
@@ -292,7 +314,7 @@ export const columns: ColumnDef<Token>[] = [
         compactDisplay: 'short'
       }).format(amount)
 
-      return <div className="flex items-center justify-center">{formatted.includes('0') ? '<$1' : formatted}</div>
+      return <div className="flex items-center justify-center">{formatted}</div>
     },
   },
   {

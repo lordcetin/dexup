@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import Tippy from '@tippyjs/react';
 import 'tippy.js/dist/tippy.css';
-import { FaQuestion } from "react-icons/fa";
+import { FaQuestion, FaRegHeart } from "react-icons/fa";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,6 +31,7 @@ import CustomProgressBar from '@/components/CustomProgressBar/page';
 import ProgressBar from '@/components/ProgressBar/page';
 import DexImage from '@/components/DexImage/page';
 import PairImage from '@/components/PairImage/page';
+import PriceConvert from '@/lib/PriceConvert';
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 export type Token = {
@@ -143,6 +144,8 @@ export const columns: ColumnDef<Token>[] = [
         <div onClick={() => goToSwap()} className='flex items-center gap-x-1 w-full pl-3 cursor-pointer max-md:w-44'>
           <PairImage baseimage={baseimage} quoteimage={quoteimage} size1={8} size2={6} classes={'mr-5 max-md:fixed z-[99999] max-md:bg-brandblack'}/>
           <div className='flex items-center gap-x-1 max-md:fixed max-md:ml-12 z-[99999] max-md:bg-brandblack'><h1 className='uppercase'>{name}</h1><h3 className='uppercase opacity-35'>{symbol}</h3></div>
+          <FaRegHeart className="flex justify-end items-center text-white/30 hover:text-white transition-all"/>
+          {/* <FaHeart className="absolute right-3 text-white/30 hover:text-white transition-all" /> */}
         </div>
       )
     }
@@ -164,7 +167,15 @@ export const columns: ColumnDef<Token>[] = [
       ? parseInt(price.toString().split('e-')[1], 10) 
       : price.toString().split('.')[1]?.length || 0;
 
-      return <div className="flex justify-center items-center">{significantZeros < 20 ? formatted : <Tippy content={`Price: ${formatted}`}><span className='cursor-pointer'>{amount.toFixed(2)+"/..."}</span></Tippy>}</div>
+      const expNotation = amount.toExponential().split('e-');
+      const significantDigits = expNotation[0];
+      const zeros = expNotation.length > 1 ? parseInt(expNotation[1], 10) - 1 : 0; // -1 çünkü baştaki 0. şeklini hesaba katıyoruz
+    
+      // Son iki önemli rakamı al
+      let lastTwoDigits = significantDigits.replace('.', '').padEnd(3, '0').slice(0, 2); // '.' kaldır, 3 karaktere tamamla, ilk iki karakteri al
+      
+      return <div className="flex justify-center items-center">{significantZeros < 18 ? formatted : <span className='cursor-pointer relative'>${`0.00`}<small className='relative top-1'>{zeros}</small>{lastTwoDigits}</span>}</div>
+      // return <PriceConvert amount={amount} />
     },
     header: ({column}) => {
       return (

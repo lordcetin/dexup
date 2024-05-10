@@ -3,6 +3,7 @@
 import CopyClipboard from "@/components/CopyClipboard/page";
 import Input from "@/components/Input/page";
 import TimeAgo from "@/components/TimeAgo/page";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import axios from "axios";
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
 import React, { useEffect, useState } from "react";
@@ -20,6 +21,7 @@ const Comments = ({}: Props) => {
   const pooladdress = searchParams.get('pair')
   const router = useRouter()
   const {address,isConnected,chainId} = useAccount();
+  const {open,close} = useWeb3Modal()
   const [commentData,setCommentData] = useState<any>([]);
   const [commentLoading,setCommentLoading] = useState<boolean>(false);
   const [comment,setComment] = useState<any>("");
@@ -62,7 +64,7 @@ const Comments = ({}: Props) => {
   },[])
 
   return (
-    <div className="w-[400px] max-md:w-96 border border-white/10 rounded-xl px-3 py-5 h-[633px] flex-col justify-center items-center relative mt-2 bg-[#131722]">
+    <div className="w-80 max-md:w-96 border border-white/10 rounded-xl px-3 py-5 h-[600px] flex-col justify-center items-center relative bg-[#131722]">
       <p className="flex items-center w-full text-white/50">Comments</p>
       {isConnected ? 
       <>

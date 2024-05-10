@@ -68,7 +68,7 @@ const Traders = ({}: Props) => {
   },[])
 
   return (
-    <div className="flex-col items-center w-[780px] rounded-xl p-5 bg-[#131722] mt-2 border border-white/10 max-md:w-96">
+    <div className="flex-col items-center w-[780px] rounded-xl p-5 bg-[#131722] border border-white/10 max-md:w-96">
     <h1 className="flex items-center w-full text-white/50">Past 24 Hour Trades</h1>
     <div className="flex items-center w-full gap-x-2">
     <DataTable loadingtrader={loadingtrader} columns={columns} data={traderData} />

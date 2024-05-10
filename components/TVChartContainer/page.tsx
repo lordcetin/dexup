@@ -15,12 +15,10 @@ export const TVChartContainer = (props:any) => {
 	const searchParams:any = useSearchParams()
 	const chain = searchParams.get('chain')
 	const pooladdress = searchParams.get('pair')
-
-	const {baseCoinId} = useAppContext()
-
 	const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
 
 	useEffect(() => {
+
 		function countLeadingZeros(number:any) {
 			// Sayıyı string'e dönüştür ve bilimsel gösterimde olup olmadığını kontrol et.
 			const numberStr = number.toString();
@@ -35,17 +33,10 @@ export const TVChartContainer = (props:any) => {
 				return match ? match[0].length : 0; // Eşleşme varsa sıfır sayısını döndür.
 			}
 		}
-		const getAllSymbols = async () => {
-			const responseALLTOKEN  = await fetch(`https://pro-api.coingecko.com/api/v3/coins/${baseCoinId && baseCoinId.toLowerCase()}?tickers=true`,{
-					method:'GET',
-					headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-			});
-			const dataALLTOKEN = await responseALLTOKEN.json();
-			return dataALLTOKEN
-	}
+
 		const configurationData = {
 			// Represents the resolutions for bars supported by your datafeed
-			supported_resolutions: ['1', '5', '15', '1H', '4H', 'D', '2D', '3D', 'W', '3W', 'M', '6M'],
+			supported_resolutions: ['1', '5', '15', '1H', '4H', 'D'],
 
 			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
 			exchanges: [
@@ -111,14 +102,14 @@ export const TVChartContainer = (props:any) => {
 					minmov: 1,
 					pricescale: scale,//100
 					has_intraday:true,
-					supported_resolutions: ['1', '5', '15', '1H', '4H', 'D', '2D', '3D', 'W', '3W', 'M', '6M'],
+					supported_resolutions: ['1', '5', '15', '1H', '4H', 'D'],
 					volume_precision: 2,
 					data_status: 'streaming',
 					supports_group_request: false,
 					supports_marks: false,
 					supports_search: false,
 					supports_timescale_marks: false,
-					// debug:true,
+					debug:true,
 			}
 	
 			onSymbolResolvedCallback(symbolInfo);
@@ -127,12 +118,10 @@ export const TVChartContainer = (props:any) => {
 			}
 			},
 			getBars: async (symbolInfo:any, resolution:any, periodParams:any, onHistoryCallback:any, onErrorCallback:any) => {
-
 			const { from, to, firstDataRequest,countBack } = periodParams;
-
 			try {
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '2D' ? 'day?aggregate=2' : resolution === '3D' ? 'day?aggregate=3' : resolution === 'W' ? 'day?aggregate=7' : resolution === '3W' ? 'day?aggregate=21' : resolution === 'M' ? 'day?aggregate=30' : resolution === '6M' ? 'day?aggregate=180' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
+				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
 						method:'GET',
 						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
 				});
@@ -151,8 +140,16 @@ export const TVChartContainer = (props:any) => {
 						volume: parseFloat(ohlcItem[5])
 				};
 		});
+
+				// const response = await fetch(`/api/chartdata?chain=${chain}&pooladdress=${pooladdress}&to=${to}`)
+				// const bardata = await response.json()
+
+				// if(resolution === '15'){
+				// 	onHistoryCallback(bardata[0]?.bars15, { noData: false, });
+				// }else if(resolution === '240'){
+				// 	onHistoryCallback(bardata[0]?.bars240, { noData: false, });
+				// }
 				onHistoryCallback(bars, { noData: false, });
-			
 			} catch (error) {
 				console.log("ERROR",error)
 				onErrorCallback(error);
@@ -190,7 +187,7 @@ export const TVChartContainer = (props:any) => {
 			supports_search: false,
 			supports_timescale_marks: false,
 			// show_exchange_logos: props.show_exchange_logos,
-			// debug: props.debug,
+			debug: props.debug,
 			// timeframe:props.timeframe
 		};
 
