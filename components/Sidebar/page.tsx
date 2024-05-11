@@ -107,16 +107,18 @@ const Sidebar = (props: Props) => {
       </div>
     </div>
     <div className="h-[1px] bg-gradient-to-l to-transparent via-white/10 from-transparent rounded-full w-full"></div>
-    <div>
-      <div onClick={() => router.push(`/comingsoon`)}>
-      <div className="group-hover:hidden text-2xl"><LuNetwork /></div>
-      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><LuNetwork /> <span className="text-sm">Advertise</span></div>
+    <div className="w-full justify-center items-center flex relative">
+      <div onClick={() => router.push(`/advertise`)}>
+      {pathname === '/advertise' ? <span className="h-11 w-[2px] bg-gradient-to-t to-transparent via-sky-500 from-transparent absolute -right-[1px] -top-2"></span> : null}
+      <div className={pathname === '/advertise' ? "group-hover:hidden text-2xl text-sky-500" : "group-hover:hidden text-2xl"}><LuNetwork /></div>
+      <div className={pathname === '/advertise' ? "items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer text-sky-500" : "items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"}><LuNetwork /> <span className="text-sm">Advertise</span></div>
       </div>
     </div>
-    <div>
-      <div onClick={() => router.push(`/comingsoon`)}>
-      <div className="group-hover:hidden text-2xl"><MdOutlineTipsAndUpdates /></div>
-      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><MdOutlineTipsAndUpdates /> <span className="text-sm">Token Update</span></div>
+    <div className="w-full justify-center items-center flex relative">
+      <div onClick={() => router.push(`/updatetoken`)}>
+      {pathname === '/updatetoken' ? <span className="h-11 w-[2px] bg-gradient-to-t to-transparent via-sky-500 from-transparent absolute -right-[1px] -top-2"></span> : null}
+      <div className={pathname === '/updatetoken' ? "group-hover:hidden text-2xl text-sky-500" : "group-hover:hidden text-2xl"}><MdOutlineTipsAndUpdates /></div>
+      <div className={pathname === '/updatetoken' ? "items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer text-sky-500" : "items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"}><MdOutlineTipsAndUpdates /> <span className="text-sm">Token Update</span></div>
       </div>
     </div>
     <div>

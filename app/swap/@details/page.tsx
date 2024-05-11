@@ -8,7 +8,7 @@ import TokenScan from "@/components/TokenScan/page";
 import { useAppContext } from "@/context/AppContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, {  useEffect, useState } from "react";
 import { AiFillSafetyCertificate } from "react-icons/ai";
 import { BiWorld } from "react-icons/bi";
@@ -33,7 +33,7 @@ const Details = ({}: Props) => {
   const [detailError,setDetailError] = useState("");
   const [transtime,setTransacitonTime] = useState("24");
   // const [editModal,setEditDetailsModal] = useState(false);
-  
+  const router = useRouter()
   const getAmount = (fiat:any) => {
     const formatted = new Intl.NumberFormat("en-US",{
       style:"currency",
@@ -140,7 +140,7 @@ const Details = ({}: Props) => {
           <CopyClipboard address={tokenInfo && tokenInfo?.address}/>
           </div>
           <div className="flex items-center w-full mt-5 ">
-          <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto rounded-lg text-sm text-white/70">{tokenInfo?.description}</p>
+          <p className="flex-wrap whitespace-pre-wrap w-full max-h-36 h-auto antialiased overflow-y-auto overflow-x-hidden rounded-lg text-sm text-white/70">{tokenInfo?.description}</p>
           </div>
           {tokenInfo?.websites?.length ? <h1 className="flex items-center w-full mt-3">Website Links</h1> : null}
           <div className="flex-wrap justify-center items-center mt-3">
@@ -159,7 +159,8 @@ const Details = ({}: Props) => {
             {tokenInfo?.twitter_handle && <Link href={`https://twitter.com/${tokenInfo?.twitter_handle}`}><FaTwitter size={18} className="hover:opacity-15 transition-all"/></Link>}
           </div>
           <div className="flex justify-center items-center w-full mt-3">
-            <button onClick={() => setEditDetailsModal(true)} className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>
+            {/* <button onClick={() => setEditDetailsModal(true)} className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button> */}
+            <button onClick={() => router.push(`/updatetoken`)} className="px-7 py-1 border border-slate-600/30 bg-slate-600/20 rounded-lg text-white/50 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 transition-all">Edit Details</button>
           </div>
           </div>
         </div>

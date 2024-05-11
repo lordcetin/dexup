@@ -14,6 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { headers } from "next/headers";
 import { SocketProvider } from "./providers";
+
 // import WalletContextProvider from '@/context/WalletContextProvider'
 // import { SocketProvider } from "./providers";
 export const metadata: Metadata = {
@@ -47,7 +48,6 @@ const fontSans = FontSans({
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
 
   const initialState = cookieToInitialState(config, headers().get('cookie'))
-  
 
   return (
     <>
