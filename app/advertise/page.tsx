@@ -24,7 +24,7 @@ type Props = {
 };
 
 
-function EditModal({setEditDetailsModal}: Props) {
+function Advertise({setEditDetailsModal}: Props) {
   const { address,chain,chainId } = useAccount();
   const [selectOpen, setSelectOpen] = useState(false);
   const [transferAmountETH, setTransferAmountETH] = useState<any>("");
@@ -420,7 +420,7 @@ function EditModal({setEditDetailsModal}: Props) {
   );
 }
 
-export default EditModal;
+export default Advertise;
 function TransferButton({
   takerAddress,
   sellTokenAddress,
