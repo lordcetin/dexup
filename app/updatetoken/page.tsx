@@ -20,11 +20,11 @@ import { parseUnits } from "ethers";
 
 
 type Props = {
-  setEditDetailsModal:any
+
 };
 
 
-function UpdateToken({setEditDetailsModal}: Props) {
+function UpdateToken({}: Props) {
   const { address,chain,chainId } = useAccount();
   const [selectOpen, setSelectOpen] = useState(false);
   const [transferAmountETH, setTransferAmountETH] = useState<any>("");
