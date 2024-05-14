@@ -275,7 +275,7 @@ const Landing = () => {
     setCurrentPage((prevPage) => ((prevPage - 2 + totalPages) % totalPages) + 1);
   };
   return (
-    <div className="flex max-md:flex-col justify-center items-center w-[150vh] relative">
+    <div className="flex max-md:flex-col justify-center items-center w-[150vh] max-md:w-96 relative">
 			{/* <div data-orientation='left' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -left-20 z-[999] cursor-pointer text-slate-600"><FaAngleLeft size={38}/></div> */}
 			
 			<Swiper
@@ -303,7 +303,7 @@ const Landing = () => {
 			breakpoints={{
 				320: {
 					slidesPerView: 1,
-					spaceBetween: 20,
+					spaceBetween: 0,
 				},
 				768: {
 					slidesPerView: 4,

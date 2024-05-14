@@ -115,7 +115,7 @@ const ShortDetail = ({}: Props) => {
   return (
     <>
     {!details ? 
-  <div className="flex items-center w-full rounded-xl border border-white/10 bg-[#131722] mb-2 gap-x-2 px-7 py-5">
+  <div className="flex items-center w-full max-md:w-screen rounded-xl border border-white/10 bg-[#131722] mb-2 gap-x-2 px-7 py-5">
     <div className="flex items-center gap-x-6 max-md:grid max-md:grid-cols-2 max-md:gap-y-2">
         
       <div className="flex items-center gap-x-6 relative cursor-pointer" onClick={() => setOpenModal(!openModal)}>

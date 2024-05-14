@@ -103,7 +103,7 @@ const Navbar = ({}: Props) => {
   }, [modalRef]);
 
   return (
-  <nav className="h-16 w-full flex fixed left-0 top-0 justify-between items-center z-[9999] px-12 max-md:px-3">
+  <nav className="h-16 w-full flex fixed left-0 top-0 justify-between items-center z-[9999] px-12 max-md:px-3 max-md:w-screen">
     <div className="w-3/6 max-md:hidden"></div>
     <div className="flex items-center relative w-full max-md:justify-end">
     <IoIosSearch size={32} onClick={() => setMobileSearch(!mobilesearch)} className="text-white/50 group-focus:text-white group-hover:text-white max-md:block hidden max-md:mr-4 max-md:border max-md:border-white/10 max-md:rounded-lg z-[9999999]"/>

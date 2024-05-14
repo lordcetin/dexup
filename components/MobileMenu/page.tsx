@@ -18,8 +18,9 @@ type Props = {
 const MobileMenu = ({setMobileMenu}: Props) => {
   const router = useRouter();
   return (
-  <div className="fixed z-[99999999999] w-screen h-screen bg-black/50">
-  <div onBlur={() => setMobileMenu(false)} className="fixed z-[9999999999999] flex-col items-center w-full h-[400px] rounded-t-3xl bg-brandblack border border-white/10 bottom-0 left-0 transition-all duration-500 ease-in-out animate-drawer">
+    <>
+  <div className="fixed z-[9999999999999] w-full h-full bg-black/50"></div>
+  <div onBlur={() => setMobileMenu(false)} className="fixed z-[99999999999999] flex-col items-center w-screen h-[400px] rounded-t-3xl bg-brandblack border border-white/10 bottom-0 left-0 transition-all duration-500 ease-in-out animate-drawer">
     <div className="flex justify-center items-center w-full"><div onClick={() => setMobileMenu(false)} className=" w-28 h-2 rounded-full bg-neutral-800 my-3 animate-pulse"></div></div>
     <div className="flex-col items-center w-full h-full mt-3 pb-12 overflow-y-scroll">
       <div className="grid grid-cols-4 gap-x-4 gap-y-6 p-5">
@@ -113,7 +114,7 @@ const MobileMenu = ({setMobileMenu}: Props) => {
       </div>
     </div>
   </div>
-  </div>
+  </>
 );
 };
 

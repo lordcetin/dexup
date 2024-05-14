@@ -97,7 +97,7 @@ const Iframes = ({}: Props) => {
     height="660px"
     width="100%"
     scrolling="no"
-    className="border-none block rounded-xl max-w-[400px] min-w-[300px] overflow-hidden max-md:h-96"
+    className="border-none block rounded-xl max-w-[400px] min-w-[300px] overflow-hidden"
     />
     }
     </div> : null}

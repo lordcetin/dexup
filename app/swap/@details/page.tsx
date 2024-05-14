@@ -120,7 +120,7 @@ const Details = ({}: Props) => {
 
     <div>
        
-       <div className="flex-col items-center w-80 max-md:w-96 bg-[#131722] rounded-xl relative flex-shrink-0 box-border mb-2 border border-white/10 self-start h-[600px] overflow-y-auto">
+       <div className="flex-col items-center w-80 max-md:w-screen bg-[#131722] rounded-xl relative flex-shrink-0 box-border mb-2 border border-white/10 self-start h-[600px] overflow-y-auto">
         <AuroBanner/>
         {/* <ImageColorPalette imageUrl={tokenInfo?.image?.large === 'missing.png' ? '/assets/missing.png' : tokenInfo?.image?.large} /> */}
         <div className="flex justify-center items-center w-full absolute z-50 -translate-y-8">

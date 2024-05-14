@@ -92,7 +92,7 @@ export default function Swap() {
       : null
       } */}
 
-      <div className="fixed bottom-0 w-full h-12 bg-zinc-800 z-[999999] justify-between items-center hidden max-md:flex border-t-[1px] border-white/30">
+      <div className="fixed left-0 bottom-0 w-full h-12 bg-zinc-800 z-[999999] justify-between items-center hidden max-md:flex border-t-[1px] border-white/30">
         <div className={info ? "px-5 bg-black h-12 flex items-center" : "px-5 hover:bg-black h-12 flex items-center"} onClick={() => {setInfo(true),setChartTxns(false),setChart(false),setTxns(false)}}>Info</div>
         <div className={charttxns ? "px-5 hover:bg-black h-12 flex items-center" : "px-5 hover:bg-black h-12 flex items-center"} onClick={() => {setInfo(false),setChartTxns(true),setChart(false),setTxns(false)}}>Chart+Txns</div>
         <div className={charts ? "px-5 bg-black h-12 flex items-center" : "px-5 hover:bg-black h-12 flex items-center"} onClick={() => {setInfo(false),setChartTxns(false),setChart(true),setTxns(false)}}>Chart</div>

@@ -64,7 +64,7 @@ const Comments = ({}: Props) => {
   },[])
 
   return (
-    <div className="w-80 max-md:w-96 border border-white/10 rounded-xl px-3 py-5 h-[600px] flex-col justify-center items-center relative bg-[#131722]">
+    <div className="w-80 max-md:w-screen border border-white/10 rounded-xl px-3 py-5 h-[600px] flex-col justify-center items-center relative bg-[#131722]">
       <p className="flex items-center w-full text-white/50">Comments</p>
       {isConnected ? 
       <>
