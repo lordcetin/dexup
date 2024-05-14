@@ -30,7 +30,7 @@ const MobileMenu = ({setMobileMenu}: Props) => {
       </div>
     </div>
     <div>
-      <div onClick={() => router.push(`/swap?chain=ethereum&pair=0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852`)} className="flex-col flex items-center">
+      <div onClick={() => router.push(`/swap?chain=eth&pair=0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852`)} className="flex-col flex items-center">
       <div className="text-2xl border border-white/20 rounded-xl size-16 mb-1 flex items-center justify-center bg-gradient-to-tr to-neutral-700 via-neutral-500 from-neutral-800"><PiSwap/></div>
       <div className="items-center gap-x-3 text-sm hover:scale-110 transition-all cursor-pointer">Swap</div>
       </div>

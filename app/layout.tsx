@@ -51,15 +51,15 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
 
   return (
     <>
+    
     <SocketProvider>
-
     <html lang="en" suppressHydrationWarning>
       <head>
       <script src="https://terminal.jup.ag/main-v1.js" data-preload />
       </head>
       <body className={`${fontSans.variable} bgradient w-screen h-screen text-white font-sans antialiased overflow-x-hidden`}>
       {/* <WalletContextProvider> */}
-      
+
       <ToastContainer
         position="top-center"
         autoClose={3000}
@@ -73,6 +73,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
         theme="dark"
         />
           <Web3ModalProvider initialState={initialState}>
+
         <AppContextProvider>
         <div className="flex">
           <Sidebar/>
@@ -82,13 +83,16 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
             </main>
         </div>
           </AppContextProvider>
+
           </Web3ModalProvider>
 
         {/* </WalletContextProvider> */}
+
       </body>
     </html>
     
     </SocketProvider>
+    
     </>
   );
 }

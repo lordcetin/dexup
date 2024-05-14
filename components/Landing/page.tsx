@@ -322,7 +322,7 @@ const Landing = () => {
 			>
 				{datas.map((slide:any,index:any) => (
 					<>
-				<SwiperSlide>
+				<SwiperSlide key={index}>
           <Banner slide={slide} index={index}/>
 					{/* <Image src={`${slide.srcset}`} width={800} height={800} alt="" className="w-[728px] h-[420px] rounded-2xl object-cover border border-transparent hover:border-yellow-500 transition-all cursor-pointer"/> */}
 				</SwiperSlide>

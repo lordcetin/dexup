@@ -55,7 +55,7 @@ const Sidebar = (props: Props) => {
       </div>
     </div>
     <div className="w-full justify-center items-center flex relative group/btn">
-      <div onClick={() => router.push(`/swap?chain=ethereum&pair=0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852`)}>
+      <div onClick={() => router.push(`/swap?chain=eth&pair=0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852`)}>
       {pathname === '/swap' ? <span className="h-11 w-[2px] bg-gradient-to-t to-transparent via-sky-500 from-transparent absolute -right-[1px] -top-2"></span> : null}
       {/* <span className="h-11 w-[2px] bg-gradient-to-t to-transparent via-sky-500 from-transparent absolute -right-[1px] -top-2 group-hover/btn:block hidden transition-all"></span> */}
       <div className={pathname === '/swap' ? "group-hover:hidden text-2xl text-sky-500" : "group-hover:hidden text-2xl"}><PiSwap/></div>
