@@ -1,11 +1,14 @@
 import React from "react";
 
-type Props = {};
+type Props = {
+  slide:any
+  index:any
+};
 
-const Banner = (props: Props) => {
+const Banner = ({slide,index}: Props) => {
   return (
   <div className="w-[450px] max-md:w-80 h-56 border border-white/20 rounded-xl flex justify-center items-center bg-gradient-to-tr from-black/15 via-slate-500/10 to-transparent text-white/50">
-    <span>AD PLACE</span>
+    <span>{slide?.id}. AD PLACE</span>
   </div>
   );
 };

@@ -1,5 +1,5 @@
 'use client'
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,6 +31,28 @@ interface DataTableProps<TData, TValue> {
   loadingtrader:boolean
 }
 
+const useViewport = () => {
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    // Initial width on component mount
+    setWidth(window.innerWidth);
+
+    // Event listener for window resize
+    window.addEventListener('resize', handleWindowResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []); // Run effect only on component mount
+
+  return width;
+};
+
 export function DataTable<TData, TValue>({
   columns,
   data,
@@ -39,6 +61,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const {setActive} = useAppContext()
+  const viewportWidth:any = useViewport();
 
   const table = useReactTable({
     data,
@@ -58,7 +81,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="flex-col flex items-center w-full mt-6 max-md:w-80">
 
-    <div className="rounded-t-xl dark-glassmorphism overflow-hidden w-[750px] max-md:w-80 h-[480px]">
+    <div className={viewportWidth > 1920 ? "rounded-t-xl dark-glassmorphism overflow-hidden w-[1550px] max-md:w-80 h-[480px]" : "rounded-t-xl dark-glassmorphism overflow-hidden w-[750px] max-md:w-80 h-[480px]"}>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

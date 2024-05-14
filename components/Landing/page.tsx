@@ -16,7 +16,7 @@ import { Swiper, SwiperSlide, useSwiper } from "swiper/react";
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
-import { FreeMode, Navigation, Pagination } from 'swiper/modules';
+import { Autoplay,FreeMode, Navigation, Pagination } from 'swiper/modules';
 import { FaAngleLeft,FaAngleRight } from "react-icons/fa6";
 const useViewport = () => {
   const [width, setWidth] = useState<number | undefined>(undefined);
@@ -276,7 +276,7 @@ const Landing = () => {
   };
   return (
     <div className="flex max-md:flex-col justify-center items-center w-[150vh] relative">
-			<div data-orientation='left' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -left-20 z-[999] cursor-pointer text-slate-600"><FaAngleLeft size={38}/></div>
+			{/* <div data-orientation='left' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -left-20 z-[999] cursor-pointer text-slate-600"><FaAngleLeft size={38}/></div> */}
 			
 			<Swiper
 			slidesPerView={2}
@@ -285,7 +285,10 @@ const Landing = () => {
 			allowTouchMove={true}
 			autoHeight={true}
 			loop={true}
-			loopAdditionalSlides={6}
+      autoplay={{
+        delay: 2500,
+        disableOnInteraction: false,
+      }}
 			speed={500}
 			watchSlidesProgress={true}
 			// onNavigationNext={(e:any) => console.log("next button",e)}
@@ -314,20 +317,20 @@ const Landing = () => {
 			pagination={{
 				clickable: true,
 			}}
-			modules={[Navigation]}
+			modules={[Autoplay,Navigation]}
 			className="mySwiper"
 			>
 				{datas.map((slide:any,index:any) => (
 					<>
 				<SwiperSlide>
-          <Banner/>
+          <Banner slide={slide} index={index}/>
 					{/* <Image src={`${slide.srcset}`} width={800} height={800} alt="" className="w-[728px] h-[420px] rounded-2xl object-cover border border-transparent hover:border-yellow-500 transition-all cursor-pointer"/> */}
 				</SwiperSlide>
 					</>
 				))}
 
 			</Swiper>
-			<div data-orientation='right' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -right-20 z-[999] cursor-pointer text-slate-600"><FaAngleRight size={38}/></div>
+			{/* <div data-orientation='right' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -right-20 z-[999] cursor-pointer text-slate-600"><FaAngleRight size={38}/></div> */}
 
     {/* <div className="w-[800px] h-[430px] max-md:w-96 max-md:h-[800px] overflow-hidden rounded-xl relative max-md:px-3">
     <div className="absolute z-[999] flex-col items-center p-7 pointer-events-none">

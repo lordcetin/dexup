@@ -10,13 +10,33 @@ import { useAppContext } from "@/context/AppContext";
 import { generateSymbol } from "@/app/swap/datafeed/helpers";
 import { CrosshairMode, LineStyle, createChart } from 'lightweight-charts';
 
+const useViewport = () => {
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+    };
 
+    // Initial width on component mount
+    setWidth(window.innerWidth);
+
+    // Event listener for window resize
+    window.addEventListener('resize', handleWindowResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []); // Run effect only on component mount
+
+  return width;
+};
 export const TVChartContainer = (props:any) => {
 	const searchParams:any = useSearchParams()
 	const chain = searchParams.get('chain')
 	const pooladdress = searchParams.get('pair')
 	const chartContainerRef = useRef<HTMLDivElement>() as React.MutableRefObject<HTMLInputElement>;
-
+	const viewportWidth:any = useViewport();
 	useEffect(() => {
 
 		function countLeadingZeros(number:any) {
@@ -40,18 +60,16 @@ export const TVChartContainer = (props:any) => {
 
 			// The `exchanges` arguments are used for the `searchSymbols` method if a user selects the exchange
 			exchanges: [
-					{ value: 'Bitfinex', name: 'Bitfinex', desc: 'Bitfinex'},
-					{ value: 'Kraken', name: 'Kraken', desc: 'Kraken bitcoin exchange'},
-					{ value: 'DEXUP', name: 'Dexup', desc: 'Dexup bitcoin exchange'},
+					{ value: 'DEXUP', name: 'Dexup', desc: 'Dexup exchange platform'},
 			],
 			// The `symbols_types` arguments are used for the `searchSymbols` method if a user selects this symbol type
 			symbols_types: [
 					{ name: 'crypto', value: 'crypto'}
 			],
 			supports_group_request: false,
-			supports_marks: false,
-			supports_search: false,
-			supports_timescale_marks: false,
+			supports_marks: true,
+			supports_timescale_marks: true,
+			supports_time: true,
 	};
 		const datafeed = {
     
@@ -98,18 +116,15 @@ export const TVChartContainer = (props:any) => {
 					type: 'crypto',
 					session: '24x7',//24x7
 					timezone: 'exchange',//Etc/UTC
-					exchange: 'DEXUP',
+					exchange: 'dexup.io',
 					minmov: 1,
 					pricescale: scale,//100
 					has_intraday:true,
+					// logo_urls:'',
 					supported_resolutions: ['1', '5', '15', '1H', '4H', 'D'],
 					volume_precision: 2,
 					data_status: 'streaming',
-					supports_group_request: false,
-					supports_marks: false,
-					supports_search: false,
-					supports_timescale_marks: false,
-					debug:true,
+					supportSymbolSearch:false,
 			}
 	
 			onSymbolResolvedCallback(symbolInfo);
@@ -182,19 +197,32 @@ export const TVChartContainer = (props:any) => {
       theme: props.theme,
       width: props.width,
       height: props.height,
-			supports_group_request: false,
-			supports_marks: false,
-			supports_search: false,
-			supports_timescale_marks: false,
-			// show_exchange_logos: props.show_exchange_logos,
-			debug: props.debug,
+			supportSymbolSearch:false,
 			// timeframe:props.timeframe
+			enabled_features: [
+				"show_spread_operators",
+				"adaptive_logo",
+				"side_toolbar_in_fullscreen_mode",
+				// "show_symbol_logos",
+				// "show_symbol_logo_in_legend",
+			],
+			disabled_features: [
+				"use_localstorage_for_settings",
+				"header_symbol_search",
+				"header_compare",
+				"header_quick_search",
+				"symbol_search_hot_key",
+				"header_undo_redo",
+				"display_market_status",
+				"edit_buttons_in_legend"
+			],
 		};
 
 		const tvWidget = new widget(widgetOptions);
 
-		tvWidget.onChartReady(() => {
+		// tvWidget?.activeChart()?.executeActionById("drawingToolbarAction");
 
+		tvWidget.onChartReady(() => {
 			// tvWidget.headerReady().then(() => {
 			// 	const button = tvWidget.createButton();
 			// 	button.setAttribute("title", "Click to show a notification popup");
@@ -220,7 +248,7 @@ export const TVChartContainer = (props:any) => {
 
 	return (
 		<>
-		<div className="w-[780px] max-md:w-96 h-[600px] max-md:h-96 overflow-hidden rounded-xl bg-[#131722] border border-white/10">
+		<div style={{height: `${props?.height}px`}} className={viewportWidth > 1920 ? `w-[1600px] h-[${props?.height}px] overflow-hidden rounded-xl bg-[#131722] border border-white/10` : `w-[780px] max-md:w-96 h-[${props?.height}px] max-md:h-96 overflow-hidden rounded-xl bg-[#131722] border border-white/10`}>
 		{/* <div id="tvchart" className={styles.TVChartContainer}></div> */}
 			<div ref={chartContainerRef} className={styles.TVChartContainer} />
 		</div>

@@ -7,14 +7,34 @@ import { columns } from "../DataTable/columns";
 import { useAppContext } from "@/context/AppContext";
 
 type Props = {};
+const useViewport = () => {
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+    };
 
+    // Initial width on component mount
+    setWidth(window.innerWidth);
+
+    // Event listener for window resize
+    window.addEventListener('resize', handleWindowResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []); // Run effect only on component mount
+
+  return width;
+};
 const Traders = ({}: Props) => {
   const searchParams = useSearchParams() as any
   const chain = searchParams.get('chain')
   const pooladdress = searchParams.get('pair')
   const [traderData,setTraderData] = useState<any>([]);
   const [loadingtrader,setloadingtrader] = useState<boolean>(false);
-  
+  const viewportWidth:any = useViewport();
   const { 
     setChain 
   } = useAppContext()
@@ -68,7 +88,7 @@ const Traders = ({}: Props) => {
   },[])
 
   return (
-    <div className="flex-col items-center w-[780px] rounded-xl p-5 bg-[#131722] border border-white/10 max-md:w-96">
+    <div className={viewportWidth > 1920 ? "flex-col items-center w-[1600px] rounded-xl p-5 bg-[#131722] border border-white/10 max-md:w-96" : "flex-col items-center w-[780px] rounded-xl p-5 bg-[#131722] border border-white/10 max-md:w-96"}>
     <h1 className="flex items-center w-full text-white/50">Past 24 Hour Trades</h1>
     <div className="flex items-center w-full gap-x-2">
     <DataTable loadingtrader={loadingtrader} columns={columns} data={traderData} />

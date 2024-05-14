@@ -1,4 +1,27 @@
+'use client'
+import { useEffect, useState } from "react";
 
+const useViewport = () => {
+  const [width, setWidth] = useState<number | undefined>(undefined);
+  useEffect(() => {
+    const handleWindowResize = () => {
+      setWidth(window.innerWidth);
+    };
+
+    // Initial width on component mount
+    setWidth(window.innerWidth);
+
+    // Event listener for window resize
+    window.addEventListener('resize', handleWindowResize);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleWindowResize);
+    };
+  }, []); // Run effect only on component mount
+
+  return width;
+};
 export default function SwapLayout({
   children,
   chart,
@@ -18,6 +41,7 @@ export default function SwapLayout({
   shortdetail:React.ReactNode
   honeypot:React.ReactNode
 }) {
+  const viewportWidth:any = useViewport();
   return (
     <div>
       <div>{children}</div>
