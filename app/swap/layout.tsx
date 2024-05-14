@@ -1,4 +1,5 @@
 'use client'
+import { useAppContext } from "@/context/AppContext";
 import { useEffect, useState } from "react";
 
 const useViewport = () => {
@@ -42,21 +43,108 @@ export default function SwapLayout({
   honeypot:React.ReactNode
 }) {
   const viewportWidth:any = useViewport();
+  const {info,setInfo,charttxns,setChartTxns,charts,setChart,txns,setTxns} = useAppContext();
   return (
+    <>
+    {viewportWidth < 768 ?
     <div>
       <div>{children}</div>
+      <>
+      {info ?
+      <>
       <div style={{display:'flex', flex:1}}>{shortdetail}</div>
       <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
         <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
           <div>{details}</div>
-          <div>{chart}</div>
+          {/* <div>{chart}</div> */}
           <div>{comments}</div>
+        </div>
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{iframes}</div>
+          <div>{traders}</div> */}
+        </div>
+      </div>
+      </>
+      : charttxns ?
+      <>
+      {/* <div style={{display:'flex', flex:1}}>{shortdetail}</div> */}
+      <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{details}</div> */}
+          <div>{chart}</div>
+          {/* <div>{comments}</div> */}
         </div>
         <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
           <div>{iframes}</div>
           <div>{traders}</div>
         </div>
       </div>
+      </>
+      : charts ?
+      <>
+      {/* <div style={{display:'flex', flex:1}}>{shortdetail}</div> */}
+      <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{details}</div> */}
+          <div>{chart}</div>
+          {/* <div>{comments}</div> */}
+        </div>
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{iframes}</div> */}
+          {/* <div>{traders}</div> */}
+        </div>
+      </div>
+      </>
+      : txns ?
+      <>
+      {/* <div style={{display:'flex', flex:1}}>{shortdetail}</div> */}
+      <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{details}</div> */}
+          {/* <div>{chart}</div> */}
+          {/* <div>{comments}</div> */}
+        </div>
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          <div>{iframes}</div>
+          <div>{traders}</div>
+        </div>
+      </div>
+      </>
+      :
+      <>
+      <div style={{display:'flex', flex:1}}>{shortdetail}</div>
+      <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          <div>{details}</div>
+          {/* <div>{chart}</div> */}
+          <div>{comments}</div>
+        </div>
+        <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+          {/* <div>{iframes}</div>
+          <div>{traders}</div> */}
+        </div>
+      </div>
+      </>
+      }
+      </>
     </div>
+    :
+    <div>
+    <div>{children}</div>
+    <div style={{display:'flex', flex:1}}>{shortdetail}</div>
+    <div style={{ display: "flex" , flexDirection:'column'}} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+      <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div>{details}</div>
+        <div>{chart}</div>
+        <div>{comments}</div>
+      </div>
+      <div style={{ display:"flex", flex:1 }} className="gap-x-2 max-md:flex-col max-md:gap-y-2">
+        <div>{iframes}</div>
+        <div>{traders}</div>
+      </div>
+    </div>
+    </div>
+    }
+    </>
   )
 }

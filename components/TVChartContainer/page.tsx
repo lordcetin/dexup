@@ -120,7 +120,7 @@ export const TVChartContainer = (props:any) => {
 					minmov: 1,
 					pricescale: scale,//100
 					has_intraday:true,
-					// logo_urls:'',
+					logo_urls:pairData?.baseImg,
 					supported_resolutions: ['1', '5', '15', '1H', '4H', 'D'],
 					volume_precision: 2,
 					data_status: 'streaming',

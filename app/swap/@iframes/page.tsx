@@ -81,7 +81,7 @@ const Iframes = ({}: Props) => {
   return (
   <div className="flex-col items-center w-80 max-md:w-96 space-y-2">
 
-    <div onClick={() => setOpenSwap(!isOpenSwap)} className="relative w-80 justify-center items-center group overflow-hidden cursor-pointer rounded-xl">
+    <div onClick={() => setOpenSwap(!isOpenSwap)} className="relative w-80 justify-center items-center group overflow-hidden cursor-pointer rounded-xl max-md:w-full">
       <button className="flex justify-center items-center w-full border-[1px] border-sky-300/30 group-hover:border-sky-300/50 overflow-hidden rounded-xl p-5 bg-gradient-to-tl to-[#131722] from-transparent font-light text-lg text-sky-500 group-hover:text-sky-300 transition-all">Swap <BiChevronDown size={32} className={isOpenSwap ? "flex justify-end items-center absolute right-6 rotate-180 transition-all" : "flex justify-end items-center absolute right-6 rotate-0 transition-all"}/></button>
       <div className="absolute bottom-0 bg-gradient-to-l to-transparent via-sky-300 from-transparent w-[310px] h-[1px] ml-1 transition-all group-hover:via-sky-300 animate-pulse before:absolute before:w-80 before:left-3 before:h-20 before:rounded-full before:-bottom-5 before:rotate-12 before:shadow-2xl before:shadow-sky-700 group-hover:before:-rotate-12 group-hover:before:-left-3 group-hover:before:transition-all"></div>
     </div>
@@ -89,7 +89,7 @@ const Iframes = ({}: Props) => {
     {isOpenSwap ? <div>
     {chain === 'solana' ?
     <>
-    <div id="integrated-terminal" className="border border-white/10 block rounded-xl max-w-[400px] min-w-[300px]"></div>
+    <div id="integrated-terminal" className="border border-white/10 block rounded-xl max-w-[400px] min-w-[300px] max-md:w-96 max-md:h-96"></div>
     </>
     : 
     <iframe
@@ -97,7 +97,7 @@ const Iframes = ({}: Props) => {
     height="660px"
     width="100%"
     scrolling="no"
-    className="border-none block rounded-xl max-w-[400px] min-w-[300px] overflow-hidden"
+    className="border-none block rounded-xl max-w-[400px] min-w-[300px] overflow-hidden max-md:h-96"
     />
     }
     </div> : null}

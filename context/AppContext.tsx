@@ -60,6 +60,14 @@ type AppContextType = {
   setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
   showAccountMenu: boolean;
   setShowAccountMenu: React.Dispatch<React.SetStateAction<boolean>>;
+  info: boolean;
+  setInfo: React.Dispatch<React.SetStateAction<boolean>>;
+  charttxns: boolean;
+  setChartTxns: React.Dispatch<React.SetStateAction<boolean>>;
+  chart: boolean;
+  setChart: React.Dispatch<React.SetStateAction<boolean>>;
+  txns: boolean;
+  setTxns: React.Dispatch<React.SetStateAction<boolean>>;
 
 };
 
@@ -84,6 +92,10 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
   const [netchain, setChain] = useState('');
   const [details,setOpenDetails] = useState(false);
   const [editModal,setEditDetailsModal] = useState(false);
+  const [info,setInfo] = useState(true);
+  const [charttxns,setChartTxns] = useState(false);
+  const [charts,setChart] = useState(false);
+  const [txns,setTxns] = useState(false);
   const [isChart, setIsChart] = useState<string[] | any>([]);
   const [selectedProfileID, setSelectedProfileID] = useState<string>('');
   const [selectedProfileDetails, setSelectedProfileDetails] = useState<UserProfile | string[] | any>([]);
@@ -124,6 +136,7 @@ export const AppContextProvider = ({ children }: AppContextProviderProps) => {
       details,setOpenDetails,
       editModal,setEditDetailsModal,
       isChart,setIsChart,
+      info,setInfo,charttxns,setChartTxns,charts,setChart,txns,setTxns
       }}>
       {children}
     </AppContext.Provider>
