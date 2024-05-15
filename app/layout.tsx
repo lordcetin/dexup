@@ -14,7 +14,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { headers } from "next/headers";
 import { SocketProvider } from "./providers";
-
+import { Analytics } from "@vercel/analytics/react"
 // import WalletContextProvider from '@/context/WalletContextProvider'
 
 export const metadata: Metadata = {
@@ -80,6 +80,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
           <Navbar/>
             <main className="flex justify-center items-center w-full container mx-auto my-28">
             {children}
+            
             </main>
         </div>
           </AppContextProvider>
@@ -87,7 +88,7 @@ export default function RootLayout({children}: Readonly<{children: React.ReactNo
           </Web3ModalProvider>
 
         {/* </WalletContextProvider> */}
-
+        <Analytics />
       </body>
     </html>
     
