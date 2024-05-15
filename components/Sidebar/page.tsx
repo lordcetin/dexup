@@ -21,6 +21,7 @@ import { MdOutlineFeedback } from "react-icons/md";
 import { TbStairs } from "react-icons/tb";
 import { IoChevronDown } from "react-icons/io5";
 import MobileMenu from "../MobileMenu/page";
+import { GiToken } from "react-icons/gi";
 type Props = {};
 
 const Sidebar = (props: Props) => {
@@ -64,8 +65,8 @@ const Sidebar = (props: Props) => {
     </div>
     <div>
       <div onClick={() => router.push(`/comingsoon`)}>
-      <div className="group-hover:hidden text-2xl"><BsCart2/></div>
-      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><BsCart2/> Cart</div>
+      <div className="group-hover:hidden text-2xl"><GiToken /></div>
+      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><GiToken /> DXP Token</div>
       </div>
     </div>
     <div>
@@ -77,7 +78,7 @@ const Sidebar = (props: Props) => {
     <div>
       <div onClick={() => router.push(`/comingsoon`)}>
       <div className="group-hover:hidden text-2xl"><MdOutlineWaterDrop /></div>
-      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><MdOutlineWaterDrop /> <span className="text-sm">New Pairs</span></div>
+      <div className="items-center gap-x-3 hidden group-hover:flex text-lg hover:scale-110 transition-all cursor-pointer"><MdOutlineWaterDrop /> <span className="text-sm">New Pools</span></div>
       </div>
     </div>
     <div className="h-[1px] bg-gradient-to-l to-transparent via-white/10 from-transparent rounded-full w-full"></div>
