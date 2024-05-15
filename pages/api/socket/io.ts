@@ -22,7 +22,7 @@ const ioHandler = (req: NextApiRequest, res: NextApiResponseServerIo) => {
     const io = new ServerIO(httpServer, {
       path: path,
       cors: {
-        origin: "https://dexup.io", // Bu satırı güvenlik için spesifik bir URL ile değiştirebilirsiniz.
+        origin: "http://82.180.137.38:3000", // Bu satırı güvenlik için spesifik bir URL ile değiştirebilirsiniz.
         methods: ["GET", "POST"],
         allowedHeaders: ["my-custom-header"],
         credentials: true
