@@ -45,9 +45,8 @@ const Traders = ({}: Props) => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-      const ressa = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`,{
+      const ressa = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`,{
         method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
         cache:'no-cache'
       }).then((res:any) => res.json()).then((data:any) => {
 

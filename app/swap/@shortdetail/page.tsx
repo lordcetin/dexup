@@ -93,11 +93,9 @@ const ShortDetail = ({}: Props) => {
       const data = await res.json();
       setGoPlus(data.result[`${pairData?.baseaddress}`])
 
-      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/tokens/${pairData?.baseaddress}?include=top_pools`,{
-        method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-      })
+      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/tokens/${pairData?.baseaddress}/pools?include=base_token%2C%20quote_token%2C%20dex&page=1&sort=h24_volume_usd_liquidity_desc`)
       const tokenData = await responseTokenInfo.json()
+      console.log("tokenData",tokenData)
       
       if(tokenData.error === 'coin not found'){
         setDetailError('It will take time for the data for this token to be generated')
@@ -106,10 +104,10 @@ const ShortDetail = ({}: Props) => {
       setTokenInfo(tokenData)
     }
     getDetails()
-    const intervalId = setInterval(() => {
-      getDetails()
-    },3000)
-    return () => clearInterval(intervalId)
+    // const intervalId = setInterval(() => {
+    //   getDetails()
+    // },3000)
+    // return () => clearInterval(intervalId)
   },[])
 
   return (

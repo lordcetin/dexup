@@ -104,11 +104,8 @@ const Details = ({}: Props) => {
     const tokenInf = async () => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
-
-      const responseTokenInfo = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/tokens/${pairData?.baseaddress}/info`,{
-        method:'GET',
-        headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-      })
+      console.log("pairData",pairData)
+      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pairData?.baseaddress}/info`)
       const tokenInfoData = await responseTokenInfo.json()
 
       setTokenInfo(tokenInfoData?.data?.attributes)

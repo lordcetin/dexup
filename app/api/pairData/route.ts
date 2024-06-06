@@ -15,10 +15,7 @@ export async function GET(req: NextRequest) {
     // const chaId = network[0]?.id
     // const coingecko_asset_platform_id = network[0]?.attributes?.coingecko_asset_platform_id
 
-    const poolResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}?include=base_token%2C%20quote_token%2C%20dex`, {
-      method: 'GET',
-      headers: { 'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ' },
-    });
+    const poolResponse = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pooladdress}?include=base_token%2Cquote_token`);
     const poolData = await poolResponse.json();
 
     // Assume base and quote data are available

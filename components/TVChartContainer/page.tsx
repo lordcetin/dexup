@@ -95,10 +95,7 @@ export const TVChartContainer = (props:any) => {
 			const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-			const priceResponse = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/simple/networks/${chain}/token_price/${pairData?.baseaddress}`,{
-				method:'GET',
-				headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-			});
+			const priceResponse = await fetch(`https://api.geckoterminal.com/api/v2/simple/networks/${chain}/token_price/${pairData?.baseaddress}`);
 			const priceData = await priceResponse.json();
 			const price = priceData?.data?.attributes?.token_prices[pairData?.baseaddress];
 
@@ -136,10 +133,7 @@ export const TVChartContainer = (props:any) => {
 			const { from, to, firstDataRequest,countBack } = periodParams;
 			try {
 
-				const responseOHLC  = await fetch(`https://pro-api.coingecko.com/api/v3/onchain/networks/${chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`,{
-						method:'GET',
-						headers:{'x-cg-pro-api-key': 'CG-HNRTG1Cfx4hwNN9DPjZGtrLQ'},
-				});
+				const responseOHLC  = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pooladdress}/ohlcv/${resolution === '15' ? 'minute?aggregate=15' : resolution === '1D' ? 'day?aggregate=1' : resolution === '1' ? 'minute?aggregate=1' : resolution === '5' ? 'minute?aggregate=5' : resolution === '60' ? 'hour?aggregate=1' : resolution === '240' ? 'hour?aggregate=4' : 'minute?aggregate=15' }&before_timestamp=${to}&limit=1000&currency=usd&token=base`);
 
 				const dataOHLC = await responseOHLC.json();
 				const datas = dataOHLC?.data?.attributes?.ohlcv_list

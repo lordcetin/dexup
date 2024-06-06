@@ -46,6 +46,7 @@ const Landing = () => {
   const [tokens,setTokens] = useState<any[]>([]);
   const [days,setDays] = useState('7');
   const [chartdata,setChartData] = useState([]);
+  const [items,setNewsItems] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
   const viewportWidth:any = useViewport();
@@ -72,7 +73,7 @@ const Landing = () => {
     {id:4},
     {id:5},
   ]
-  const items = datas.map((movie:any,indexs:any) => movie)
+  // const items = datas.map((movie:any,indexs:any) => movie)
   const totalPages = Math.ceil(items.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -194,22 +195,22 @@ const Landing = () => {
       amt: 2100
     }
   ];
-// useEffect(() => {
-//   const getNews = async () => {
-//     const res = await fetch(`/api/news`)
-//     const data = await res.json()
-//     const newsItems = data.results.slice(0,8).map((news:any, index:any) => ({
-//       id: index,
-//       name: news.domain, // API'den gelen veri yapısına göre ayarlayın
-//       designation: news.title, // API'den gelen veri yapısına göre ayarlayın
-//       content: (
-//         <ItemContent news={news}/>
-//       )
-//     }));
-//     setNewsItems(newsItems);
-//   }
-//     getNews()
-// },[])
+useEffect(() => {
+  const getNews = async () => {
+    const res = await fetch(`/api/news`)
+    const data = await res.json()
+    const newsItems = data.results.slice(0,8).map((news:any, index:any) => ({
+      id: index,
+      name: news.domain, // API'den gelen veri yapısına göre ayarlayın
+      designation: news.title, // API'den gelen veri yapısına göre ayarlayın
+      content: (
+        <ItemContent news={news}/>
+      )
+    }));
+    setNewsItems(newsItems);
+  }
+    getNews()
+},[])
   // const items = [
   //   {
   //   id:1,
@@ -275,10 +276,10 @@ const Landing = () => {
     setCurrentPage((prevPage) => ((prevPage - 2 + totalPages) % totalPages) + 1);
   };
   return (
-    <div className="flex max-md:flex-col justify-center items-center w-[150vh] max-md:w-96 relative">
+    <div className="flex max-md:flex-col justify-center items-center w-[150vh] max-md:w-96 relative gap-x-12">
 			{/* <div data-orientation='left' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -left-20 z-[999] cursor-pointer text-slate-600"><FaAngleLeft size={38}/></div> */}
 			
-			<Swiper
+			{/*<Swiper
 			slidesPerView={2}
 			spaceBetween={24}
 			freeMode={true}
@@ -324,15 +325,15 @@ const Landing = () => {
 					<>
 				<SwiperSlide key={index}>
           <Banner slide={slide} index={index}/>
-					{/* <Image src={`${slide.srcset}`} width={800} height={800} alt="" className="w-[728px] h-[420px] rounded-2xl object-cover border border-transparent hover:border-yellow-500 transition-all cursor-pointer"/> */}
+					<Image src={`${slide.srcset}`} width={800} height={800} alt="" className="w-[728px] h-[420px] rounded-2xl object-cover border border-transparent hover:border-yellow-500 transition-all cursor-pointer"/>
 				</SwiperSlide>
 					</>
 				))}
 
-			</Swiper>
+			</Swiper>*/}
 			{/* <div data-orientation='right' className="bg-white rounded-full w-16 h-16 flex justify-center items-center absolute -right-20 z-[999] cursor-pointer text-slate-600"><FaAngleRight size={38}/></div> */}
 
-    {/* <div className="w-[800px] h-[430px] max-md:w-96 max-md:h-[800px] overflow-hidden rounded-xl relative max-md:px-3">
+    <div className="w-[800px] h-[430px] max-md:w-96 max-md:h-[800px] overflow-hidden rounded-xl relative max-md:px-3">
     <div className="absolute z-[999] flex-col items-center p-7 pointer-events-none">
       <h5 className="text-xs font-semibold mb-3">ETHEREUM 2.0</h5>
       <h1 className="text-4xl font-bold mb-3">Your Gateway<br/>into Blockchain</h1>
@@ -343,9 +344,9 @@ const Landing = () => {
       <Image src={meshobject} alt="Objects" width={500} height={500} className="w-full object-cover "/>
     </div>
     <BackgroundGradientAnimation/>
-    </div> */}
+    </div>
 
-    {/* {items.length > 0 && <CardStack items={items} offset={4} scaleFactor={0.1}/>} */}
+    {items.length > 0 && <CardStack items={items} offset={4} scaleFactor={0.1}/>}
 
     {/* <div className="w-[465px] h-[430px] rounded-xl flex-col flex items-center white-glassmorphism py-7 px-5">
 
