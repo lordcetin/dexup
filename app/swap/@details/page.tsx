@@ -105,9 +105,9 @@ const Details = ({}: Props) => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
       console.log("pairData",pairData)
-      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pairData?.baseaddress}/info`)
+      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/tokens/${pairData?.baseaddress}/info`)
       const tokenInfoData = await responseTokenInfo.json()
-
+      console.log("TokenINFO",tokenInfoData)
       setTokenInfo(tokenInfoData?.data?.attributes)
     }
     tokenInf()

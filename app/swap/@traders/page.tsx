@@ -45,10 +45,7 @@ const Traders = ({}: Props) => {
       const response = await fetch(`/api/pairData?chain=${chain}&pooladdress=${pooladdress}`)
       const pairData = await response.json()
 
-      const ressa = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`,{
-        method:'GET',
-        cache:'no-cache'
-      }).then((res:any) => res.json()).then((data:any) => {
+      const ressa = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/pools/${pooladdress}/trades?trade_volume_in_usd_greater_than=0`).then((res:any) => res.json()).then((data:any) => {
 
         const tradedata = data.data.map((item:any) => { //filter((u:any) => u.attributes.to_token_address !== pairData?.baseaddress)
           const attributes = item.attributes;
@@ -80,10 +77,10 @@ const Traders = ({}: Props) => {
     }
     
     getTraders()
-    const intervalId = setInterval(() => {
-      getTraders()
-    },3000)
-    return () => clearInterval(intervalId)
+    // const intervalId = setInterval(() => {
+    //   getTraders()
+    // },3000)
+    // return () => clearInterval(intervalId)
   },[])
 
   return (

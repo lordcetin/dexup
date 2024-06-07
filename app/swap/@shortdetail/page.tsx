@@ -93,7 +93,7 @@ const ShortDetail = ({}: Props) => {
       const data = await res.json();
       setGoPlus(data.result[`${pairData?.baseaddress}`])
 
-      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/tokens/${pairData?.baseaddress}/pools?include=base_token%2C%20quote_token%2C%20dex&page=1&sort=h24_volume_usd_liquidity_desc`)
+      const responseTokenInfo = await fetch(`https://api.geckoterminal.com/api/v2/networks/${chain}/tokens/${pairData?.baseaddress}/info`)
       const tokenData = await responseTokenInfo.json()
       console.log("tokenData",tokenData)
       
