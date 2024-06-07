@@ -117,10 +117,10 @@ const ShortDetail = ({}: Props) => {
     <div className="flex items-center gap-x-6 max-md:grid max-md:grid-cols-2 max-md:gap-y-2">
         
       <div className="flex items-center gap-x-6 relative cursor-pointer max-md:col-span-full" onClick={() => setOpenModal(!openModal)}>
-        <img src={tokenInfo?.data?.attributes?.image_url === 'missing.png' ? '/assets/missing.png' : tokenInfo?.data?.attributes?.image_url} alt={tokenInfo?.data?.attributes?.name} className="w-12 object-cover border border-white/10 rounded-full"/>
+        <img src={pairdata?.baseImg === 'missing.png' ? '/assets/missing.png' : pairdata?.baseImg} alt={pairdata.name} className="w-12 object-cover border border-white/10 rounded-full"/>
         <div className="absolute bottom-3 left-6"><DexImage dex={pairdata?.dex} size={8}/></div>
         <div className="flex-col items-center mt-3">
-        <Tippy content={`Top Pools`}><h1 className="text-xl flex gap-x-2 truncate">{tokenInfo?.data?.attributes?.name} <small className="text-white/50 truncate">{tokenInfo?.data?.attributes?.symbol}</small><ChevronDown className={openModal ? "rotate-180 transition-all" : "rotate-0 transition-all"}/></h1></Tippy>
+        <Tippy content={`Top Pools`}><h1 className="text-xl flex gap-x-2 truncate">{pairdata?.name} <small className="text-white/50 truncate">{tokenInfo?.data?.attributes?.symbol}</small><ChevronDown className={openModal ? "rotate-180 transition-all" : "rotate-0 transition-all"}/></h1></Tippy>
         <div className="flex items-center gap-x-2 bg-white text-brandblack font-bold text-xl p-2 rounded-lg mt-2"><PriceConvert amount={pairdata?.baseprice}/><div className={pairdata?.price_change_percentage?.h24.includes('-') ? "text-xl max-md:text-sm font-bold text-red-600" : pairdata?.price_change_percentage?.h24 === "0" ? "text-xl max-md:text-sm font-bold text-brandblack" : "text-xl max-md:text-sm font-bold text-green-500"}>{pairdata?.price_change_percentage?.h24}%</div></div>
         </div>
         {openModal ? 
