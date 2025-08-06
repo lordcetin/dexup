@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Landing/page.tsx", "components/Chart/page.tsx", "components/TVChartContainer/page.tsx", "app/swap/datafeed/datafeed.js", "components/AuroBanner/page.tsx", "components/ChainPopover/page.jsx", "app/dashboard/@control/page.jsx" , "app/dashboard/@cronjobs/page.jsx", "app/dashboard/@earning/page.jsx", "app/dashboard/@users/page.jsx","app/dashboard/@coingecko/page.jsx", "app/loading.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.js","**/*.jsx", "**/*.tsx", ".next/types/**/*.ts", "components/Landing/page.tsx", "components/Chart/page.tsx", "components/TVChartContainer/page.tsx", "app/swap/datafeed/datafeed.js", "components/AuroBanner/page.tsx", "components/ChainPopover/page.jsx", "app/dashboard/@control/page.jsx" , "app/dashboard/@cronjobs/page.jsx", "app/dashboard/@earning/page.jsx", "app/dashboard/@users/page.jsx","app/dashboard/@coingecko/page.jsx", "app/loading.jsx"],
   "exclude": ["node_modules"]
 }

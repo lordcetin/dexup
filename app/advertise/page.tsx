@@ -10,13 +10,12 @@ import ss1 from '@/public/ss1.png'
 import ss2 from '@/public/ss2.png'
 import ss3 from '@/public/ss3.png'
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
-import { InputIcon } from "@radix-ui/react-icons";
+
 import InputSecond from "@/components/InputSecond/page";
 import { toast } from "react-toastify";
 import { FaImage } from "react-icons/fa";
 import { useAccount, usePrepareTransactionRequest, useReadContract, useSendTransaction, useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { Address, erc20Abi, parseEther } from "viem";
-import { parseUnits } from "ethers";
 
 
 type Props = {

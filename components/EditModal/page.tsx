@@ -100,8 +100,6 @@ function EditModal({setEditDetailsModal}: Props) {
     getPrice()
   },[chainId])
 
-
-
   async function onChangeLogo(e:any) {
     setLogoLoading(true);
     const file = e.target.files[0];
